@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Set these environment variables
@@ -9,6 +10,8 @@ set +e
 
 echo "*** Building for" $ROUTER_NAME
 
+XMX=${XMX:-6100M}
+XMS=${XMS:-3G}
 ORG=${ORG:-hsldevcom}
 CONTAINER=opentripplanner-data-container
 DOCKER_TAG=${DOCKER_TAG:-$TRAVIS_BUILD_ID}
@@ -47,8 +50,8 @@ unzip -j ${WEBROOT}/router-$ROUTER_NAME.zip -d build/$ROUTER_NAME/
 if [ $? -ne 0 ]; then
     exit 0
 fi
-VERSION=`docker run --rm --entrypoint /bin/bash hsldevcom/opentripplanner:prod  -c "java -jar otp-shaded.jar --version"|grep commit|cut -d' ' -f2`
-docker run -v `pwd`/build:/opt/opentripplanner/graphs --rm --entrypoint /bin/bash hsldevcom/opentripplanner:prod  -c "java -Xmx6g -jar otp-shaded.jar --build graphs/$ROUTER_NAME"
+VERSION=`docker run --rm --entrypoint /bin/bash $ORG/opentripplanner:prod  -c "java -jar otp-shaded.jar --version"|grep commit|cut -d' ' -f2`
+docker run -v `pwd`/build:/opt/opentripplanner/graphs --rm --entrypoint /bin/bash $ORG/opentripplanner:prod  -c "java -Xmx$XMX -Xms$XMS -jar otp-shaded.jar --build graphs/$ROUTER_NAME"
 if [ $? -ne 0 ]; then
     exit 0
 fi

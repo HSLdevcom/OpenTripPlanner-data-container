@@ -4,17 +4,21 @@ branches:
   only:
     - master
 
+services: docker
+
+install: true
+
 language: C
 
 jobs:
   include:
-   - stage: test
+   - stage: update builder
      env: ROUTER_NAME=hsl
      script: ./prebuild.sh
-   - stage: test
+   - stage: update builder
      env: ROUTER_NAME=waltti
      script: ./prebuild.sh
-   - stage: test
+   - stage: update builder
      env: ROUTER_NAME=finland
      script: ./prebuild.sh
 
@@ -28,18 +32,12 @@ jobs:
      env: ROUTER_NAME=finland
      script: ./build-docker-image.sh
 
-   - stage: deploy
+   - stage: test and deploy
      env: ROUTER_NAME=hsl
      script: ./deploy.sh
-   - stage: deploy
+   - stage: test and deploy
      env: ROUTER_NAME=waltti
      script: ./deploy.sh
-   - stage: deploy
+   - stage: test and deploy
      env: ROUTER_NAME=finland
      script: ./deploy.sh
-
-services:
- - docker
-
-install:
- - true
