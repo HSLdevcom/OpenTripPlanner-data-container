@@ -10,7 +10,7 @@ jobs:
   include:
    - stage: test
      env: ROUTER_NAME=hsl
-     script: ./prebuild.sh
+     script: free -hm
    - stage: test
      env: ROUTER_NAME=waltti
      script: ./prebuild.sh
