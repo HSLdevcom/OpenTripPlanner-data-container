@@ -12,13 +12,13 @@ language: C
 
 jobs:
   include:
-   - stage: update builder
+   - stage: travis_wait 25 update builder
      env: ROUTER_NAME=hsl
      script: ./prebuild.sh
    - stage: update builder
      env: ROUTER_NAME=waltti
      script: ./prebuild.sh
-   - stage: update builder
+   - stage: travis_wait 25 update builder
      env: ROUTER_NAME=finland
      script: ./prebuild.sh
 
