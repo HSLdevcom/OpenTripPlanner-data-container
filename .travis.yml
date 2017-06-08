@@ -14,13 +14,13 @@ jobs:
   include:
    - stage: update builder
      env: ROUTER_NAME=hsl
-     script: ./prebuild.sh
+     script: travis_wait 25 ./prebuild.sh
    - stage: update builder
      env: ROUTER_NAME=waltti
-     script: ./prebuild.sh
+     script: travis_wait 25 ./prebuild.sh
    - stage: update builder
      env: ROUTER_NAME=finland
-     script: ./prebuild.sh
+     script: travis_wait 25 ./prebuild.sh
 
    - stage: build
      env: ROUTER_NAME=hsl
