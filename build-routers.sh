@@ -38,6 +38,16 @@ function retrieveTampere() {
   downloadTampere
   set +e
   $FIT_GTFS finland-latest.osm.pbf +init=epsg:3067 tampere.zip tampere_fitted.zip &> tampere.fit.log.txt
+  fit_pid=$!
+
+  while  ps | grep " $fit_pid "
+  do
+      echo "fitting GTFS..."
+      sleep 60
+  done
+
+  wait
+
   RESULT=$?
   if [ $RESULT -ne 0 ]; then
       echo "GTFS fit failed"
@@ -104,7 +114,17 @@ function retrieveHsl() {
   # Note! we use finland OSM graph
   echo "Note! Next mapfit requires lot of memory. If it fails mysteriously, try adding more."
   set +e
-  $FIT_GTFS $ROUTER_FINLAND/finland-latest.osm.pbf +init=epsg:3067 hsl.zip hsl_fitted.zip &> hsl.fit.log.txt
+  $FIT_GTFS $ROUTER_FINLAND/finland-latest.osm.pbf +init=epsg:3067 hsl.zip hsl_fitted.zip &> hsl.fit.log.txt &
+  fit_pid=$!
+
+  while   ps | grep " $fit_pid "
+  do
+      echo "fitting GTFS..."
+      sleep 60
+  done
+
+  wait
+
   RESULT=$?
   if [ $RESULT -ne 0 ]; then
       echo "GTFS fit failed"
@@ -228,6 +248,16 @@ function retrieveKoontikanta() {
   mv matka.filtered.zip matka.zip
   set +e
   $FIT_GTFS_STOPS finland-latest.osm.pbf +init=epsg:3067 matka.zip matka_fitted.zip &> matka.fit.log.txt
+  fit_pid=$!
+
+  while ps | grep " $fit_pid "
+  do
+      echo "fitting GTFS..."
+      sleep 60
+  done
+
+  wait
+
   RESULT=$?
   if [ $RESULT -ne 0 ]; then
       echo "GTFS fit failed"
