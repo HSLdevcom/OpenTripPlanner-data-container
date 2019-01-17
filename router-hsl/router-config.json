@@ -21,7 +21,7 @@
     {
       "type": "MQTT-gtfs-rt-updater",
       "url": "tcp://mqtt.hsl.fi",
-      "topic": "gtfsrt/dev/fi/hsl/tu",
+      "topic": "gtfsrt/v1/fi/hsl/tu",
       "feedId": "HSL",
       "fuzzyTripMatching": true
     },
