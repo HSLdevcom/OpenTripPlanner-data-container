@@ -10,7 +10,8 @@ const src = (id, url, fit, rules) => ({ id, url, fit, rules })
 const HSL_CONFIG = {
   'id': 'hsl',
   'src': [
-    src('HSL', 'http://dev.hsl.fi/gtfs/hsl.zip', false)
+    src('HSL', 'http://dev.hsl.fi/gtfs/hsl.zip', false),
+    src('HSLlautta', 'http://lautta.net/db/gtfs_pk/gtfs.zip', false)
   ],
   'osm': 'hsl',
   'dem': 'hsl'
