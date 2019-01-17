@@ -11,7 +11,7 @@ const HSL_CONFIG = {
   'id': 'hsl',
   'src': [
     src('HSL', 'http://dev.hsl.fi/gtfs/hsl.zip', false),
-    src('HSLlautta', 'http://lautta.net/db/gtfs_pk/gtfs.zip', false)
+    src('HSLlautta', 'https://gtfsdata.blob.core.windows.net/hsl/HSLlautta.zip', false)
   ],
   'osm': 'hsl',
   'dem': 'hsl'
