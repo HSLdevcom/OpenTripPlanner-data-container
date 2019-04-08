@@ -97,15 +97,6 @@
       "frequencySec": 10
     },
     {
-      "id": "linkki-trip-updates",
-      "type": "stop-time-updater",
-      "frequencySec": 60,
-      "sourceType": "gtfs-http",
-      "url": "http://digitransit-proxy:8080/out/linkki.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
-      "feedId": "LINKKI",
-      "fuzzyTripMatching": false
-    },
-    {
       "id": "linkki-alerts",
       "type": "real-time-alerts",
       "frequencySec": 30,
