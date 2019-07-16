@@ -37,7 +37,7 @@ const FINLAND_CONFIG = {
     src('MatkahuoltoSatakunta', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/satakunta-fi/gtfs.zip', false),
     src('MatkahuoltoVakka', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/vakka-fi/gtfs.zip', false),
     src('MatkahuoltoVantaa', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/vantaa-fi/gtfs.zip', false),
-    src('Matkahuoltovarsinais', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/varsinais-fi/gtfs.zip', false),
+    src('Matkahuoltovarsinais', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/varsinais-fi/gtfs.zip', false)
   ],
   'osm': 'finland'
 }
