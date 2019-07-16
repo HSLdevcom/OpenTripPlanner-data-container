@@ -25,7 +25,19 @@ const FINLAND_CONFIG = {
     src('tampere', 'http://www.tampere.fi/ekstrat/ptdata/tamperefeed_deprecated.zip', false),
     src('LINKKI', 'http://jakoon.jkl.fi/reittiopas/datajkl.zip', 'gtfs_shape_mapfit/fit_gtfs_stops.bash'),
     src('lautta', 'http://lautta.net/db/gtfs/gtfs.zip', false),
-    src('OULU', 'https://assets.oulunliikenne.fi/gtfs_google/google_transit.zip', false)
+    src('OULU', 'https://assets.oulunliikenne.fi/gtfs_google/google_transit.zip', false),
+    src('MatkahuoltoKainuu', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/kainuu-fi/gtfs.zip', false),
+    src('MatkahuoltoSavo', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/savo-fi/gtfs.zip', false),
+    src('MatkahuoltoKanta', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/kanta-fi/gtfs.zip', false),
+    src('MatkahuoltoKarjala', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/karjala-fi/gtfs.zip', false),
+    src('MatkahuoltoKeski', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/keski-fi/gtfs.zip', false),
+    src('MatkahuoltoKyme', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/kainuu-fi/gtfs.zip', false),
+    src('MatkahuoltoLappi', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/lappi-fi/gtfs.zip', false),
+    src('MatkahuoltoPohjanmaa', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/pohjanmaa-fi/gtfs.zip', false),
+    src('MatkahuoltoSatakunta', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/satakunta-fi/gtfs.zip', false),
+    src('MatkahuoltoVakka', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/vakka-fi/gtfs.zip', false),
+    src('MatkahuoltoVantaa', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/vantaa-fi/gtfs.zip', false),
+    src('Matkahuoltovarsinais', 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/varsinais-fi/gtfs.zip', false),
   ],
   'osm': 'finland'
 }
