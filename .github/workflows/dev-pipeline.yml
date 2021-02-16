@@ -1,11 +1,11 @@
-name: Process master push or pr
+name: Process linjasto2021 push or pr
 on:
   push:
     branches:
-      - master
+      - linjasto2021
   pull_request:
     branches:
-      - master
+      - linjasto2021
 jobs:
   lint:
     runs-on: ubuntu-18.04
@@ -29,7 +29,7 @@ jobs:
       - name: Run linters
         run: npm run test
   docker-push:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/linjasto2021'
     needs:
       - lint
     runs-on: ubuntu-18.04
@@ -54,9 +54,9 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm install
-      - name: Build docker image from master and push it
+      - name: Build docker image from linjasto2021 and push it
         run: ./.github/workflows/scripts/build_and_push_dev.sh
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_AUTH: ${{ secrets.DOCKER_AUTH }}
-          DOCKER_BASE_TAG: latest
+          DOCKER_BASE_TAG: linjasto2021
