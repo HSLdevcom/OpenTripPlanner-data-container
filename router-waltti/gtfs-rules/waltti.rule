@@ -1,8 +1,3 @@
-# Joensuu - remove route_type 6 = gondola
-{"op":"remove", "match":{"file":"routes.txt", "route_type":"6"}}
-# Joensuu, Kouvola and Lahti - map white route color to 'bus blue'
-{"op":"update", "match":{"file":"routes.txt", "route_color":"FFFFFF"}, "update":{"route_color":""}}
-
 # Remove shape_dist_traveled from stop_times.txt as values in waltti GTFS are bogus
 {"op":"update", "match":{"file":"stop_times.txt", }, "update":{"shape_dist_traveled":-999.0}}
 

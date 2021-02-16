@@ -37,4 +37,6 @@ make -C pymapmatch
 cd ..
 
 git clone https://github.com/HSLdevcom/OTPQA.git
-
+cd OTPQA
+git checkout linjasto2021
+cd ..
