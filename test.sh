@@ -51,9 +51,6 @@ fi
 
 echo "Got otp ip: $IP"
 
-lat: 61.4980944,
-    lon: 23.7606972,
-
 if [ "$ROUTER_NAME" == "hsl" ]; then
     MAX_WAIT=30
     URL="http://$IP:8080/otp/routers/default/plan?fromPlace=60.19812876015124%2C24.934051036834713&toPlace=60.218630210423306%2C24.807472229003906"
