@@ -51,12 +51,15 @@ fi
 
 echo "Got otp ip: $IP"
 
+lat: 61.4980944,
+    lon: 23.7606972,
+
 if [ "$ROUTER_NAME" == "hsl" ]; then
     MAX_WAIT=30
     URL="http://$IP:8080/otp/routers/default/plan?fromPlace=60.19812876015124%2C24.934051036834713&toPlace=60.218630210423306%2C24.807472229003906"
 elif [ "$ROUTER_NAME" == "waltti" ]; then
     MAX_WAIT=60
-    URL="http://$IP:8080/otp/routers/default/plan?fromPlace=60.44638185995603%2C22.244396209716797&toPlace=60.45053041945487%2C22.313575744628906"
+    URL="http://$IP:8080/otp/routers/default/plan?fromPlace=61.497463%2C23.761372&toPlace=61.45432%2C23.85747"
 else
     MAX_WAIT=60
     URL="http://$IP:8080/otp/routers/default/plan?fromPlace=60.19812876015124%2C24.934051036834713&toPlace=60.218630210423306%2C24.807472229003906"
