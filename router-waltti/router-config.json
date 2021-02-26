@@ -12,22 +12,5 @@
       "maxSlope": 0.125
   },
   "updaters": [
-    {
-      "id": "tampere-trip-updates",
-      "type": "stop-time-updater",
-      "frequencySec": 60,
-      "sourceType": "gtfs-http",
-      "url": "http://digitransit-proxy:8080/out/tre.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
-      "feedId": "tampere",
-      "fuzzyTripMatching": false
-    },
-    {
-      "id": "tampere-alerts",
-      "type": "real-time-alerts",
-      "frequencySec": 30,
-      "url": "http://digitransit-proxy:8080/out/tre.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
-      "feedId": "tampere",
-      "fuzzyTripMatching": false
-    }
   ]
 }
