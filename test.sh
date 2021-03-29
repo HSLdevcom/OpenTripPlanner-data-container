@@ -56,7 +56,7 @@ if [ "$ROUTER_NAME" == "hsl" ]; then
     URL="http://$IP:8080/otp/routers/default/plan?fromPlace=60.19812876015124%2C24.934051036834713&toPlace=60.218630210423306%2C24.807472229003906"
 elif [ "$ROUTER_NAME" == "waltti" ]; then
     MAX_WAIT=60
-    URL="http://$IP:8080/otp/routers/default/plan?fromPlace=61.497463%2C23.761372&toPlace=61.45432%2C23.85747"
+    URL="http://$IP:8080/otp/routers/default/plan?fromPlace=61.49825%2C23.73681&toPlace=61.44557%2C23.854514&time=1:02pm&date=8-10-2021"
 else
     MAX_WAIT=60
     URL="http://$IP:8080/otp/routers/default/plan?fromPlace=60.19812876015124%2C24.934051036834713&toPlace=60.218630210423306%2C24.807472229003906"
