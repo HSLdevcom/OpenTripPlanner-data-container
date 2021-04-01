@@ -42,7 +42,7 @@ const buildGraph = function (config) {
         resolve({ commit: commit, config: config })
       } else {
         const log = lastLog.join('')
-        postSlackMessage(`${config.id} build failed: ${status}:${log}`)
+        postSlackMessage(`${config.id} build failed: ${status}:${log} :boom:`)
         reject('could not build') // eslint-disable-line
       }
 

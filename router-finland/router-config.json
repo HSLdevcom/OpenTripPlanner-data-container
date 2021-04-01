@@ -36,7 +36,8 @@
       "type": "bike-rental",
       "sourceType": "smoove",
       "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "frequencySec": 10
+      "frequencySec": 10,
+      "allowOverloading": true
     },
     {
       "id": "matka-trip-updates",
@@ -112,7 +113,8 @@
       "sourceType": "smoove",
       "url": "http://digitransit-proxy:8080/out/data.foli.fi/citybike/smoove",
       "frequencySec": 10,
-      "network": "turku"
+      "network": "turku",
+      "allowOverloading": false
     },
     {
       "id": "oulu-bike-rental",
@@ -129,6 +131,14 @@
       "url": "http://digitransit-proxy:8080/out/kaupunkipyorat.kuopio.fi/tkhs-export-map.html?format=xml",
       "frequencySec": 60,
       "network": "vilkku"
+    },
+    {
+      "id": "lappeenranta-bike-rental",
+      "type": "bike-rental",
+      "sourceType": "kaakau",
+      "url": "http://digitransit-proxy:8080/out/ckan.saita.fi/geojson/kaupunkipyoraparkit_lpr.geojson",
+      "frequencySec": 3600,
+      "network": "lappeenranta"
     }
   ],
   "boardTimes": {

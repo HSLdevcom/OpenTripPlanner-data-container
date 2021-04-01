@@ -11,7 +11,7 @@ apt-get update && \
 
 rm -rf /var/lib/apt/lists/*
 
-wget https://bootstrap.pypa.io/2.7/get-pip.py && \
+wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
   python get-pip.py && \
   pip install imposm.parser && \
   pip install argh && \

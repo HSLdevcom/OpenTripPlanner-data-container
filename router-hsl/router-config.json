@@ -41,7 +41,8 @@
       "type": "bike-rental",
       "sourceType": "smoove",
       "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "frequencySec": 10
+      "frequencySec": 10,
+      "allowOverloading": true
     },
     {
       "id": "hsl-bike-park",

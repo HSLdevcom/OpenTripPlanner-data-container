@@ -4,22 +4,16 @@
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"A"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"D"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"E"}}
-{"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"H"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"I"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"K"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"L"}}
-{"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"M"}}
-{"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"N"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"P"}}
-{"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"S"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"T"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"U"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"X"}}
 {"op":"remove", "match":{"file":"routes.txt", "agency_id":"4", "route_short_name":"Y"}}
 # HSL
 {"op":"remove", "match":{"file":"agency.txt", "agency_id":"2"}}
-{"op":"remove", "match":{"file":"routes.txt", "agency_id":"HSL", "route_short_name":"R"}}
-{"op":"remove", "match":{"file":"routes.txt", "agency_id":"HSL", "route_short_name":"Z"}}
 # Tampere old
 {"op":"remove", "match":{"file":"agency.txt", "agency_id":"3"}}
 # Tampere new

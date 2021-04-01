@@ -56,7 +56,7 @@ ${id}-fake-name,${id}-fake-url,${id}-fake-lang,${id}\n`
                 // send warning also to slack between monday and friday
                 const day = now.getDay()
                 if (day > 0 && day < 6) {
-                  postSlackMessage('GTFS data for ' + id + ' had not been updated within 8 hours.\n')
+                  postSlackMessage('GTFS data for ' + id + ' had not been updated within 8 hours :boom:')
                 }
               }
             }
