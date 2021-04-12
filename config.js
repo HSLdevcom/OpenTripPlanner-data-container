@@ -36,7 +36,7 @@ const WALTTI_CONFIG = {
   'id': 'waltti',
   'src': [
     src('tampere', 'http://www.tampere.fi/ekstrat/ptdata/tamperefeed_linjasto2021.zip', false),
-    src('TampereVR', 'https://rata.digitraffic.fi/api/v1/trains/gtfs-vr-tre.zip', false, undefined, { gzip: true }),
+    // src('TampereVR', 'https://rata.digitraffic.fi/api/v1/trains/gtfs-vr-tre.zip', false, undefined, { gzip: true }),
     src('tampereDRT', 'https://www.tampere.fi/ekstrat/ptdata/tamperefeed_kutsuliikenne.zip', false)
   ],
   'osm': 'finland',
