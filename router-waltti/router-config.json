@@ -10,6 +10,16 @@
       "walkBoardCost": 540,
       "maxSlope": 0.125
   },
+  "streetRoutingTimeout": 8,
+  "transit": {
+    "maxNumberOfTransfers" : 12,
+    "dynamicSearchWindow" : {
+      "minTransitTimeCoefficient" : 2.5,
+      "minWaitTimeCoefficient": 0.5,
+      "minWinTimeMinutes" : 60,
+      "maxWinTimeMinutes" : 1440
+    }
+  },
   "updaters": [
   ]
 }

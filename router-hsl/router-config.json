@@ -22,7 +22,7 @@
     {
       "id": "hsl-trip-updates",
       "type": "MQTT-gtfs-rt-updater",
-      "url": "tcp://mqtt.cinfra.fi",
+      "url": "tcp://pred.rt.hsl.fi",
       "topic": "gtfsrt/v2/fi/hsl/tu",
       "feedId": "HSL",
       "fuzzyTripMatching": true
@@ -31,7 +31,7 @@
       "id": "hsl-alerts",
       "type": "real-time-alerts",
       "frequencySec": 30,
-      "url": "https://api.digitransit.fi/realtime/service-alerts/v2/hsl",
+      "url": "https://realtime.hsl.fi/realtime/service-alerts/v2/hsl",
       "feedId": "HSL",
       "fuzzyTripMatching": true
     },
@@ -40,7 +40,8 @@
       "type": "bike-rental",
       "sourceType": "smoove",
       "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "frequencySec": 10
+      "frequencySec": 10,
+      "allowOverloading": true
     },
     {
       "id": "hsl-bike-park",

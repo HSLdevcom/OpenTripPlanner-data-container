@@ -1,0 +1,4 @@
+# Removals from HSL gtfs package for matka.fi
+{"op":"remove", "match":{"file":"routes.txt", "agency_id":"HSL", "route_short_name":"R"}}
+{"op":"remove", "match":{"file":"routes.txt", "agency_id":"HSL", "route_short_name":"Z"}}
+

@@ -38,7 +38,7 @@ function testGTFS (gtfsFile, quiet = false) {
                 const log = lastLog.join('')
                 process.stdout.write(gtfsFile + ` Test FAILED (${c})\n`)
                 process.stdout.write(gtfsFile + ': ' + lastLog.join('') + '\n')
-                postSlackMessage(`${gtfsFile} test failed: ${log}`)
+                postSlackMessage(`${gtfsFile} test failed: ${log} :boom:`)
                 resolve(false)
               }
               fse.removeSync(folder)
@@ -65,7 +65,7 @@ function testGTFS (gtfsFile, quiet = false) {
             const log = lastLog.join('')
             process.stdout.write(gtfsFile + ` Test FAILED (${e})\n`)
             process.stdout.write(gtfsFile + ': ' + log + '\n')
-            postSlackMessage(`${gtfsFile} test failed: ${log}`)
+            postSlackMessage(`${gtfsFile} test failed: ${log} :boom:`)
             fse.removeSync(folder)
             reject(e)
           }

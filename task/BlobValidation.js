@@ -17,7 +17,7 @@ function validateHash (localFile, headerHash) {
           resolve()
         }).catch((err) => {
           process.stdout.write(localFile + ': file had different md5 hash than in blob storage\n')
-          postSlackMessage(localFile + ': file had different md5 hash than in blob storage')
+          postSlackMessage(localFile + ': file had different md5 hash than in blob storage :boom:')
           reject(err)
         })
     }

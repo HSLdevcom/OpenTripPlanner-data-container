@@ -17,7 +17,7 @@
     {
       "id": "hsl-trip-updates",
       "type": "MQTT-gtfs-rt-updater",
-      "url": "tcp://mqtt.cinfra.fi",
+      "url": "tcp://pred.rt.hsl.fi",
       "topic": "gtfsrt/v2/fi/hsl/tu",
       "feedId": "HSL",
       "fuzzyTripMatching": true
@@ -26,7 +26,7 @@
       "id": "hsl-alerts",
       "type": "real-time-alerts",
       "frequencySec": 30,
-      "url": "https://api.digitransit.fi/realtime/service-alerts/v2/hsl",
+      "url": "https://realtime.hsl.fi/realtime/service-alerts/v2/hsl",
       "feedId": "HSL",
       "fuzzyTripMatching": true
     },
@@ -35,7 +35,8 @@
       "type": "bike-rental",
       "sourceType": "smoove",
       "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "frequencySec": 10
+      "frequencySec": 10,
+      "allowOverloading": true
     },
     {
       "id": "matka-trip-updates",
@@ -111,7 +112,8 @@
       "sourceType": "smoove",
       "url": "http://digitransit-proxy:8080/out/data.foli.fi/citybike/smoove",
       "frequencySec": 10,
-      "network": "turku"
+      "network": "turku",
+      "allowOverloading": true
     },
     {
       "id": "oulu-bike-rental",
@@ -128,6 +130,14 @@
       "url": "http://digitransit-proxy:8080/out/kaupunkipyorat.kuopio.fi/tkhs-export-map.html?format=xml",
       "frequencySec": 60,
       "network": "vilkku"
+    },
+    {
+      "id": "lappeenranta-bike-rental",
+      "type": "bike-rental",
+      "sourceType": "kaakau",
+      "url": "http://digitransit-proxy:8080/out/ckan.saita.fi/geojson/kaupunkipyoraparkit_lpr.geojson",
+      "frequencySec": 3600,
+      "network": "lappeenranta"
     }
   ],
   "boardTimes": {
