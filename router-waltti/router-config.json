@@ -20,6 +20,33 @@
       "maxWinTimeMinutes" : 1440
     }
   },
+  "vectorTileLayers": [
+    {
+      "name": "stops",
+      "type": "Stop",
+      "mapper": "Digitransit",
+      "maxZoom": 17,
+      "minZoom": 13,
+      "cacheMaxSeconds": 600
+    },
+    {
+      "name": "stations",
+      "type": "Station",
+      "mapper": "Digitransit",
+      "maxZoom": 17,
+      "minZoom": 11,
+      "cacheMaxSeconds": 600
+    }
+  ],
   "updaters": [
+    {
+      "id": "salo-trip-updates",
+      "type": "stop-time-updater",
+      "frequencySec": 60,
+      "sourceType": "gtfs-http",
+      "url": "http://digitransit-proxy:8080/out/paikku.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
+      "feedId": "Salo",
+      "fuzzyTripMatching": false
+    }
   ]
 }

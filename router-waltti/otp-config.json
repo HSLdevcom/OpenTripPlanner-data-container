@@ -5,6 +5,7 @@
       "APIServerInfo": true,
       "APIUpdaterStatus": false,
       "APIExternalGeocoder": false,
-      "APIBikeRental": false
+      "APIBikeRental": false,
+      "SandboxAPIMapboxVectorTilesApi": true
   }
 }
