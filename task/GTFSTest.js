@@ -28,7 +28,7 @@ function testGTFS (gtfsFile, quiet = false) {
         const r = fs.createReadStream(gtfsFile)
         r.on('end', () => {
           try {
-            const build = exec(`docker run --rm -v ${hostDataDir}/tmp:/opt/opentripplanner/graphs --entrypoint /bin/bash hsldevcom/opentripplanner:${testTag} -c "java -Xmx10G -jar otp-shaded.jar --build --save ./graphs/${dir} "`,
+            const build = exec(`docker run --rm -v ${hostDataDir}/tmp:/opt/opentripplanner/graphs --entrypoint /bin/bash hsldevcom/opentripplanner:${testTag} -c "java -Xmx9G -jar otp-shaded.jar --build --save ./graphs/${dir} "`,
               { maxBuffer: constants.BUFFER_SIZE })
             build.on('exit', function (c) {
               if (c === 0) {

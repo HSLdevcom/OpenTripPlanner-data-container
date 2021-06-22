@@ -3,7 +3,7 @@ set +e
 
 # set defaults
 ORG=${ORG:-hsldevcom}
-JAVA_OPTS=${JAVA_OPTS:--Xmx10g}
+JAVA_OPTS=${JAVA_OPTS:--Xmx9g}
 ROUTER_NAME=${1:-hsl}
 TEST_TAG=${2:-latest}
 TOOLS_TAG=${3:-latest}
