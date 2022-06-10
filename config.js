@@ -57,10 +57,19 @@ const WALTTI_CONFIG = {
   'dem': 'waltti'
 }
 
+
+const VARELY_CONFIG = {
+  'id': 'varely',
+  'src': [
+    src('VARELY', 'http://digitransit-proxy:8080/out/varelyadmin.mattersoft.fi/feeds/102.zip', false, false)
+  ],
+  'osm': 'finland'
+}
+
 let ALL_CONFIGS
 
 const setCurrentConfig = (name) => {
-  ALL_CONFIGS = [WALTTI_CONFIG, HSL_CONFIG, FINLAND_CONFIG].reduce((acc, nxt) => {
+  ALL_CONFIGS = [WALTTI_CONFIG, HSL_CONFIG, FINLAND_CONFIG], VARELY_CONFIG.reduce((acc, nxt) => {
     if ((name && name.split(',').indexOf(nxt.id) !== -1) ||
       name === undefined) {
       acc.push(nxt)

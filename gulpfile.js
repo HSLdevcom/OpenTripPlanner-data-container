@@ -159,5 +159,6 @@ gulp.task('router:buildGraph', gulp.series('router:copy', function () {
     .pipe(gulp.dest(`${config.dataDir}/build/waltti`))
     .pipe(gulp.dest(`${config.dataDir}/build/finland`))
     .pipe(gulp.dest(`${config.dataDir}/build/hsl`))
+    .pipe(gulp.dest(`${config.dataDir}/build/varely`))
   return buildOTPGraphTask(config.ALL_CONFIGS())
 }))
