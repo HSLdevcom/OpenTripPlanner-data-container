@@ -28,7 +28,7 @@
       "transitGeneralizedCostLimit": {
         "costLimitFunction": "600 + 1.5x"
       },
-      "nonTransitGeneralizedCostLimit": "180 + 1.2x"
+      "nonTransitGeneralizedCostLimit": "1800 + 2x"
     },
     "transitReluctanceForMode": {
       "BUS": 1.2,
