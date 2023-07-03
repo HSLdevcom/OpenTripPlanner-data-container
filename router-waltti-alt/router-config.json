@@ -12,6 +12,7 @@
     "elevatorBoardTime": 60,
     "walkBoardCost": 120,
     "bikeBoardCost": 120,
+    "maxAccessEgressStopCount": 300,
     "maxAccessEgressDuration": "45m",
     "maxDirectStreetDuration": "4h",
     "maxDirectStreetDurationForMode": {
