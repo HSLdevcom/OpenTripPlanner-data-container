@@ -1,6 +1,6 @@
 {
   "otpFeatures": {
-      "SandboxAPILegacyGraphQLApi": true,
+      "GtfsGraphQlApi": true,
       "APIGraphInspectorTile": true,
       "APIServerInfo": true,
       "APIUpdaterStatus": false,
