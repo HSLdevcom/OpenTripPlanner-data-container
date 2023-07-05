@@ -12,16 +12,18 @@
     "bikeBoardCost": 120,
     "stairsTimeFactor": 2,
     "elevatorBoardTime": 60,
-    "maxAccessEgressStopCount": 300,
-    "maxAccessEgressDuration": "1h",
+    "accessEgress": {
+      "maxStopCount": 500,
+      "maxDuration": "1h",
+      "maxDurationForMode": {
+        "CAR_TO_PARK": "2h"
+      }
+    },
     "maxDirectStreetDuration": "100h",
     "maxDirectStreetDurationForMode": {
       "walk": "90m"
     },
     "maxJourneyDuration": "24h",
-    "maxAccessEgressDurationForMode": {
-      "CAR_TO_PARK": "2h"
-    },
     "streetRoutingTimeout": "9s",
     "wheelchairAccessibility": {
       "stop": {

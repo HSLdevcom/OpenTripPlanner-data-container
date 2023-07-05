@@ -12,8 +12,10 @@
     "bikeBoardCost": 120,
     "stairsTimeFactor": 2,
     "elevatorBoardTime": 60,
-    "maxAccessEgressStopCount": 300,
-    "maxAccessEgressDuration": "8h",
+    "accessEgress": {
+      "maxStopCount": 500,
+      "maxDuration": "8h"
+    },
     "maxDirectStreetDuration": "100h",
     "maxDirectStreetDurationForMode": {
       "walk": "90m"
