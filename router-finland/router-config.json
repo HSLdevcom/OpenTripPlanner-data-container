@@ -111,7 +111,7 @@
       "id": "tampere-bike-rental",
       "type": "bike-rental",
       "sourceType": "gbfs",
-      "url": "http://digitransit-proxy:8080/out/gbfs.urbansharing.com/tampere.onurbansharing.com/",
+      "url": "https://gbfs.urbansharing.com/tampere.onurbansharing.com/",
       "frequencySec": 30,
       "network": "inurba_tampere",
       "allowOverloading": true
