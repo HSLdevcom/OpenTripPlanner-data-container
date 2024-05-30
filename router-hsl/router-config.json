@@ -48,14 +48,14 @@
       "id": "hsl-bike-park",
       "type": "bike-park",
       "sourceType": "hsl-parkandride",
-      "url": "http://digitransit-proxy:8080/out/p.hsl.fi/api/v1/facilities.json?limit=-1",
+      "url": "https://parking.fintraffic.fi/api/v1/facilities.json?limit=-1",
       "frequencySec": 600
     },
     {
       "id": "hsl-car-park",
       "type": "car-park",
       "sourceType": "hsl-parkandride",
-      "url": "http://digitransit-proxy:8080/out/p.hsl.fi/api/v1/facilities.json?limit=-1",
+      "url": "https://parking.fintraffic.fi/api/v1/facilities.json?limit=-1",
       "frequencySec": 600
     },
     {
