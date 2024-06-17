@@ -89,9 +89,8 @@ const routers = {
       mapSrc('tampereDRT', 'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_kutsuliikenne.zip'),
       mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
       mapSrc('FUNI', 'https://foligtfs.blob.core.windows.net/routeplanner/gtfs-foli-ff.zip', true),
-      mapSrc('Raasepori', 'https://tvv.fra1.digitaloceanspaces.com/232.zip', true),
-      mapSrc('WalttiTest', 'https://lmjadmin.mattersoft.fi/feeds/229.zip', true)
-    ],
+      mapSrc('Raasepori', 'https://tvv.fra1.digitaloceanspaces.com/232.zip', true)
+      ],
     osm: ['finland'],
     dem: 'waltti'
   },

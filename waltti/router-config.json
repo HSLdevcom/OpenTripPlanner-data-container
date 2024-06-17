@@ -512,23 +512,6 @@
       "frequency": "30s",
       "url": "https://gbfs.urbansharing.com/tampere.onurbansharing.com/gbfs.json",
       "overloadingAllowed": true
-    },
-    {
-      "id": "walttitest-trip-updates",
-      "type": "stop-time-updater",
-      "frequency": "60s",
-      "url": "http://digitransit-proxy:8080/out/lmj.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
-      "feedId": "WalttiTest",
-      "fuzzyTripMatching": false,
-      "backwardsDelayPropagationType": "ALWAYS"
-    },
-    {
-      "id": "walttitest-alerts",
-      "type": "real-time-alerts",
-      "frequency": "30s",
-      "url": "http://digitransit-proxy:8080/out/lmj.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
-      "feedId": "WalttiTest",
-      "fuzzyTripMatching": false
     }
   ]
 }
