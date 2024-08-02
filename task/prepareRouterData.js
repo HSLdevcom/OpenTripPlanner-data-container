@@ -9,7 +9,7 @@ const gtfsFile = (src) => src.id + '.zip'
 const { dataDir } = require('../config')
 
 function createFile (config, fileName, source) {
-  const name = `${config.id}/router/${fileName}`
+  const name = `${config.id}/${fileName}`
   process.stdout.write(`copying ${fileName}...\n`)
   const file = new Vinyl({ path: name, contents: cloneable(fs.createReadStream(source)) })
   return file
@@ -53,7 +53,7 @@ function createAndProcessRouterConfig (config) {
       }
     }
   })
-  const name = `${config.id}/router/router-config.json`
+  const name = `${config.id}/router-config.json`
   const file = new Vinyl({ path: name, contents: Buffer.from(JSON.stringify(routerConfig, null, 2)) })
   return file
 }

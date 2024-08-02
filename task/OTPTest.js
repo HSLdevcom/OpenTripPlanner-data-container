@@ -28,7 +28,7 @@ function testWithOTP (otpFile, quiet = false) {
         const r = fs.createReadStream(otpFile)
         r.on('end', () => {
           try {
-            const build = exec(`docker run --rm -v ${hostDataDir}/tmp:/opt/opentripplanner/graphs --entrypoint /bin/bash hsldevcom/opentripplanner:${testTag} -c "java -Xmx12G -jar otp-shaded.jar --build graphs/${dir} "`,
+            const build = exec(`docker run --rm -e JAVA_OPTS="-Xmx12G" -v ${hostDataDir}/tmp/${dir}:/var/opentripplanner hsldevcom/opentripplanner:${testTag} --build /var/opentripplanner`,
               { maxBuffer: constants.BUFFER_SIZE })
             build.on('exit', function (c) {
               if (c === 0) {

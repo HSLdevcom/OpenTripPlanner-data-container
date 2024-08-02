@@ -26,20 +26,25 @@ if (process.env.ROUTERS) {
   routers = ['finland', 'waltti', 'hsl']
 }
 
-start('seed').then(() => {
-  process.stdout.write('Seeded.\n')
-  if (process.argv.length === 3 && process.argv[2] === 'once') {
-    process.stdout.write('Running update once.\n')
-    update()
-  } else {
-    const cronPattern = process.env.CRON || '0 0 3 * * *'
-    process.stdout.write(`Starting timer with pattern: ${cronPattern}\n`)
-    new CronJob(cronPattern, update, null, true, 'Europe/Helsinki') // eslint-disable-line
-  }
-}).catch((err) => {
-  process.stdout.write(err + '\n')
-  process.exit(1)
-})
+if (!process.env.NOSEED) {
+  start('seed').then(() => {
+    process.stdout.write('Seeded.\n')
+    if (process.argv.length === 3 && process.argv[2] === 'once') {
+      process.stdout.write('Running update once.\n')
+      update()
+    } else {
+      const cronPattern = process.env.CRON || '0 0 3 * * *'
+      process.stdout.write(`Starting timer with pattern: ${cronPattern}\n`)
+      new CronJob(cronPattern, update, null, true, 'Europe/Helsinki') // eslint-disable-line
+    }
+  }).catch((err) => {
+    process.stdout.write(err + '\n')
+    process.exit(1)
+  })
+} else {
+  process.stdout.write('Running update once.\n')
+  update()
+}
 
 async function update () {
   const slackResponse = await postSlackMessage('Starting data build')
@@ -79,23 +84,51 @@ async function update () {
 
   await every(routers, function (router, callback) {
     setCurrentConfig(router)
-    start('router:buildGraph').then(() => {
+    start('router:buildGraph').then(async function deploy() {
       try {
-        process.stdout.write('Executing deploy script.\n')
-        execFileSync('./deploy.sh', [router],
-          {
-            env:
-              {
-                DOCKER_USER: process.env.DOCKER_USER,
-                DOCKER_AUTH: process.env.DOCKER_AUTH,
-                DOCKER_TAG: process.env.DOCKER_TAG,
-                TEST_TAG: process.env.OTP_TAG || '',
-                TOOLS_TAG: process.env.TOOLS_TAG || '',
-                SKIPPED_SITES: process.env.SKIPPED_SITES || ''
-              },
-            stdio: [0, 1, 2]
-          }
-        )
+        process.stdout.write('Testing new graph\n')
+        execFileSync('./test.sh', [router, process.env.OTP_TAG, process.env.TOOLS_TAG, process.env.SKIPPED_SITES], {
+          env: {
+            DOCKER_USER: process.env.DOCKER_USER,
+            DOCKER_AUTH: process.env.DOCKER_AUTH,
+            DOCKER_TAG: process.env.DOCKER_TAG,
+            ROUTER_NAME: router,
+          },
+          stdio: [0, 1, 2]
+        })
+
+        // Docker tags don't work with ':' and file names are also prettier without them. We also need to
+        // remove milliseconds because they are not relevant and make converting string back to ISO format
+        // more difficult.
+        const date = new Date().toISOString().slice(0, -5).concat('Z').replace(/:/g, '.')
+
+        global.storageDirName = `${router}/${process.env.DOCKER_TAG}/${date}`
+
+        process.stdout.write('Uploading data to storage\n')
+        await start('router:store')
+
+        process.stdout.write(`Patch new storage location ${global.storageDirName} to configs\n`)
+        await start('deploy:prepare')
+
+        process.stdout.write('Deploy docker images\n')
+        execFileSync('./otp-data-server/deploy.sh', [date], {
+          env: {
+            DOCKER_USER: process.env.DOCKER_USER,
+            DOCKER_AUTH: process.env.DOCKER_AUTH,
+            DOCKER_TAG: process.env.DOCKER_TAG,
+            ROUTER_NAME: router,
+          },
+          stdio: [0, 1, 2]
+        })
+        execFileSync('./opentripplanner/deploy-otp.sh', [date], {
+          env: {
+            DOCKER_USER: process.env.DOCKER_USER,
+            DOCKER_AUTH: process.env.DOCKER_AUTH,
+            ROUTER_NAME: router,
+            OTP_TAG: process.env.OTP_TAG || ''
+          },
+          stdio: [0, 1, 2]
+        })
         // Update parent message to state OK if everything went okay
         updateSlackMessage(`${router} data updated. :white_check_mark:`)
       } catch (E) {
