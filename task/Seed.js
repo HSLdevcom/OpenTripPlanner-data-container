@@ -2,10 +2,17 @@ const fs = require('fs')
 const { postSlackMessage, dirNameToDate, extractAllFiles } = require('../util')
 
 function findLatestZip (sourceDir, routerId, tag) {
-  const basePath = `${sourceDir}/${routerId}/${tag}`
+  const basePath = `${sourceDir}/${tag}`
   let latestDirName
   let latestDate = null
   fs.readdirSync(basePath).forEach(file => {
+    if (!fs.lstatSync(file).isDirectory()) {
+      return
+    }
+    const routers = fs.readdirSync(file)
+    if (routers.length !== 1 || routers[0] !== routerId) {
+      return
+    }
     // Directory names follow ISO 8601 format without milliseconds and
     // with ':' replaced with '.'.
     const date = dirNameToDate(file)
@@ -14,7 +21,7 @@ function findLatestZip (sourceDir, routerId, tag) {
       latestDirName = file
     }
   })
-  return `${basePath}/${latestDirName}/router-${routerId}.zip`
+  return `${basePath}/${latestDirName}/${routerId}/router-${routerId}.zip`
 }
 
 /**

@@ -102,7 +102,7 @@ async function update () {
         // more difficult.
         const date = new Date().toISOString().slice(0, -5).concat('Z').replace(/:/g, '.')
 
-        global.storageDirName = `${router}/${process.env.DOCKER_TAG}/${date}`
+        global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${router}`
 
         process.stdout.write('Uploading data to storage\n')
         await start('router:store')
