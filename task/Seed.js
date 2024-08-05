@@ -6,10 +6,11 @@ function findLatestZip (sourceDir, routerId, tag) {
   let latestDirName
   let latestDate = null
   fs.readdirSync(basePath).forEach(file => {
-    if (!fs.lstatSync(file).isDirectory()) {
+    const filePath = `${basePath}/${file}`
+    if (!fs.lstatSync(filePath).isDirectory()) {
       return
     }
-    const routers = fs.readdirSync(file)
+    const routers = fs.readdirSync(filePath)
     if (routers.length !== 1 || routers[0] !== routerId) {
       return
     }
