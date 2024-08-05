@@ -37,17 +37,22 @@ function sortByDate (firstFile, secondFile) {
   return 0
 }
 
+function isCorrectRouter (basePath, file, routerId) {
+  const routers = fs.readdirSync(`${basePath}/${file}`)
+  return routers.length === 1 && routers[0] === routerId
+}
+
 /*
  * Keeps 10 valid latest versions and removes the rest.
  */
 function deleteOldVersions (sourceDir, routerId, tag) {
-  const basePath = `${sourceDir}/${routerId}/${tag}`
+  const basePath = `${sourceDir}/${tag}`
   if (!fs.existsSync(basePath)) {
     return Promise((res) => res())
   }
   return Promise.all(deleteInvalidVersions(basePath)).then(() => {
-    const filesToDelete = fs.readdirSync(basePath).sort(sortByDate).slice(0, -10)
-    return filesToDelete.map(file => del(`${basePath}/${file}`))
+    const filesToDelete = fs.readdirSync(basePath).filter(file => isCorrectRouter(basePath, file, routerId)).sort(sortByDate).slice(0, -10)
+    return filesToDelete.map(file => del(`${basePath}/${file}/${routerId}`))
   })
 }
 

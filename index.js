@@ -129,6 +129,10 @@ async function update () {
           },
           stdio: [0, 1, 2]
         })
+        if (!process.env.NOCLEANUP) {
+          process.stdout.write('Remove oldest data versions from storage\n')
+          await start('storage:cleanup')
+        }
         // Update parent message to state OK if everything went okay
         updateSlackMessage(`${router} data updated. :white_check_mark:`)
       } catch (E) {
