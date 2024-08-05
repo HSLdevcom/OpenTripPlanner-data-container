@@ -6,7 +6,7 @@ ORG=hsldevcom
 
 function imagedeploy {
     DOCKER_IMAGE=$ORG/$1
-    DOCKER_TAG=${DOCKER_BASE_TAG:-latest}
+    DOCKER_TAG=${DOCKER_BASE_TAG:-v2}
 
     COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
 
