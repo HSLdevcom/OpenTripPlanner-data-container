@@ -644,7 +644,7 @@
       "type": "vehicle-rental",
       "sourceType": "gbfs",
       "frequency": "30s",
-      "network": "bolt",
+      "network": "bolt_helsinki",
       "url": "https://mds.bolt.eu/gbfs/2/10/gbfs",
       "geofencingZones": true
     }
