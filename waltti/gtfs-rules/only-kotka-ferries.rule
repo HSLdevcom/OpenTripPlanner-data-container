@@ -1,2 +1,2 @@
 # Only keep routes available in Kotka
-{"op":"retain", "match":{"file":"routes.txt", "route_id":"120590685"}}
+{"op":"retain", "match":{"file":"agency.txt", "agency_name":"Finferries"}}
