@@ -13,10 +13,4 @@ RUN printf '#!/bin/sh\ngrep -v "#" /etc/lighttpd/lighttpd.conf |grep port > /dev
 ENV PORT="8080"
 EXPOSE 8080
 
-ADD *.zip  /var/www/localhost/htdocs/
-ADD version.txt /var/www/localhost/htdocs/
-ADD build.log /var/www/localhost/htdocs/
-ADD router/connected.csv /var/www/localhost/htdocs/
-ADD router/unconnected.csv /var/www/localhost/htdocs/
-
-CMD /bin/ash -c "cd var/www/localhost/htdocs/;unzip router*.zip;cp router-*/* .;rm -r \$(find ./ -type d|grep router);cd -;/usr/sbin/startlighttpd"
+CMD /bin/ash -c "/usr/sbin/startlighttpd"

@@ -8,44 +8,26 @@ ROUTER_NAME=${1:-hsl}
 TEST_TAG=${2:-latest}
 TOOLS_TAG=${3:-latest}
 SKIPPED_SITES="$4"
-DOCKER_IMAGE=$ORG/opentripplanner-data-container-$ROUTER_NAME:test
 
 function shutdown() {
   echo shutting down
-  docker stop otp-data-$ROUTER_NAME || true
   docker stop otp-$ROUTER_NAME || true
 }
-
-echo "Making sure there are no old test containers or image available"
-docker stop otp-data-finland || true
-docker stop otp-finland || true
-docker stop otp-data-waltti || true
-docker stop otp-waltti || true
-docker stop otp-data-hsl || true
-docker stop otp-hsl || true
-docker rmi --force $DOCKER_IMAGE || true
-cd data/build/$ROUTER_NAME
-echo "Building data-container image..."
-docker build -t $DOCKER_IMAGE -f Dockerfile.data-container .
 
 if [ -n "$SKIPPED_SITES" ] && [ $SKIPPED_SITES == "all" ]; then
     echo "*** Skipping all tests"
     exit 0
 fi
 
-echo -e "\n##### Testing $ROUTER_NAME ($DOCKER_IMAGE)#####\n"
+echo -e "\n##### Testing $ROUTER_NAME #####\n"
 
-echo "Starting data container..."
-docker run --rm --name otp-data-$ROUTER_NAME $DOCKER_IMAGE > /dev/stdout &
-sleep 120
 echo "Starting otp..."
-if [ -v TEST_TAG ] && [ "$TEST_TAG" != "undefined" ]; then
-  docker run --rm --name otp-$ROUTER_NAME -e ROUTER_NAME=$ROUTER_NAME -e JAVA_OPTS=$JAVA_OPTS -e ROUTER_DATA_CONTAINER_URL=http://otp-data:8080/ --link otp-data-$ROUTER_NAME:otp-data $ORG/opentripplanner:$TEST_TAG > /dev/stdout &
-  sleep 5
-else
-  docker run --rm --name otp-$ROUTER_NAME -e ROUTER_NAME=$ROUTER_NAME -e JAVA_OPTS=$JAVA_OPTS -e ROUTER_DATA_CONTAINER_URL=http://otp-data:8080/ --link otp-data-$ROUTER_NAME:otp-data $ORG/opentripplanner:latest > /dev/stdout &
-  sleep 5
-fi
+docker run --rm --name otp-$ROUTER_NAME -e JAVA_OPTS="$JAVA_OPTS" \
+    --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/graph.obj,target=/var/opentripplanner/graph.obj \
+    --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/router-config.json,target=/var/opentripplanner/router-config.json \
+    $ORG/opentripplanner:$TEST_TAG --server --port 8888 --basePath ./ --graphs /var/ --router opentripplanner &
+    sleep 10
+
 echo "Getting otp ip.."
 timeout=$(($(date +%s) + 480))
 until IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' otp-$ROUTER_NAME) || [[ $(date +%s) -gt $timeout ]]; do sleep 1;done;

@@ -1,5 +1,6 @@
 const JSZip = require('jszip')
 const fs = require('fs')
+const { execSync } = require('child_process')
 const globby = require('globby')
 const readline = require('readline')
 const path = require('path')
@@ -92,7 +93,10 @@ async function updateSlackMessage (messageText) {
  */
 const compareSizes = (localFile, newFileSize, maxDifference) => {
   return new Promise((resolve, reject) => {
-    if (newFileSize === undefined || !fs.existsSync(localFile)) {
+    if (!fs.existsSync(localFile)) {
+      reject('error')
+    }
+    if (newFileSize === undefined) {
       return resolve()
     }
     let fileSize = fs.statSync(localFile).size
@@ -157,6 +161,25 @@ const otpMatching = function (directory) {
   })
 }
 
+/*
+ * Directory names follow ISO 8601 format without milliseconds and
+ * with ':' replaced with '.'. Returns null if date can't be parsed.
+ */
+function dirNameToDate (dirName) {
+  const date = new Date(dirName.replace(/\./g, ':'))
+  return date instanceof Date && !isNaN(date) ? date : null
+}
+
+/**
+ * Extracts files from a zip archive and saves them to given path
+ * @param {string} zipPath - zip file name
+ * @param {string} destinationPath - The path to the data directory where files are put
+ */
+function extractAllFiles (zipPath, destinationPath) {
+  execSync(`unzip -o ${zipPath} -d ${destinationPath}`)
+  process.stdout.write(`Unzipped ${zipPath} to ${destinationPath}\n`)
+}
+
 module.exports = {
   zipDir: (zipFile, dir, cb) => {
     zipWithGlob(zipFile, [`${dir}/*`], undefined, cb)
@@ -166,5 +189,7 @@ module.exports = {
   postSlackMessage,
   updateSlackMessage,
   compareSizes,
-  otpMatching
+  otpMatching,
+  dirNameToDate,
+  extractAllFiles
 }

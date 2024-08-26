@@ -1,8 +1,10 @@
 const fs = require('fs')
+const del = require('del')
 const { exec, execSync } = require('child_process')
 const { zipWithGlob, postSlackMessage, otpMatching } = require('../util')
 const { dataDir, hostDataDir, constants } = require('../config.js')
 const graphBuildTag = process.env.OTP_TAG || 'latest'
+ const dockerImage = `hsldevcom/opentripplanner:${graphBuildTag}`
 
 /*
  * node.js wrapper for building OTP graph
@@ -17,10 +19,11 @@ const buildGraph = function (config) {
     }
   }
   const p = new Promise((resolve, reject) => {
-    const version = execSync(`docker pull hsldevcom/opentripplanner:${graphBuildTag};docker run --rm --entrypoint /bin/bash hsldevcom/opentripplanner:${graphBuildTag}  -c "java -jar otp-shaded.jar --version"`)
+    const version = execSync(`docker pull ${dockerImage};docker run --rm ${dockerImage} --version`)
     const commit = version.toString().match(/commit: ([0-9a-f]+)/)[1]
 
-    const buildGraph = exec(`docker run -v ${hostDataDir}/build:/opt/opentripplanner/graphs --rm --entrypoint /bin/bash hsldevcom/opentripplanner:${graphBuildTag}  -c "java -Xmx12g -jar otp-shaded.jar --build graphs/${config.id}/router"`, { maxBuffer: constants.BUFFER_SIZE })
+    const command = `docker run -e JAVA_OPTS="-Xmx12g" -v ${hostDataDir}/build/${config.id}:/var/opentripplanner ${dockerImage} --build /var/opentripplanner`
+    const buildGraph = exec(command, { maxBuffer: constants.BUFFER_SIZE })
     // const buildGraph = exec('ls -la');
     const buildLog = fs.openSync(`${dataDir}/build/${config.id}/build.log`, 'w+')
 
@@ -61,9 +64,9 @@ module.exports = {
           // create zip file for the source data
           // include all gtfs + osm + router- + build configs
           zipWithGlob(`${dataDir}/build/${config.id}/router-${config.id}.zip`,
-            [`${dataDir}/build/${config.id}/router/*.zip`, `${dataDir}/build/${config.id}/router/*.json`,
-              `${dataDir}/build/${config.id}/router/${config.osm}.pbf`,
-              `${dataDir}/build/${config.id}/router/${config.dem}.tif`],
+            [`${dataDir}/build/${config.id}/*.zip`, `${dataDir}/build/${config.id}/*.json`,
+              `${dataDir}/build/${config.id}/${config.osm}.pbf`,
+              `${dataDir}/build/${config.id}/${config.dem}.tif`],
             `router-${config.id}`,
             (err) => {
               if (err) {
@@ -78,7 +81,7 @@ module.exports = {
           // create zip file for the graph:
           // include  graph.obj + router-config.json
           zipWithGlob(`${dataDir}/build/${config.id}/graph-${config.id}-${commit}.zip`,
-            [`${dataDir}/build/${config.id}/router/Graph.obj`, `${dataDir}/build/${config.id}/router/router-*.json`],
+            [`${dataDir}/build/${config.id}/Graph.obj`, `${dataDir}/build/${config.id}/router-*.json`],
             config.id,
             (err) => {
               if (err) {
@@ -98,7 +101,7 @@ module.exports = {
             }
           })
         })
-        return Promise.all([p1, p2, p3]).then(() => otpMatching(`${dataDir}/build/${config.id}/router`))
+        return Promise.all([p1, p2, p3]).then(() => otpMatching(`${dataDir}/build/${config.id}`)).then(() => del(`${dataDir}/build/${config.id}/taggedStops.log`))
       })
     })).then(() => {
       process.stdout.write('Created SUCCESS\n')

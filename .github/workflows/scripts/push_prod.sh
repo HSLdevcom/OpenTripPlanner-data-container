@@ -6,8 +6,8 @@ ORG=hsldevcom
 
 function imagedeploy {
     DOCKER_IMAGE=$ORG/$1
-    DOCKER_TAG=${DOCKER_BASE_TAG:-prod}
-    DOCKER_DEV_TAG=${DOCKER_DEV_TAG:-latest}
+    DOCKER_TAG=${DOCKER_BASE_TAG:-v2-prod}
+    DOCKER_DEV_TAG=${DOCKER_DEV_TAG:-v2}
 
     DOCKER_TAG_LONG=$DOCKER_TAG-$(date +"%Y-%m-%dT%H.%M.%S")-$COMMIT_HASH
     DOCKER_IMAGE_TAG=$DOCKER_IMAGE:$DOCKER_TAG

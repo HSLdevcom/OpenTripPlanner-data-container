@@ -22,8 +22,14 @@ function validateSize (seededFile, downloadedFile) {
           global.blobSizeOk = true
           resolve()
         }).catch((err) => {
-          process.stdout.write(downloadedFile + ': file had different size than the seeded file\n')
-          reject(err)
+          if (err === 'error') {
+            process.stdout.write(`Failed to load local data for ${downloadedFile}\n`)
+            global.blobSizeOk = true
+            resolve()
+          } else {
+            process.stdout.write(downloadedFile + ': file had different size than the seeded file\n')
+            reject(err)
+          }
         })
     }
   })
