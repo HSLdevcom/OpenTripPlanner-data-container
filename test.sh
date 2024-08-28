@@ -55,7 +55,7 @@ ITERATIONS=$(($MAX_WAIT * 6))
 echo "max wait (minutes): $MAX_WAIT"
 
 for (( c=1; c<=$ITERATIONS; c++ ));do
-  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://$IP:8080/otp/routers/default || true)
+  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://$IP:8888/otp/routers/default || true)
 
   if [ $STATUS_CODE = 200 ]; then
     echo "OTP started"
