@@ -23,7 +23,7 @@ echo -e "\n##### Testing $ROUTER_NAME #####\n"
 
 echo "Starting otp..."
 docker run --rm --name otp-$ROUTER_NAME -e JAVA_OPTS="$JAVA_OPTS" \
-    --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/graph.obj,target=/var/opentripplanner/graph.obj \
+    --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/Graph.obj,target=/var/opentripplanner/Graph.obj \
     --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/router-config.json,target=/var/opentripplanner/router-config.json \
     $ORG/opentripplanner:$TEST_TAG --server --port 8888 --basePath ./ --graphs /var/ --router opentripplanner &
     sleep 10
