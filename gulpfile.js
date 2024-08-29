@@ -168,7 +168,7 @@ gulp.task('router:copy', gulp.series('router:del', function () {
 gulp.task('router:buildGraph', gulp.series('router:copy', () => buildOTPGraphTask(config.ALL_CONFIGS())))
 
 gulp.task('router:store', () =>
-  gulp.src(`${config.dataDir}/build/${routerId}/**/*`).pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/`))
+  gulp.src(`${config.dataDir}/build/${routerId}/**/*`, { buffer: false }).pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/`))
 )
 
 gulp.task('deploy:prepare', () => patchDeploymentFiles())
