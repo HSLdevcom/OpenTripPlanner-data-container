@@ -22,7 +22,8 @@
     "accessEgress": {
       "maxDuration": "1h",
       "maxDurationForMode": {
-        "CAR_TO_PARK": "2h"
+        "CAR_TO_PARK": "2h",
+        "BIKE": "3h"
       }
     },
     "maxDirectStreetDuration": "100h",
@@ -76,16 +77,6 @@
         }
       },
       {
-        "modes": "BICYCLE_RENT",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
-        "bicycle": {
-          "speed": 5.55
-        }
-      },
-      {
         "modes": "WALK",
         "walk": {
           "speed": 1.67,
@@ -93,13 +84,31 @@
         }
       },
       {
-        "modes": "BICYCLE_RENT",
+        "modes": "BICYCLE",
+        "walk": {
+          "speed": 1.2,
+          "reluctance": 1.8
+        },
+        "bicycle": {
+          "speed": 5.55,
+          "rental": {
+            "useAvailabilityInformation": true
+          },
+          "optimization": "SAFEST_STREETS"
+        }
+      },
+      {
+        "modes": "BICYCLE",
         "walk": {
           "speed": 1.67,
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55
+          "speed": 5.55,
+          "rental": {
+            "useAvailabilityInformation": true
+          },
+          "optimization": "SAFEST_STREETS"
         }
       }
     ]
