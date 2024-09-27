@@ -2,7 +2,7 @@ name: Process v3 push or pr
 on:
   push:
     branches:
-      - v3
+      - hotfix
   pull_request:
     branches:
       - v3
@@ -29,7 +29,7 @@ jobs:
       - name: Run linters
         run: npm run test
   docker-push:
-    if: github.ref == 'refs/heads/v3'
+    if: github.ref == 'refs/heads/hotfix'
     needs:
       - lint
     runs-on: ubuntu-latest
@@ -59,4 +59,4 @@ jobs:
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_AUTH: ${{ secrets.DOCKER_AUTH }}
-          DOCKER_BASE_TAG: v3
+          DOCKER_BASE_TAG: hotfix
