@@ -206,7 +206,7 @@
         "mapper": "Digitransit",
         "maxZoom": 20,
         "minZoom": 5,
-        "cacheMaxSeconds": 43200,
+        "cacheMaxSeconds": 45,
         "expansionFactor": 0.25
       },
       {
@@ -215,7 +215,7 @@
         "mapper": "DigitransitRealtime",
         "maxZoom": 20,
         "minZoom": 5,
-        "cacheMaxSeconds": 43200,
+        "cacheMaxSeconds": 45,
         "expansionFactor": 0.25
       },
       {
@@ -298,11 +298,11 @@
       ]
     },
     {
-      "id": "bolt-scooter-rental",
+      "id": "bolt-helsinki-scooter-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
       "frequency": "30s",
-      "network": "bolt",
+      "network": "bolt_helsinki",
       "url": "https://mds.bolt.eu/gbfs/2/10/gbfs",
       "geofencingZones": true
     }
