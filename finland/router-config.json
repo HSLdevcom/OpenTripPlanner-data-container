@@ -63,26 +63,16 @@
         "walk": {
           "speed": 1.2,
           "reluctance": 1.8
-        }
-      },
-      {
-        "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
         },
         "wheelchairAccessibility": {
           "enabled": true
         }
       },
       {
-        "modes": "BICYCLE_RENT",
+        "modes": "WALK",
         "walk": {
           "speed": 1.2,
           "reluctance": 1.8
-        },
-        "bicycle": {
-          "speed": 5.55
         }
       },
       {
@@ -93,13 +83,38 @@
         }
       },
       {
-        "modes": "BICYCLE_RENT",
+        "modes": "BICYCLE",
+        "walk": {
+          "speed": 1.2,
+          "reluctance": 1.8
+        },
+        "bicycle": {
+          "speed": 5.55,
+          "rental": {
+            "useAvailabilityInformation": true
+          },
+          "optimization": "SAFEST_STREETS"
+        }
+      },
+      {
+        "modes": "BICYCLE",
         "walk": {
           "speed": 1.67,
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55
+          "speed": 5.55,
+          "rental": {
+            "useAvailabilityInformation": true
+          },
+          "optimization": "SAFEST_STREETS"
+        }
+      },
+      {
+        "modes": "CAR",
+        "walk": {
+          "speed": 1.3,
+          "reluctance": 1.75
         }
       }
     ]
