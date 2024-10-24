@@ -20,7 +20,10 @@
       "boardCost": 120
     },
     "accessEgress": {
-      "maxDuration": "1h"
+      "maxDuration": "1h",
+      "maxDurationForMode": {
+        "CAR": "3h"
+      }
     },
     "maxDirectStreetDuration": "2h",
     "maxDirectStreetDurationForMode": {

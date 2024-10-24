@@ -17,8 +17,14 @@
       "wheelchairAccessibility": {
         "enabled": true
       }
-    }
+    },
+    { "modes": "BICYCLE" },
+    { "modes": "CAR" }
   ],
+  "carsAllowedStopMaxTransferDurationsForMode": {
+    "BIKE": "3h",
+    "CAR": "3h"
+  },
   "boardingLocationTags": ["ref", "ref:findt", "ref:findr"],
   "osmDefaults": {
     "timeZone": "Europe/Helsinki",

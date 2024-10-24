@@ -17,8 +17,12 @@
         "enabled": true,
         "maxSlope": 0.125
       }
-    }
+    },
+    { "modes": "CAR" }
   ],
+  "carsAllowedStopMaxTransferDurationsForMode": {
+    "CAR": "3h"
+  },
   "gtfsDefaults" : {
     "stationTransferPreference" : "recommended"
   },

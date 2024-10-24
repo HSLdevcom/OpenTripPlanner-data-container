@@ -22,7 +22,9 @@
     "accessEgress": {
       "maxDuration": "1h",
       "maxDurationForMode": {
-        "CAR_TO_PARK": "2h"
+        "CAR_TO_PARK": "2h",
+        "BIKE": "3h",
+        "CAR": "3h"
       }
     },
     "maxDirectStreetDuration": "100h",
