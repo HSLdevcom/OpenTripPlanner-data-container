@@ -17,7 +17,8 @@
       "wheelchairAccessibility": {
         "enabled": true
       }
-    }
+    },
+    { "modes": "BICYCLE" }
   ],
   "boardingLocationTags": ["ref", "ref:findt", "ref:findr"],
   "osmDefaults": {
