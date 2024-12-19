@@ -128,7 +128,6 @@ Keeps 10 latest versions of the data in storage and removes the rest.
 
 ### otp-data-tools
 
-Contains tools for gtfs manipulation, such as One Bus Away gtfs filter. OBA filter tool version 1.3.9 is embedded into this repository.
-It should be replaced with a newer version if such one appears e.g. into https://mvnrepository.com/.
-
-These tools are packaged inside docker container and are used during the data build process.
+Contains tools, such as the OneBusAway gtfs filter, for gtfs manipulation.
+It uses the [opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli](https://registry.hub.docker.com/r/opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli) as the base image.
+These tools are packaged inside a docker container and are used during the data build process.
