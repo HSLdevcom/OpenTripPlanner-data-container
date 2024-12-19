@@ -1,6 +1,8 @@
 # OpenTripPlanner-data-tools
-[![Build](https://github.com/hsldevcom/OpenTripPlanner-data-container/workflows/Process%20master%20push%20or%20pr/badge.svg?branch=master)](https://github.com/HSLdevcom/OpenTripPlanner-data-container/actions)
 
 ## About:
-1. This docker container includes all the needed tools for preparing gtfs data
-   ready for consumption.
+- This docker container includes all the needed tools for preparing gtfs data ready for consumption.
+- It uses opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli as the base image.
+- Useful links:
+  - https://developer.onebusaway.org/modules/onebusaway-gtfs-modules/current/onebusaway-gtfs-transformer-cli.html
+  - https://registry.hub.docker.com/r/opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli
