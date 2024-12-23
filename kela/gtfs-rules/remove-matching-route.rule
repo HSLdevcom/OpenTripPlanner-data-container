@@ -1,0 +1,2 @@
+# remove routes matching the route_short_name regex
+{"op":"remove", "match":{"file":"routes.txt", "route_short_name":"m/^OB(2|3|36|37|38|4|41|44|6|9|91)$/"}}

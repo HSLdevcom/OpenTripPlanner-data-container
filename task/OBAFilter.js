@@ -12,7 +12,7 @@ const { postSlackMessage, parseId } = require('../util')
 function OBAFilter (src, dst, rule) {
   process.stdout.write(`filtering ${src} with ${rule}...\n`)
 
-  const cmd = `docker pull ${dataToolImage}; docker run -v ${dataDir}:/data --rm ${dataToolImage} java -Xmx6g -jar onebusaway-gtfs-transformer-cli.jar --transform=/data/${rule} /data/${src} /data/${dst}`
+  const cmd = `docker run -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`
 
   try {
     execSync(cmd, { stdio: [0, 1, 2] })
