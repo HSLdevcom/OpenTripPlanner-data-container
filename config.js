@@ -1,12 +1,4 @@
-/*
- * id = feedid (String)
- * url = feed url (String)
- * fit = mapfit shapes (true/falsy)
- * rules = OBA Filter rules to apply (array of strings or undefined)
- * replacements = replace or remove file from gtfs package (format: {'file_to_replace': 'file_to_replace_with' or null})
- * request options = optional special options for request
- */
-const mapSrc = (id, url, fit, rules, replacements, request) => ({ id, url, fit, rules, replacements, request })
+const assert = require('assert')
 
 // OBA filter erases files which it does not recognize from GTFS packages
 // this array specifies the file names which should be preserved
@@ -22,119 +14,10 @@ if (process.env.MH_BASIC_AUTH) {
   mhAddress = 'http://digitransit-proxy:8080/out/minfoapi.matkahuolto.fi/gtfs/kokomaa-fi/gtfs.zip'
 }
 
-const routers = {
-  hsl: {
-    id: 'hsl',
-    src: [
-      mapSrc('HSL', 'https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip', false, undefined, { 'trips.txt': 'trips2.txt' }),
-      // mapSrc('HSLlautta', 'https://koontikartta.navici.com/tiedostot/gtfs_lautat_digitransit.zip')
-      // src('Sipoo', 'https://koontikartta.navici.com/tiedostot/rae/sipoon_kunta_sibbo_kommun.zip')
-    ],
-    osm: ['hsl'],
-    dem: 'hsl'
-  },
+assert(process.env.ROUTER_NAME !== undefined, 'ROUTER_NAME must be defined')
 
-  finland: {
-    id: 'finland',
-    src: [
-      mapSrc('HSL', 'https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip', false, ['finland/gtfs-rules/hsl-no-trains.rule'], { 'trips.txt': 'trips2.txt' }),
-      mapSrc('MATKA', 'https://mobility.mobility-database.fintraffic.fi/static/digitransit_new.zip', true),
-      mapSrc('tampere', 'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_deprecated.zip'),
-      mapSrc('LINKKI', 'https://tvv.fra1.digitaloceanspaces.com/209.zip', true),
-      mapSrc('OULU', 'https://tvv.fra1.digitaloceanspaces.com/229.zip'),
-      mapSrc('digitraffic', 'https://rata.digitraffic.fi/api/v1/trains/gtfs-passenger-stops.zip', false, undefined, undefined, { headers: { 'Accept-Encoding': 'gzip', 'Digitraffic-User': 'Digitransit/OTP-dataloading' } }),
-      mapSrc('Rauma', 'http://digitransit-proxy:8080/out/raumaadmin.mattersoft.fi/feeds/233.zip'),
-      mapSrc('Hameenlinna', 'https://tvv.fra1.digitaloceanspaces.com/203.zip', true),
-      mapSrc('Kotka', 'https://tvv.fra1.digitaloceanspaces.com/217.zip', true),
-      mapSrc('Kouvola', 'https://tvv.fra1.digitaloceanspaces.com/219.zip', true),
-      mapSrc('Lappeenranta', 'https://tvv.fra1.digitaloceanspaces.com/225.zip', true),
-      mapSrc('Mikkeli', 'https://tvv.fra1.digitaloceanspaces.com/227.zip', true),
-      mapSrc('Vaasa', 'https://tvv.fra1.digitaloceanspaces.com/249.zip', true),
-      mapSrc('Joensuu', 'https://tvv.fra1.digitaloceanspaces.com/207.zip', true),
-      mapSrc('FOLI', 'https://data.foli.fi/gtfs/gtfs.zip'),
-      mapSrc('Lahti', 'https://tvv.fra1.digitaloceanspaces.com/223.zip', true),
-      mapSrc('Kuopio', 'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip'),
-      mapSrc('Rovaniemi', 'https://tvv.fra1.digitaloceanspaces.com/237.zip', true),
-      mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
-      mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
-      mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
-      mapSrc('Viro', 'https://peatus.ee/gtfs/gtfs.zip'),
-      mapSrc('Raasepori', 'https://tvv.fra1.digitaloceanspaces.com/232.zip', true),
-      mapSrc('VARELY', 'http://digitransit-proxy:8080/out/varelyadmin.mattersoft.fi/feeds/102.zip', false),
-      mapSrc('Harma', 'https://harmanliikenne.bussikaista.fi/sites/harma/files/gtfs/export/latest.zip', true),
-      mapSrc('PohjolanMatka', 'https://minfoapi.matkahuolto.fi/gtfs/458/gtfs.zip', true),
-      mapSrc('Korsisaari','https://minfoapi.matkahuolto.fi/gtfs/036/gtfs.zip', true)
-    ],
-    osm: ['finland', 'estonia']
-  },
-
-  waltti: {
-    id: 'waltti',
-    src: [
-      mapSrc('Hameenlinna', 'https://tvv.fra1.digitaloceanspaces.com/203.zip', true),
-      mapSrc('Kotka', 'https://tvv.fra1.digitaloceanspaces.com/217.zip', true),
-      mapSrc('Kouvola', 'https://tvv.fra1.digitaloceanspaces.com/219.zip', true),
-      mapSrc('Lappeenranta', 'https://tvv.fra1.digitaloceanspaces.com/225.zip', true),
-      mapSrc('Mikkeli', 'https://tvv.fra1.digitaloceanspaces.com/227.zip', true),
-      mapSrc('Vaasa', 'https://tvv.fra1.digitaloceanspaces.com/249.zip', true),
-      mapSrc('Joensuu', 'https://tvv.fra1.digitaloceanspaces.com/207.zip', true),
-      mapSrc('FOLI', 'https://data.foli.fi/gtfs/gtfs.zip'),
-      mapSrc('Lahti', 'https://tvv.fra1.digitaloceanspaces.com/223.zip', true, undefined, {'fare_attributes.txt': 'digitransit_fare_attributes.txt', 'fare_rules.txt': 'digitransit_fare_rules.txt'}),
-      mapSrc('Kuopio', 'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip'),
-      mapSrc('OULU', 'https://tvv.fra1.digitaloceanspaces.com/229.zip'),
-      mapSrc('LINKKI', 'https://tvv.fra1.digitaloceanspaces.com/209.zip', true, undefined, {'fare_attributes.txt': 'digitransit_fare_attributes.txt', 'fare_rules.txt': 'digitransit_fare_rules.txt'}),
-      mapSrc('tampere', 'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_deprecated.zip'),
-      mapSrc('Rovaniemi', 'https://tvv.fra1.digitaloceanspaces.com/237.zip', true),
-      mapSrc('digitraffic', 'https://rata.digitraffic.fi/api/v1/trains/gtfs-passenger-stops.zip', false, undefined, undefined, { headers: { 'Accept-Encoding': 'gzip', 'Digitraffic-User': 'Digitransit/OTP-dataloading' } }),
-      mapSrc('tampereDRT', 'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_kutsuliikenne.zip'),
-      mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
-      mapSrc('FUNI', 'https://foligtfs.blob.core.windows.net/routeplanner/gtfs-foli-ff.zip', true),
-      mapSrc('Raasepori', 'https://tvv.fra1.digitaloceanspaces.com/232.zip', true),
-      mapSrc('KotkaLautat', 'https://koontikartta.navici.com/tiedostot/gtfs_lautat.zip', true, ['waltti/gtfs-rules/only-kotka-ferries.rule']),
-      mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
-      mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
-    ],
-    osm: ['kajaani', 'oulu', 'pori', 'rovaniemi', 'southeastFinland', 'southwestFinland', 'vaasa'],
-    dem: 'waltti'
-  },
-
-  'waltti-alt': {
-    id: 'waltti-alt',
-    src: [
-      mapSrc('WalttiTest', 'http://digitransit-proxy:8080/out/lmjadmin.mattersoft.fi/feeds/229.zip', true),
-    ],
-    osm: ['oulu']
-  },
-
-  varely: {
-    id: 'varely',
-    src: [
-      mapSrc('VARELY', 'http://digitransit-proxy:8080/out/varelyadmin.mattersoft.fi/feeds/102.zip'),
-      mapSrc('FOLI', 'https://data.foli.fi/gtfs/gtfs.zip'),
-      mapSrc('Rauma', 'http://digitransit-proxy:8080/out/raumaadmin.mattersoft.fi/feeds/233.zip'),
-      mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
-      mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true)
-    ],
-    osm: ['varely']
-  },
-
-  kela: {
-    id: 'kela',
-    src: [
-      mapSrc('kela', 'https://mobility.mobility-database.fintraffic.fi/static/Kela_suuret.zip'),
-      mapSrc('kela_varely', 'https://mobility.mobility-database.fintraffic.fi/static/Kela_varely.zip'),
-      mapSrc('kela_waltti', 'https://mobility.mobility-database.fintraffic.fi/static/kela_waltti.zip'),
-      mapSrc('matkahuolto', mhAddress, false, ['kela/gtfs-rules/matkahuolto.rule'], { 'transfers.txt': null }),
-    ],
-    osm: ['finland']
-  }
-}
-
-if (!process.env.ROUTER_NAME || !routers[process.env.ROUTER_NAME]) {
-  process.stdout.write('Invalid ROUTER_NAME variable \n')
-  process.exit(1)
-}
-const router = routers[process.env.ROUTER_NAME]
+// Require router config from router directory
+const router = require(`./${process.env.ROUTER_NAME}/config`)
 
 // EXTRA_SRC format should be {"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}
 // but you can only define, for example, new url and the other key value pairs will remain the same as they are defined in this file.

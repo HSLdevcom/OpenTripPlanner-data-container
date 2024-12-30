@@ -77,6 +77,10 @@ module.exports = {
   testOTPFile: () => {
     return through.obj(function (file, encoding, callback) {
       const otpFile = file.history[file.history.length - 1]
+      if (process.env.SKIP_OTP_TESTS) {
+        process.stdout.write('OTP test skipped because the SKIP_OTP_TESTS environment variable is set\n')
+        return callback(null, file)
+      }
       testWithOTP(otpFile, true).then((success) => {
         if (success) {
           callback(null, file)

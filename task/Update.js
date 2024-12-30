@@ -11,25 +11,31 @@ const fs = require('fs')
 const { postSlackMessage, updateSlackMessage } = require('../util')
 require('../gulpfile')
 const { router } = require('../config')
+const assert = require('assert')
 
 const MAX_GTFS_FALLBACK = 2 // threshold for aborting data loading
 
 const start = promisify((task, cb) => gulp.series(task)(cb))
 
-async function update () {
+async function update() {
+  // check environmental variables which needs to be defined
+  assert(process.env.DOCKER_TAG !== undefined, 'DOCKER_TAG must be defined')
+
   if (!process.env.NOSEED) {
     process.stdout.write('Starting seeding\n')
     await start('seed')
     process.stdout.write('Seeded\n')
   }
 
-  // we track data rejections using this global variable
-  global.hasFailures = false
-  await start('dem:update')
-  if (global.hasFailures) {
-    postSlackMessage('DEM update failed, using previous version :boom:')
+  if (!process.env.NODEM) {
+    // we track data rejections using this global variable
+    global.hasFailures = false
+    await start('dem:update')
+    if (global.hasFailures) {
+      postSlackMessage('DEM update failed, using previous version :boom:')
+    }
   }
-
+  
   // OSM update is more complicated. Download often fails, so there is a retry loop,
   //  which breaks when a big enough file gets loaded
   global.blobSizeOk = false // ugly hack but gulp does not return any values from tasks
@@ -55,7 +61,7 @@ async function update () {
     process.stdout.write('Build routing graph\n')
     await start('router:buildGraph')
 
-    if (process.env.SKIPPED_SITES === 'all') {
+    if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
       process.stdout.write('Skipping all tests')
     } else {
       process.stdout.write('Test the newly built graph with OTPQA\n')
@@ -93,12 +99,29 @@ async function update () {
     process.stdout.write('Uploading data to storage\n')
     await start('router:store')
 
-    process.stdout.write(`Patch new storage location ${global.storageDirName} to configs\n`)
-    await start('deploy:prepare')
 
-    process.stdout.write('Deploy docker images\n')
-    execFileSync('./otp-data-server/deploy.sh', [date], { stdio: [0, 1, 2] })
-    execFileSync('./opentripplanner/deploy-otp.sh', [date], { stdio: [0, 1, 2] })
+    process.stdout.write('Build and deploy Docker images\n')
+    execFileSync('./otp-data-server/deploy.sh', [date], {
+      stdio: [0, 1, 2], env: {
+        OTP_TAG: process.env.OTP_TAG,
+        OTP_GRAPH_DIR: global.storageDirName,
+        ROUTER_NAME: process.env.ROUTER_NAME,
+        ORG: process.env.ORG,
+        DOCKER_TAG: process.env.DOCKER_TAG,
+        DOCKER_USER: process.env.DOCKER_USER,
+        DOCKER_AUTH: process.env.DOCKER_AUTH
+      }
+    })
+    execFileSync('./opentripplanner/deploy-otp.sh', [date], {
+      stdio: [0, 1, 2], env: {
+        OTP_GRAPH_DIR: global.storageDirName,
+        ROUTER_NAME: process.env.ROUTER_NAME,
+        ORG: process.env.ORG,
+        DOCKER_TAG: process.env.DOCKER_TAG,
+        DOCKER_USER: process.env.DOCKER_USER,
+        DOCKER_AUTH: process.env.DOCKER_AUTH
+      }
+    })
 
     if (!process.env.NOCLEANUP) {
       process.stdout.write('Remove oldest data versions from storage\n')

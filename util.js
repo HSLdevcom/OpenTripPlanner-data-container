@@ -144,6 +144,16 @@ function dirNameToDate (dirName) {
   return date instanceof Date && !isNaN(date) ? date : null
 }
 
+/*
+ * id = feedid (String)
+ * url = feed url (String)
+ * fit = mapfit shapes (true/falsy)
+ * rules = OBA Filter rules to apply (array of strings or undefined)
+ * replacements = replace or remove file from gtfs package (format: {'file_to_replace': 'file_to_replace_with' or null})
+ * request options = optional special options for request
+ */
+const mapSrc = (id, url, fit, rules, replacements, request) => ({ id, url, fit, rules, replacements, request })
+
 module.exports = {
   zipDir: (zipFile, dir, cb) => {
     zipWithGlob(zipFile, [`${dir}/*`], undefined, cb)
@@ -153,5 +163,6 @@ module.exports = {
   updateSlackMessage,
   otpMatching,
   parseId,
-  dirNameToDate
+  dirNameToDate,
+  mapSrc
 }

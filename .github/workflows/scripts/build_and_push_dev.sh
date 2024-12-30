@@ -16,7 +16,7 @@ function imagedeploy {
 
     # Build image
     echo "Building $1"
-    docker build --tag=$DOCKER_IMAGE_TAG_LONG .
+    docker build --network=host --tag=$DOCKER_IMAGE_TAG_LONG .
 
     echo "Pushing $DOCKER_TAG image"
     docker push $DOCKER_IMAGE_TAG_LONG
