@@ -99,7 +99,6 @@ async function update() {
     process.stdout.write('Uploading data to storage\n')
     await start('router:store')
 
-
     process.stdout.write('Build and deploy Docker images\n')
     execFileSync('./otp-data-server/deploy.sh', [date], {
       stdio: [0, 1, 2], env: {

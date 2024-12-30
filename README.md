@@ -103,11 +103,7 @@ If there are quality regressions, a comma separated list of failed GTFS feed ide
 
 Stores the new data in storage (which can be a mounted storage volume).
 
-10. `deploy:prepare`
-
-Patches the data server configuration and the Dockerfile for OpenTripPlanner so that the correct storage location is used.
-
-11. `deploy.sh`
+10. `deploy.sh`
 
 Deploys new opentripplanner-data-server image with 'DOCKER_TAG' env variable (default 'v3') postfixed with the router name and
 pushes the image to Dockerhub.
@@ -119,14 +115,14 @@ Each data server image runs a http server listening to port 8080, serving both a
 and a pre-built graph. For example, in HSL case: http://localhost:8080/router-hsl.zip and graph-hsl-$OTPVERSION.zip. The image
 does not include the data, the data needs to be mounted while running the container.
 
-12. `deploy-otp.sh`
+11. `deploy-otp.sh`
 
 Tags opentripplanner image with using 'OTP_TAG' env variable (default 'v3') postfixed with the router name and pushes the image to Dockerhub.
 
 This new opentripplanner image will automatically use the graph and configuration from the storage location where the build's end result
 was stored at.
 
-13. `storage:cleanup`
+12. `storage:cleanup`
 
 Keeps 10 latest versions of the data in storage and removes the rest.
 
