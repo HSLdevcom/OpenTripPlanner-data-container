@@ -69,7 +69,7 @@ done
 echo running otpqa
 
 docker pull $TOOL_IMAGE
-docker run --name $TOOLCONT $TOOL_IMAGE /bin/sh -c "cd OTPQA; /python-venv/bin/python3 otpprofiler_json.py $OTP_URL $ROUTER_NAME $SKIPPED_SITES"
+docker run --entrypoint /bin/bash --name $TOOLCONT $TOOL_IMAGE -c "cd OTPQA; /python-venv/bin/python3 otpprofiler_json.py $OTP_URL $ROUTER_NAME $SKIPPED_SITES"
 
 if [ $? == 0 ]; then
   echo getting failed feed list from container
