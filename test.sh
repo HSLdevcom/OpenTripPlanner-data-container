@@ -44,14 +44,14 @@ fi
 
 echo Got otp ip: $IP
 
-OTP_URL=http://$IP:8080/otp/actuators/health
+OTP_URL=http://$IP:8080/otp
 
 for (( c=1; c<=20; c++ ));do
-  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" $OTP_URL || true)
+  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" $OTP_URL/actuators/health || true)
 
   if [ $STATUS_CODE = 200 ]; then
     echo OTP started
-    curl -s $OTP_URL/index/graphql -H "Content-Type: application/graphql" --data "{agencies {name}}" |grep error
+    curl -s $OTP_URL/gtfs/v1 -H "Content-Type: application/graphql" --data "{agencies {name}}" |grep error
     if [ $? = 1 ]; then #grep finds no error
 	echo OTP works
     break
