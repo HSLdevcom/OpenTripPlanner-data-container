@@ -44,7 +44,7 @@ fi
 
 echo Got otp ip: $IP
 
-OTP_URL=http://$IP:8080/otp/routers/default
+OTP_URL=http://$IP:8080/otp/actuators/health
 
 for (( c=1; c<=20; c++ ));do
   STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" $OTP_URL || true)
