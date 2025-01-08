@@ -6,5 +6,5 @@ module.exports = {
     mapSrc('WalttiTest', 'http://digitransit-proxy:8080/out/lmjadmin.mattersoft.fi/feeds/229.zip', true),
     mapSrc('TurkuTrunkroutes', 'http://data-test.foli.fi/gtfs/gtfs.zip', true),
   ],
-  osm: ['oulu', 'southwestFinland']
+  osm: ['oulu', 'southFinland']
 }
