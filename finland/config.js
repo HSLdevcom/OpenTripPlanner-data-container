@@ -17,7 +17,7 @@ module.exports = {
     mapSrc('Mikkeli', 'https://tvv.fra1.digitaloceanspaces.com/227.zip', true),
     mapSrc('Vaasa', 'https://tvv.fra1.digitaloceanspaces.com/249.zip', true),
     mapSrc('Joensuu', 'https://tvv.fra1.digitaloceanspaces.com/207.zip', true),
-    mapSrc('FOLI', 'https://data.foli.fi/gtfs/gtfs.zip'),
+    mapSrc('FOLI', 'http://data.foli.fi/gtfs/gtfs.zip'),
     mapSrc('Lahti', 'https://tvv.fra1.digitaloceanspaces.com/223.zip', true),
     mapSrc('Kuopio', 'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip'),
     mapSrc('Rovaniemi', 'https://tvv.fra1.digitaloceanspaces.com/237.zip', true),
