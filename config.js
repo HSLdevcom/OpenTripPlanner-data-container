@@ -52,10 +52,8 @@ const osm = {
   hsl: 'https://karttapalvelu.storage.hsldev.com/hsl.osm/hsl.osm.pbf',
   kajaani: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/kajaani.osm.pbf',
   oulu: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/oulu.osm.pbf',
-  pori: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/pori.osm.pbf',
   rovaniemi: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/rovaniemi.osm.pbf',
-  southeastFinland: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/southeast_finland.osm.pbf',
-  southwestFinland: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/southwest_finland.osm.pbf',
+  southFinland: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/south_finland.osm.pbf',
   vaasa: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/vaasa.osm.pbf',
   varely: 'https://karttapalvelu.storage.hsldev.com/finland.osm/varely.osm.pbf',
   ...extraOSM
