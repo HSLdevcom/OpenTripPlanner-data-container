@@ -35,7 +35,7 @@ async function update() {
       postSlackMessage('DEM update failed, using previous version :boom:')
     }
   }
-  
+
   // OSM update is more complicated. Download often fails, so there is a retry loop,
   //  which breaks when a big enough file gets loaded
   global.blobSizeOk = false // ugly hack but gulp does not return any values from tasks
@@ -113,6 +113,7 @@ async function update() {
     })
     execFileSync('./opentripplanner/deploy-otp.sh', [date], {
       stdio: [0, 1, 2], env: {
+        OTP_TAG: process.env.OTP_TAG,
         OTP_GRAPH_DIR: global.storageDirName,
         ROUTER_NAME: process.env.ROUTER_NAME,
         ORG: process.env.ORG,
