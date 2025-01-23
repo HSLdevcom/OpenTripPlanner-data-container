@@ -83,11 +83,11 @@
       ]
     }
   },
-  "transit" : {
-    "maxSearchWindow" : "8h",
-    "pagingSearchWindowAdjustments": [ "8h", "2h", "2h", "2h", "2h"],
-    "dynamicSearchWindow" : {
-      "minWindow" : "1h"
+  "transit": {
+    "maxSearchWindow": "8h",
+    "pagingSearchWindowAdjustments": ["8h", "2h", "2h", "2h", "2h"],
+    "dynamicSearchWindow": {
+      "minWindow": "1h"
     },
     "transferCacheRequests": [
       {
@@ -280,15 +280,12 @@
       "overloadingAllowed": true
     },
     {
-      "type" : "vehicle-positions",
-      "url" : "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
-      "feedId" : "HSL",
-      "frequency" : "30s",
-      "fuzzyTripMatching" : true,
-      "features" : [
-        "stop-position",
-        "occupancy"
-      ]
+      "type": "vehicle-positions",
+      "url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
+      "feedId": "HSL",
+      "frequency": "30s",
+      "fuzzyTripMatching": true,
+      "features": ["stop-position", "occupancy"]
     },
     {
       "id": "bolt-helsinki-scooter-rental",

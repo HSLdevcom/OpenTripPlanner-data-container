@@ -1,13 +1,13 @@
 {
   "otpFeatures": {
-      "GtfsGraphQlApi": true,
-      "DebugUi": true,
-      "APIServerInfo": true,
-      "APIUpdaterStatus": false,
-      "APIBikeRental": false,
-      "SandboxAPIMapboxVectorTilesApi": true,
-      "FloatingBike": false,
-      "ActuatorAPI": true,
-      "AsyncGraphQLFetchers": false
+    "GtfsGraphQlApi": true,
+    "DebugUi": true,
+    "APIServerInfo": true,
+    "APIUpdaterStatus": false,
+    "APIBikeRental": false,
+    "SandboxAPIMapboxVectorTilesApi": true,
+    "FloatingBike": false,
+    "ActuatorAPI": true,
+    "AsyncGraphQLFetchers": false
   }
 }

@@ -1,61 +1,65 @@
-const fs = require('fs')
-const del = require('del')
-const { dirNameToDate } = require('../util')
+const fs = require('fs');
+const del = require('del');
+const { dirNameToDate } = require('../util');
 
 /*
  * Removes files which are not directories, directories which are empty or can't be parsed into dates.
  */
-function deleteInvalidVersions (basePath) {
-  const deletionPromises = []
+function deleteInvalidVersions(basePath) {
+  const deletionPromises = [];
   fs.readdirSync(basePath).forEach(file => {
-    const filePath = `${basePath}/${file}`
+    const filePath = `${basePath}/${file}`;
     if (!fs.lstatSync(filePath).isDirectory()) {
-      deletionPromises.push(del(filePath))
-      return
+      deletionPromises.push(del(filePath));
+      return;
     }
     if (dirNameToDate(file) === null) {
-      deletionPromises.push(del(filePath))
-      return
+      deletionPromises.push(del(filePath));
+      return;
     }
-    const files = fs.readdirSync(filePath)
+    const files = fs.readdirSync(filePath);
     if (files.length === 0) {
-      deletionPromises.push(del(filePath))
+      deletionPromises.push(del(filePath));
     }
-  })
-  return deletionPromises
+  });
+  return deletionPromises;
 }
 
-function sortByDate (firstFile, secondFile) {
-  const firstDate = dirNameToDate(firstFile)
-  const secondDate = dirNameToDate(secondFile)
+function sortByDate(firstFile, secondFile) {
+  const firstDate = dirNameToDate(firstFile);
+  const secondDate = dirNameToDate(secondFile);
   if (firstDate < secondDate) {
-    return -1
+    return -1;
   }
   if (firstDate > secondDate) {
-    return 1
+    return 1;
   }
-  return 0
+  return 0;
 }
 
-function isCorrectRouter (basePath, file, routerId) {
-  const routers = fs.readdirSync(`${basePath}/${file}`)
-  return routers.length === 1 && routers[0] === routerId
+function isCorrectRouter(basePath, file, routerId) {
+  const routers = fs.readdirSync(`${basePath}/${file}`);
+  return routers.length === 1 && routers[0] === routerId;
 }
 
 /*
  * Keeps 10 valid latest versions and removes the rest.
  */
-function deleteOldVersions (sourceDir, routerId, tag) {
-  const basePath = `${sourceDir}/${tag}`
+function deleteOldVersions(sourceDir, routerId, tag) {
+  const basePath = `${sourceDir}/${tag}`;
   if (!fs.existsSync(basePath)) {
-    return Promise((res) => res())
+    return Promise(res => res());
   }
   return Promise.all(deleteInvalidVersions(basePath)).then(() => {
-    const filesToDelete = fs.readdirSync(basePath).filter(file => isCorrectRouter(basePath, file, routerId)).sort(sortByDate).slice(0, -10)
-    return filesToDelete.map(file => del(`${basePath}/${file}/${routerId}`))
-  })
+    const filesToDelete = fs
+      .readdirSync(basePath)
+      .filter(file => isCorrectRouter(basePath, file, routerId))
+      .sort(sortByDate)
+      .slice(0, -10);
+    return filesToDelete.map(file => del(`${basePath}/${file}/${routerId}`));
+  });
 }
 
 module.exports = function (sourceDir, routerId, tag) {
-  return deleteOldVersions(sourceDir, routerId, tag)
-}
+  return deleteOldVersions(sourceDir, routerId, tag);
+};

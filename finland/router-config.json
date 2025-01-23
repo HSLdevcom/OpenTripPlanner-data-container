@@ -53,8 +53,8 @@
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
-    "dynamicSearchWindow" : {
-      "minWindow" : "3h"
+    "dynamicSearchWindow": {
+      "minWindow": "3h"
     },
     "transferCacheRequests": [
       {
@@ -196,15 +196,12 @@
       "fuzzyTripMatching": true
     },
     {
-      "type" : "vehicle-positions",
-      "url" : "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
-      "feedId" : "HSL",
-      "frequency" : "30s",
-      "fuzzyTripMatching" : true,
-      "features" : [
-        "stop-position",
-        "occupancy"
-      ]
+      "type": "vehicle-positions",
+      "url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
+      "feedId": "HSL",
+      "frequency": "30s",
+      "fuzzyTripMatching": true,
+      "features": ["stop-position", "occupancy"]
     },
     {
       "id": "digitraffic-trip-updates",
@@ -559,7 +556,6 @@
       "url": "http://digitransit-proxy:8080/out/tkhslahtistorage.blob.core.windows.net/gbfs/gbfs.json",
       "overloadingAllowed": true,
       "rentalPickupTypes": ["station"]
-
     },
     {
       "id": "vantaa-bike-rental",

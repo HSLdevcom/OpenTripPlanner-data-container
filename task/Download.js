@@ -1,50 +1,52 @@
-const fs = require('fs')
-const { execSync } = require('child_process')
-const axios = require('axios')
-const { postSlackMessage } = require('../util')
+const fs = require('fs');
+const { execSync } = require('child_process');
+const axios = require('axios');
+const { postSlackMessage } = require('../util');
 
-function handleFail (url, err) {
-  postSlackMessage(`${url} Download failed: ${err} :boom:`)
-  global.hasFailures = true
+function handleFail(url, err) {
+  postSlackMessage(`${url} Download failed: ${err} :boom:`);
+  global.hasFailures = true;
 }
 
 /**
  * Download external data (gtfs, osm) resources.
  */
-function download (entry, dir) {
+function download(entry, dir) {
   return new Promise(resolve => {
     if (!fs.existsSync(dir)) {
-      execSync(`mkdir -p ${dir}`)
+      execSync(`mkdir -p ${dir}`);
     }
-    process.stdout.write('Downloading ' + entry.url + '...\n')
-    const name = entry.url.split('/').pop()
-    const ext = name.indexOf('.') > 0 ? '.' + name.split('.').pop() : ''
-    const filePath = `${dir}/${entry.id + ext}`
+    process.stdout.write('Downloading ' + entry.url + '...\n');
+    const name = entry.url.split('/').pop();
+    const ext = name.indexOf('.') > 0 ? '.' + name.split('.').pop() : '';
+    const filePath = `${dir}/${entry.id + ext}`;
     const request = {
       method: 'GET',
       url: entry.url,
       responseType: 'stream',
-      ...entry.request
-    }
-    axios(request).then(response => {
-      response.data.pipe(fs.createWriteStream(filePath))
-      response.data.on('error', err => {
-        handleFail(entry.url, err)
-        resolve()
+      ...entry.request,
+    };
+    axios(request)
+      .then(response => {
+        response.data.pipe(fs.createWriteStream(filePath));
+        response.data.on('error', err => {
+          handleFail(entry.url, err);
+          resolve();
+        });
+        response.data.on('end', () => {
+          process.stdout.write(entry.url + ' Download SUCCESS\n');
+          resolve();
+        });
       })
-      response.data.on('end', () => {
-        process.stdout.write(entry.url + ' Download SUCCESS\n')
-        resolve()
-      })
-    }).catch(err => {
-      handleFail(entry.url, err)
-      resolve()
-    })
-  })
+      .catch(err => {
+        handleFail(entry.url, err);
+        resolve();
+      });
+  });
 }
 
-module.exports = async function dlSequentially (entries, dir) {
+module.exports = async function dlSequentially(entries, dir) {
   for (const e of entries) {
-    await download(e, dir)
+    await download(e, dir);
   }
-}
+};
