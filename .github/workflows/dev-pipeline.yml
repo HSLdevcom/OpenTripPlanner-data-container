@@ -42,7 +42,7 @@ jobs:
       - name: Set time zone to Europe/Helsinki
         uses: zcong1993/setup-timezone@master
         with:
-          timezone: "Europe/Helsinki"
+          timezone: 'Europe/Helsinki'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:

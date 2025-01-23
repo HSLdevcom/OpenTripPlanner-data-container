@@ -44,10 +44,10 @@
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
-    "dynamicSearchWindow" : {
-      "minWindow" : "3h"
+    "dynamicSearchWindow": {
+      "minWindow": "3h"
     },
-    "maxNumberOfTransfers" : 12,
+    "maxNumberOfTransfers": 12,
     "transferCacheRequests": [
       {
         "modes": "WALK",

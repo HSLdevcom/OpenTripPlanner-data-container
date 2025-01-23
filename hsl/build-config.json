@@ -20,8 +20,8 @@
       }
     }
   ],
-  "gtfsDefaults" : {
-    "stationTransferPreference" : "recommended"
+  "gtfsDefaults": {
+    "stationTransferPreference": "recommended"
   },
   "osmDefaults": {
     "timeZone": "Europe/Helsinki",

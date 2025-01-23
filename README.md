@@ -3,12 +3,14 @@
 [![Build](https://github.com/hsldevcom/OpenTripPlanner-data-container/workflows/Process%20v3%20push%20or%20pr/badge.svg?branch=v3)](https://github.com/HSLdevcom/OpenTripPlanner-data-container/actions)
 
 ## This project:
+
 Contains tools for fetching, building and deploying fresh opentripplanner data server and opentripplanner images
 for consumption by Digitransit maintained OTP version 2.x instances.
 
 ## Main components
 
 ### otp-data-builder
+
 The actual data builder application. This is a node.js application that fetches
 and processes new gtfs/osm data. It's build around gulp and all separate steps of
 databuilding process can also be called directly from the source tree. The only
@@ -16,45 +18,46 @@ required external dependency is docker. Docker is used for launching external
 commands that do for example data manipulation.
 
 install gulp cli:
-  `yarn global add gulp-cli`
+`yarn global add gulp-cli`
 
 install app deps:
-  `yarn`
+`yarn`
 
 update osm data:
-  `ROUTER_NAME=hsl gulp osm:update`
+`ROUTER_NAME=hsl gulp osm:update`
 
 download new gtfs data for waltti:
-  `ROUTER_NAME=waltti gulp gtfs:dl`
+`ROUTER_NAME=waltti gulp gtfs:dl`
 
 #### Configuration
+
 It is possible to change the behaviour of the data builder by defining environment variables.
 
-* "ROUTER_NAME" defines for which router the data gets updated for.
-* "DOCKER_USER" defines username for authenticating to docker hub.
-* "DOCKER_AUTH" defines password for authenticating to docker hub.
-* (Optional, default v3 and tag based on date) "DOCKER_TAG" defines what will be the updated docker tag of the data server images in the remote container registry.
-* (Optional, default hsldevcom) "ORG" defines what organization images belong to in the remote container registry.
-* (Optional, default v3) "SEED_TAG" defines what version of the data storage should be used for seeding.
-* (Optional, default v2) "OTP_TAG" defines what version of OTP is used for testing, building graphs and deploying a new OTP image (postfixed with router name).
-* (Optional, default v3) "TOOLS_TAG" defines what version of otp-data-tools image is used for testing.
-* (Optional, default dev) "BUILDER_TYPE" used as a postfix to slack bot name
-* (Optional) "SLACK_CHANNEL_ID" defines to which slack channel the messages are sent to
-* (Optional) "SLACK_ACCESS_TOKEN" bearer token for slack messaging
-* (Optional, default {}) "EXTRA_SRC" defines gtfs src values that should be overridden or completely new src that should be added with unique id. Example format:
+- "ROUTER_NAME" defines for which router the data gets updated for.
+- "DOCKER_USER" defines username for authenticating to docker hub.
+- "DOCKER_AUTH" defines password for authenticating to docker hub.
+- (Optional, default v3 and tag based on date) "DOCKER_TAG" defines what will be the updated docker tag of the data server images in the remote container registry.
+- (Optional, default hsldevcom) "ORG" defines what organization images belong to in the remote container registry.
+- (Optional, default v3) "SEED_TAG" defines what version of the data storage should be used for seeding.
+- (Optional, default v2) "OTP_TAG" defines what version of OTP is used for testing, building graphs and deploying a new OTP image (postfixed with router name).
+- (Optional, default v3) "TOOLS_TAG" defines what version of otp-data-tools image is used for testing.
+- (Optional, default dev) "BUILDER_TYPE" used as a postfix to slack bot name
+- (Optional) "SLACK_CHANNEL_ID" defines to which slack channel the messages are sent to
+- (Optional) "SLACK_ACCESS_TOKEN" bearer token for slack messaging
+- (Optional, default {}) "EXTRA_SRC" defines gtfs src values that should be overridden or completely new src that should be added with unique id. Example format:
   - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["router-waltti/gtfs-rules/waltti.rule"]}}`
   - You can remove a src by including "remove": true, `{"FOLI": {"remove": true}}`
-* (Optional, default {}) "EXTRA_UPDATERS" defines router-config.json updater values that should be overridden or completely new updater that should be added with unique id. Example format:
+- (Optional, default {}) "EXTRA_UPDATERS" defines router-config.json updater values that should be overridden or completely new updater that should be added with unique id. Example format:
   - `{"turku-alerts": {"type": "real-time-alerts", "frequencySec": 30, "url": "https://foli-beta.nanona.fi/gtfs-rt/reittiopas", "feedId": "FOLI", "fuzzyTripMatching": true}}`
   - You can remove a src by including "remove": true, `{"turku-alerts": {"remove": true}}`
-* (Optional, default {}) "EXTRA_OSM" can redefine OSM source URLs. For example: `{"hsl": "https://tempserver.com/newhsl.pbf"}`
-* (Optional) "VERSION_CHECK" is a comma-separated list of feedIds from which the GTFS data's `feed_info.txt`'s file's `feed_version` field is parsed into a date object and it's checked if the data has been updated within the last 8 hours. If not, a message is sent to stdout (and slack, only monday-friday) to inform about usage of "old" data.
-* (Optional) "SKIPPED_SITES" defines a comma-separated list of sites from OTPQA tests that should be skipped. Example format:
+- (Optional, default {}) "EXTRA_OSM" can redefine OSM source URLs. For example: `{"hsl": "https://tempserver.com/newhsl.pbf"}`
+- (Optional) "VERSION_CHECK" is a comma-separated list of feedIds from which the GTFS data's `feed_info.txt`'s file's `feed_version` field is parsed into a date object and it's checked if the data has been updated within the last 8 hours. If not, a message is sent to stdout (and slack, only monday-friday) to inform about usage of "old" data.
+- (Optional) "SKIPPED_SITES" defines a comma-separated list of sites from OTPQA tests that should be skipped. Example format:
   - `"turku.digitransit.fi,reittiopas.hsl.fi"`
-* (Optional) "DISABLE_BLOB_VALIDATION" should be included if blob (OSM) validation should be disabled temporarily.
-* (Optional) "NOSEED" should be included (together with DISABLE_BLOB_VALIDATION) when data loading for a new configuration is run first time and no seed image is available.
-* (Optional) "NOCLEANUP" can be used to disable removal of historical data in storage
-* (Optional) "JAVA_OPTS" Java parameters for running OTP
+- (Optional) "DISABLE_BLOB_VALIDATION" should be included if blob (OSM) validation should be disabled temporarily.
+- (Optional) "NOSEED" should be included (together with DISABLE_BLOB_VALIDATION) when data loading for a new configuration is run first time and no seed image is available.
+- (Optional) "NOCLEANUP" can be used to disable removal of historical data in storage
+- (Optional) "JAVA_OPTS" Java parameters for running OTP
 
 #### Data processing steps
 
@@ -74,17 +77,17 @@ and if tests pass data is copied to 'data/downloads/osm' directory.
 The data is then processed with the following steps:
 
 3. `gtfs:dl`
-Downloads a GTFS package from configured location, tests the file with otp, if
-test passes data is copied to directory 'data/fit/gtfs'. The resulting zip is named <feedid>.zip.
+   Downloads a GTFS package from configured location, tests the file with otp, if
+   test passes data is copied to directory 'data/fit/gtfs'. The resulting zip is named <feedid>.zip.
 
 4. `gtfs:fit`
-Runs configured map fits. Copies data to directory 'data/filter/gtfs'.
+   Runs configured map fits. Copies data to directory 'data/filter/gtfs'.
 
 5. `gtfs:filter`
-Runs configured filterings. Copies data to directory 'data/id/gtfs'.
+   Runs configured filterings. Copies data to directory 'data/id/gtfs'.
 
 6. `gtfs:id`
-Sets the gtfs feed id to <id> and copies data to directory 'data/ready/gtfs'.
+   Sets the gtfs feed id to <id> and copies data to directory 'data/ready/gtfs'.
 
 Steps 3. - 6. can also be run together using a single `gtfs:update` command.
 

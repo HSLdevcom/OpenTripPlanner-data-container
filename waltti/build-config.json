@@ -19,8 +19,8 @@
       }
     }
   ],
-  "gtfsDefaults" : {
-    "stationTransferPreference" : "recommended"
+  "gtfsDefaults": {
+    "stationTransferPreference": "recommended"
   },
   "boardingLocationTags": ["ref", "ref:findt", "ref:findr"],
   "osmDefaults": {
