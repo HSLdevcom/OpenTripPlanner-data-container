@@ -18,7 +18,8 @@
         "enabled": true,
         "maxSlope": 0.125
       }
-    }
+    },
+    { "modes": "BICYCLE" }
   ],
   "gtfsDefaults": {
     "stationTransferPreference": "recommended"
