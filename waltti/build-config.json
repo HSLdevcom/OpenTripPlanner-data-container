@@ -17,8 +17,14 @@
         "enabled": true,
         "maxSlope": 0.125
       }
-    }
+    },
+    { "modes": "BICYCLE" }
   ],
+  "transferParametersForMode": {
+    "BIKE": {
+      "maxTransferDuration": "30m"
+    }
+  },
   "gtfsDefaults": {
     "stationTransferPreference": "recommended"
   },
