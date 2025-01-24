@@ -14,7 +14,8 @@
       "wheelchairAccessibility": {
         "enabled": true
       }
-    }
+    },
+    { "modes": "BICYCLE" }
   ],
   "gtfsDefaults": {
     "stationTransferPreference": "recommended"
