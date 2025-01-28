@@ -33,7 +33,14 @@ module.exports = {
       'Kuopio',
       'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip',
     ),
-    mapSrc('OULU', 'https://tvv.fra1.digitaloceanspaces.com/229.zip'),
+    mapSrc('OULU', 'https://tvv.fra1.digitaloceanspaces.com/229.zip',
+      true,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
+    ),
     mapSrc(
       'LINKKI',
       'https://tvv.fra1.digitaloceanspaces.com/209.zip',
@@ -70,7 +77,14 @@ module.exports = {
       'tampereDRT',
       'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_kutsuliikenne.zip',
     ),
-    mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
+    mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', 
+      true,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
+    ),
     mapSrc(
       'FUNI',
       'https://foligtfs.blob.core.windows.net/routeplanner/gtfs-foli-ff.zip',
