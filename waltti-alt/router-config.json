@@ -194,6 +194,40 @@
       "utilizationsFrequencySec": 600,
       "utilizationsUrl": "https://parking.fintraffic.fi/api/v1/utilizations.json?limit=-1",
       "hubsUrl": "https://parking.fintraffic.fi/api/v1/hubs.json?limit=-1"
+    },
+    {
+      "id": "pori-trip-updates",
+      "type": "stop-time-updater",
+      "frequency": "60s",
+      "url": "http://digitransit-proxy:8080/out/pjl.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
+      "feedId": "Pori",
+      "fuzzyTripMatching": false,
+      "backwardsDelayPropagationType": "ALWAYS"
+    },
+    {
+      "id": "pori-alerts",
+      "type": "real-time-alerts",
+      "frequency": "30s",
+      "url": "http://digitransit-proxy:8080/out/pjl.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
+      "feedId": "Pori",
+      "fuzzyTripMatching": false
+    },
+    {
+      "id": "oulu-trip-updates",
+      "type": "stop-time-updater",
+      "frequency": "60s",
+      "url": "http://digitransit-proxy:8080/out/oulu.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
+      "feedId": "OULU",
+      "fuzzyTripMatching": false,
+      "backwardsDelayPropagationType": "ALWAYS"
+    },
+    {
+      "id": "oulu-alerts",
+      "type": "real-time-alerts",
+      "frequency": "30s",
+      "url": "http://digitransit-proxy:8080/out/oulu.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
+      "feedId": "OULU",
+      "fuzzyTripMatching": false
     }
   ]
 }
