@@ -228,6 +228,6 @@
       "url": "http://digitransit-proxy:8080/out/oulu.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
       "feedId": "OULU",
       "fuzzyTripMatching": false
-    },
+    }
   ]
 }
