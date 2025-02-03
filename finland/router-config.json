@@ -16,6 +16,9 @@
       "reluctance": 1.75,
       "stairsReluctance": 1.65,
       "stairsTimeFactor": 2,
+      "escalator": {
+        "speed": 0.65
+      },
       "boardCost": 120
     },
     "accessEgress": {
@@ -23,9 +26,6 @@
       "maxDurationForMode": {
         "CAR_TO_PARK": "2h"
       }
-    },
-    "escalator": {
-      "speed": 0.65
     },
     "maxDirectStreetDuration": "100h",
     "maxDirectStreetDurationForMode": {
