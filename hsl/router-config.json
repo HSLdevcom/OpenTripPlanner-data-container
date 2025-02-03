@@ -15,6 +15,9 @@
       "reluctance": 1.75,
       "stairsReluctance": 1.65,
       "stairsTimeFactor": 2,
+      "escalator": {
+        "speed": 0.65
+      },
       "boardCost": 120
     },
     "accessEgress": {
