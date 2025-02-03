@@ -20,6 +20,9 @@
     "accessEgress": {
       "maxDuration": "1h"
     },
+    "escalator": {
+      "speed": 0.65
+    },
     "elevatorBoardTime": 60,
     "maxDirectStreetDuration": "90m",
     "maxJourneyDuration": "12h",
