@@ -25,7 +25,8 @@
   },
   "osmDefaults": {
     "timeZone": "Europe/Helsinki",
-    "osmTagMapping": "finland"
+    "osmTagMapping": "finland",
+    "includeOsmSubwayEntrances": true
   },
   "demDefaults": {
     "elevationUnitMultiplier": 0.1
