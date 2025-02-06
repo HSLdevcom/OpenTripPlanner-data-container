@@ -93,6 +93,21 @@ module.exports = {
       'https://minfoapi.matkahuolto.fi/gtfs/036/gtfs.zip',
       true,
     ),
+    mapSrc(
+      'KoivistonAuto',
+      'https://minfoapi.matkahuolto.fi/gtfs/020/gtfs.zip',
+      true,
+    ),
+    mapSrc(
+      'PahkakankaanLiikenne',
+      'https://minfoapi.matkahuolto.fi/gtfs/198/gtfs.zip',
+      true,
+    ),
+    mapSrc(
+      'IngvesSvanback',
+      'https://minfoapi.matkahuolto.fi/gtfs/177/gtfs.zip',
+      true,
+    ),
   ],
   osm: ['finland', 'estonia'],
 };
