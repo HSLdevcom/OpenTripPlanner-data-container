@@ -25,6 +25,7 @@ module.exports = {
         'fare_rules.txt': 'digitransit_fare_rules.txt',
       },
     ),
+    mapSrc('Kotka', 'https://gtfsdata.blob.core.windows.net/kotka/kotka_DT-6724_217_20250205_0910.zip', true),
   ],
   osm: ['oulu', 'southFinland'],
 };
