@@ -33,7 +33,9 @@ module.exports = {
       'Kuopio',
       'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip',
     ),
-    mapSrc('OULU', 'https://tvv.fra1.digitaloceanspaces.com/229.zip',
+    mapSrc(
+      'OULU',
+      'https://tvv.fra1.digitaloceanspaces.com/229.zip',
       true,
       undefined,
       {
