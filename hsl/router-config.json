@@ -258,7 +258,7 @@
     {
       "id": "liipi",
       "type": "vehicle-parking",
-      "sourceType": "hsl-park",
+      "sourceType": "liipi",
       "feedId": "liipi",
       "timeZone": "Europe/Helsinki",
       "facilitiesFrequencySec": 3600,
