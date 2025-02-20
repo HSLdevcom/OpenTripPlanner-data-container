@@ -27,6 +27,7 @@
       "carsAllowedStopMaxTransferDuration": "2h"
     },
     "BIKE": {
+      "maxTransferDuration": "30m",
       "carsAllowedStopMaxTransferDuration": "2h"
     }
   },
