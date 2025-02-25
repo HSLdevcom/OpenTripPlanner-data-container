@@ -16,6 +16,11 @@ module.exports = {
       true,
     ),
     mapSrc(
+      'CAR_FERRIES',
+      'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
+      true,
+    ),
+    mapSrc(
       'tampere',
       'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_deprecated.zip',
     ),
