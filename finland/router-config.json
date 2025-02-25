@@ -6,7 +6,10 @@
     "bicycle": {
       "boardCost": 120,
       "reluctance": 1.7,
-      "optimization": "safest-streets"
+      "optimization": "SAFEST_STREETS",
+      "rental": {
+        "useAvailabilityInformation": true
+      }
     },
     "car": {
       "reluctance": 10.0,
@@ -72,12 +75,6 @@
         "walk": {
           "speed": 1.2,
           "reluctance": 1.8
-        },
-        "accessEgress": {
-          "maxStopCountForMode": {
-            "BIKE": 0,
-            "CAR": 0
-          }
         }
       },
       {
@@ -88,12 +85,6 @@
         },
         "wheelchairAccessibility": {
           "enabled": true
-        },
-        "accessEgress": {
-          "maxStopCountForMode": {
-            "BIKE": 0,
-            "CAR": 0
-          }
         }
       },
       {
@@ -101,12 +92,6 @@
         "walk": {
           "speed": 1.67,
           "reluctance": 1.8
-        },
-        "accessEgress": {
-          "maxStopCountForMode": {
-            "BIKE": 0,
-            "CAR": 0
-          }
         }
       },
       {
@@ -116,17 +101,7 @@
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          },
-          "optimization": "SAFEST_STREETS"
-        },
-        "accessEgress": {
-          "maxStopCountForMode": {
-            "BIKE": 0,
-            "CAR": 0
-          }
+          "speed": 5.55
         }
       },
       {
@@ -136,17 +111,7 @@
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          },
-          "optimization": "SAFEST_STREETS"
-        },
-        "accessEgress": {
-          "maxStopCountForMode": {
-            "BIKE": 0,
-            "CAR": 0
-          }
+          "speed": 5.55
         }
       },
       {
@@ -154,12 +119,6 @@
         "walk": {
           "speed": 1.3,
           "reluctance": 1.75
-        },
-        "accessEgress": {
-          "maxStopCountForMode": {
-            "BIKE": 0,
-            "CAR": 0
-          }
         }
       }
     ]
