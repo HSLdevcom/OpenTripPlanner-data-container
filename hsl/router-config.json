@@ -5,7 +5,10 @@
     "bicycle": {
       "boardCost": 120,
       "reluctance": 1.7,
-      "optimization": "safest-streets"
+      "optimization": "SAFEST_STREETS",
+      "rental": {
+        "useAvailabilityInformation": true
+      }
     },
     "car": {
       "reluctance": 10.0
@@ -125,11 +128,7 @@
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          },
-          "optimization": "SAFEST_STREETS"
+          "speed": 5.55
         }
       },
       {
@@ -139,11 +138,7 @@
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          },
-          "optimization": "SAFEST_STREETS"
+          "speed": 5.55
         }
       }
     ]
