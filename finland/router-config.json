@@ -5,11 +5,7 @@
     "elevatorBoardTime": 60,
     "bicycle": {
       "boardCost": 120,
-      "reluctance": 1.7,
-      "optimization": "SAFEST_STREETS",
-      "rental": {
-        "useAvailabilityInformation": true
-      }
+      "reluctance": 1.7
     },
     "car": {
       "reluctance": 10.0,
@@ -101,7 +97,10 @@
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55
+          "speed": 5.55,
+          "rental": {
+            "useAvailabilityInformation": true
+          }
         }
       },
       {
@@ -111,7 +110,10 @@
           "reluctance": 1.8
         },
         "bicycle": {
-          "speed": 5.55
+          "speed": 5.55,
+          "rental": {
+            "useAvailabilityInformation": true
+          }
         }
       },
       {
