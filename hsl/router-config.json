@@ -4,7 +4,8 @@
     "waitReluctance": 0.95,
     "bicycle": {
       "boardCost": 120,
-      "reluctance": 1.7
+      "reluctance": 1.7,
+      "optimization": "safest-streets"
     },
     "car": {
       "reluctance": 10.0
