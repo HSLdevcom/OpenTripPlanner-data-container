@@ -86,8 +86,7 @@
           "speed": 5.55,
           "rental": {
             "useAvailabilityInformation": true
-          },
-          "optimization": "SAFEST_STREETS"
+          }
         }
       },
       {
@@ -100,8 +99,7 @@
           "speed": 5.55,
           "rental": {
             "useAvailabilityInformation": true
-          },
-          "optimization": "SAFEST_STREETS"
+          }
         }
       }
     ]
