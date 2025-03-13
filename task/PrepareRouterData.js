@@ -2,7 +2,7 @@ const through = require('through2');
 const Vinyl = require('vinyl');
 const fs = require('fs');
 const cloneable = require('cloneable-readable');
-const { dataDir } = require('../config');
+const { dataDir, storageDir } = require('../config');
 
 function createFile(config, fileName, sourcePath) {
   process.stdout.write(`copying ${fileName}...\n`);
@@ -58,7 +58,7 @@ function createAndProcessRouterConfig(router) {
 /**
  * Make router data ready for inclusion in opentripplanner.
  */
-module.exports = function (router) {
+function prepareRouterData(router) {
   const stream = through.obj();
 
   process.stdout.write(
@@ -83,4 +83,79 @@ module.exports = function (router) {
   stream.end();
 
   return stream;
+}
+
+/**
+ * Make router data ready for the street only graph build in opentripplanner.
+ */
+function prepareRouterDataForOnlyStreetGraphBuild (router) {
+  const stream = through.obj();
+
+  process.stdout.write(
+    'Collecting data and configuration files for only street graph build\n',
+  );
+
+  stream.push(createFile(router, 'build-config.json', router.id));
+  stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createAndProcessRouterConfig(router));
+  router.osm.forEach(osmId => {
+    const name = osmId + '.pbf';
+    stream.push(createFile(router, name, `${dataDir}/ready/osm`));
+  });
+  if (router.dem) {
+    const name = router.dem + '.tif';
+    stream.push(createFile(router, name, `${dataDir}/ready/dem`));
+  }
+  stream.end();
+
+  return stream;
+}
+
+function getDirectories(path) {
+  const directoryContents = fs.readdirSync(path);
+  const directories = directoryContents.filter((element) => {
+    return fs.statSync(path + '/' + element).isDirectory();
+  })
+  return directories;
+}
+
+/**
+ * Make router data ready for the street only graph build in opentripplanner.
+ */
+function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
+  const stream = through.obj();
+
+  process.stdout.write(
+    'Collecting data and configuration files for graph build based on prebuilt street graph data\n',
+  );
+
+  stream.push(createFile(router, 'build-config.json', router.id));
+  stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createAndProcessRouterConfig(router));
+  router.src.forEach(src => {
+    const name = src.id + '-gtfs.zip';
+    stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
+  });
+
+  const osmDirectories = getDirectories(`${storageDir}/osm-builds`);
+  if (osmDirectories.length > 0) {
+    osmDirectories.sort((date1, date2) => new Date(date2.replace(/./g, ':')) - new Date(date1.replace(/./g, ':')));
+    process.stdout.write(
+      `Using OSM data from ${osmDirectories[0]} \n`,
+    );
+    stream.push(createFile(router, 'streetGraph.obj', `${storageDir}/osm-builds/${osmDirectories[0]}/${router.id}/streetGraph.obj`));
+  } else {
+    throw new Error(`No OSM directories can be found exist!\n`)
+  }
+  
+  stream.end();
+
+  return stream;
+}
+
+
+module.exports = {
+  prepareRouterData,
+  prepareRouterDataForOnlyStreetGraphBuild,
+  prepareRouterDataForPrebuiltStreetGraphBuild,
 };

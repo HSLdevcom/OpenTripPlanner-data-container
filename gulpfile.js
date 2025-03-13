@@ -10,10 +10,10 @@ const mapFit = require('./task/MapFit');
 const { validateBlobSize } = require('./task/BlobValidation');
 const { testOTPFile } = require('./task/OTPTest');
 const seed = require('./task/Seed');
-const prepareRouterData = require('./task/PrepareRouterData');
+const { prepareRouterData, prepareRouterDataForOnlyStreetGraphBuild, prepareRouterDataForPrebuiltStreetGraphBuild } = require('./task/PrepareRouterData');
 const del = require('del');
 const config = require('./config');
-const { buildOTPGraphTask } = require('./task/BuildOTPGraph');
+const { buildOTPGraphTask, buildOTPOnlyStreetGraphTask } = require('./task/BuildOTPGraph');
 const { renameGTFSFile } = require('./task/GTFSRename');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFromZip, addToZip } = require('./task/ZipTask');
@@ -246,10 +246,44 @@ gulp.task(
   gulp.series('router:copy', () => buildOTPGraphTask(config.router)),
 );
 
+gulp.task(
+  'router:copyForPrebuiltStreetGraphDataBuild',
+  gulp.series('router:del', () =>
+    prepareRouterDataForPrebuiltStreetGraphBuild(config.router).pipe(
+      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+    ),
+  ),
+);
+
+gulp.task(
+  'router:buildWithPrebuiltStreetGraph',
+  gulp.series('router:copyForPrebuiltStreetGraphDataBuild', () => buildOTPGraphTask(config.router)),
+);
+
+gulp.task(
+  'router:copyOnlyStreetGraphData',
+  gulp.series('router:del', () =>
+    prepareRouterDataForOnlyStreetGraphBuild(config.router).pipe(
+      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+    ),
+  ),
+);
+
+gulp.task(
+  'router:buildOnlyStreetGraph',
+  gulp.series('router:copyOnlyStreetGraphData', () => buildOTPOnlyStreetGraphTask(config.router)),
+);
+
 gulp.task('router:store', () =>
   gulp
     .src(`${config.dataDir}/build/${config.router.id}/**/*`, { buffer: false })
     .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/`)),
+);
+
+gulp.task('router:storeOnlyStreetGraphData', () =>
+  gulp
+    .src(`${config.dataDir}/build/osm-builds/${config.router.id}/streetGraph.obj`, { buffer: false })
+    .pipe(gulp.dest(`${config.storageDir}/osm-builds/${global.storageDirName}/`)),
 );
 
 gulp.task('storage:cleanup', () =>
