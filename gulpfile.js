@@ -282,7 +282,7 @@ gulp.task('router:store', () =>
 
 gulp.task('router:storeOnlyStreetGraphData', () =>
   gulp
-    .src(`${config.dataDir}/build/osm-builds/${config.router.id}/streetGraph.obj`, { buffer: false })
+    .src(`${config.dataDir}/build/${config.router.id}/streetGraph.obj`, { buffer: false })
     .pipe(gulp.dest(`${config.storageDir}/osm-builds/${global.storageDirName}/`)),
 );
 
