@@ -3,6 +3,7 @@ const Vinyl = require('vinyl');
 const fs = require('fs');
 const cloneable = require('cloneable-readable');
 const { dataDir, storageDir } = require('../config');
+const { dirNameToDate } = require('../util');
 const assert = require('assert');
 
 function createFile(config, fileName, sourcePath) {
@@ -143,7 +144,7 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
 
   const osmDirectories = getDirectories(`${storageDir}/osm-builds/${process.env.DOCKER_TAG}`);
   if (osmDirectories.length > 0) {
-    osmDirectories.sort((date1, date2) => new Date(date1.replace(/./g, ':')) - new Date(date2.replace(/./g, ':')));
+    osmDirectories.sort((date1, date2) => dirNameToDate(date2) - dirNameToDate(date1));
     const osmPath = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
     process.stdout.write(
       `Using OSM data from ${osmPath} \n`,
