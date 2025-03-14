@@ -126,7 +126,7 @@ async function buildGraph(name) {
   await start('router:buildGraph');
 
   if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
-    process.stdout.write('Skipping all tests');
+    process.stdout.write('Skipping all tests\n');
   } else {
     process.stdout.write('Test the newly built graph with OTPQA\n');
     execFileSync('./test.sh', [], { stdio: [0, 1, 2] });
@@ -221,7 +221,7 @@ async function buildWithPrebuiltStreetGraph(name) {
   await start('router:buildWithPrebuiltStreetGraph');
 
   if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
-    process.stdout.write('Skipping all tests');
+    process.stdout.write('Skipping all tests\n');
   } else {
     process.stdout.write('Test the newly built graph with OTPQA\n');
     execFileSync('./test.sh', [], { stdio: [0, 1, 2] });
