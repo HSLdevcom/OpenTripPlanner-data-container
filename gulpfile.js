@@ -280,12 +280,6 @@ gulp.task('router:store', () =>
     .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/`)),
 );
 
-gulp.task('router:storeOnlyStreetGraphData', () =>
-  gulp
-    .src(`${config.dataDir}/build/${config.router.id}/streetGraph.obj`, { buffer: false })
-    .pipe(gulp.dest(`${config.storageDir}/osm-builds/${global.storageDirName}/`)),
-);
-
 gulp.task('storage:cleanup', () =>
   storageCleanup(config.storageDir, config.router.id, process.env.SEED_TAG),
 );

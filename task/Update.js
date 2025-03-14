@@ -75,10 +75,10 @@ async function buildOnlyStreetGraph(name) {
 
   const date = getDateString();
 
-  global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
+  global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${name}`;
 
-  process.stdout.write('Uploading only street graph data to storage\n');
-  await start('router:storeOnlyStreetGraphData');
+  process.stdout.write('Uploading street graph only build data to storage\n');
+  await start('router:store');
   
   updateSlackMessage(`${name} street only graph data updated :white_check_mark:`);
 }
