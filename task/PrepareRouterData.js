@@ -143,7 +143,7 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
 
   const osmDirectories = getDirectories(`${storageDir}/osm-builds/${process.env.DOCKER_TAG}`);
   if (osmDirectories.length > 0) {
-    osmDirectories.sort((date1, date2) => new Date(date2.replace(/./g, ':')) - new Date(date1.replace(/./g, ':')));
+    osmDirectories.sort((date1, date2) => new Date(date1.replace(/./g, ':')) - new Date(date2.replace(/./g, ':')));
     const osmPath = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
     process.stdout.write(
       `Using OSM data from ${osmPath} \n`,
