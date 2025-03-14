@@ -3,6 +3,7 @@ const Vinyl = require('vinyl');
 const fs = require('fs');
 const cloneable = require('cloneable-readable');
 const { dataDir, storageDir } = require('../config');
+const assert = require('assert');
 
 function createFile(config, fileName, sourcePath) {
   process.stdout.write(`copying ${fileName}...\n`);
