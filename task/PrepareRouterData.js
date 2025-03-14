@@ -123,6 +123,9 @@ function getDirectories(path) {
  * Make router data ready for the street only graph build in opentripplanner.
  */
 function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
+  // check environmental variables which needs to be defined
+  assert(process.env.DOCKER_TAG !== undefined, 'DOCKER_TAG must be defined');
+  
   const stream = through.obj();
 
   process.stdout.write(
@@ -137,13 +140,14 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
 
-  const osmDirectories = getDirectories(`${storageDir}/osm-builds`);
+  const osmDirectories = getDirectories(`${storageDir}/osm-builds/${process.env.DOCKER_TAG}`);
   if (osmDirectories.length > 0) {
     osmDirectories.sort((date1, date2) => new Date(date2.replace(/./g, ':')) - new Date(date1.replace(/./g, ':')));
+    const osmPath = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
     process.stdout.write(
-      `Using OSM data from ${osmDirectories[0]} \n`,
+      `Using OSM data from ${osmPath} \n`,
     );
-    stream.push(createFile(router, 'streetGraph.obj', `${storageDir}/osm-builds/${osmDirectories[0]}/${router.id}/streetGraph.obj`));
+    stream.push(createFile(router, 'streetGraph.obj', osmPath));
   } else {
     throw new Error(`No OSM directories can be found exist!\n`)
   }
