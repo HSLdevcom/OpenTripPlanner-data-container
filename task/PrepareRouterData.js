@@ -148,6 +148,12 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
     process.stdout.write(
       `Using OSM data from ${osmPath} \n`,
     );
+    // This is needed for gtfs data fitting.
+    router.osm.forEach(osmId => {
+      const name = osmId + '.pbf';
+      stream.push(createFile(router, name, osmPath));
+    });
+    // This is the prebuilt street graph.
     stream.push(createFile(router, 'streetGraph.obj', osmPath));
   } else {
     throw new Error(`No OSM directories can be found exist!\n`)
