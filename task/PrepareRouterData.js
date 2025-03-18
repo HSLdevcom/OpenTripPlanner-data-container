@@ -90,7 +90,7 @@ function prepareRouterData(router) {
 /**
  * Make router data ready for the street only graph build in opentripplanner.
  */
-function prepareRouterDataForStreetOnlyGraphBuild (router) {
+function prepareRouterDataForStreetOnlyGraphBuild(router) {
   const stream = through.obj();
 
   process.stdout.write(
@@ -115,19 +115,19 @@ function prepareRouterDataForStreetOnlyGraphBuild (router) {
 
 function getDirectories(path) {
   const directoryContents = fs.readdirSync(path);
-  const directories = directoryContents.filter((element) => {
+  const directories = directoryContents.filter(element => {
     return fs.statSync(path + '/' + element).isDirectory();
-  })
+  });
   return directories;
 }
 
 /**
  * Make router data ready for the street only graph build in opentripplanner.
  */
-function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
+function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
   // check environmental variables which needs to be defined
   assert(process.env.DOCKER_TAG !== undefined, 'DOCKER_TAG must be defined');
-  
+
   const stream = through.obj();
 
   process.stdout.write(
@@ -142,13 +142,15 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
 
-  const osmDirectories = getDirectories(`${storageDir}/osm-builds/${process.env.DOCKER_TAG}`);
+  const osmDirectories = getDirectories(
+    `${storageDir}/osm-builds/${process.env.DOCKER_TAG}`,
+  );
   if (osmDirectories.length > 0) {
-    osmDirectories.sort((date1, date2) => dirNameToDate(date2) - dirNameToDate(date1));
-    const osmPath = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
-    process.stdout.write(
-      `Using OSM data from ${osmPath} \n`,
+    osmDirectories.sort(
+      (date1, date2) => dirNameToDate(date2) - dirNameToDate(date1),
     );
+    const osmPath = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
+    process.stdout.write(`Using OSM data from ${osmPath} \n`);
     // This is needed for gtfs data fitting and seeding.
     router.osm.forEach(osmId => {
       const name = osmId + '.pbf';
@@ -162,14 +164,13 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
     // This is the prebuilt street graph.
     stream.push(createFile(router, 'streetGraph.obj', osmPath));
   } else {
-    throw new Error(`No OSM directories can be found!\n`)
+    throw new Error(`No OSM directories can be found!\n`);
   }
-  
+
   stream.end();
 
   return stream;
 }
-
 
 module.exports = {
   prepareRouterData,

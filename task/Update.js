@@ -14,8 +14,10 @@ const { router } = require('../config');
 const assert = require('assert');
 
 const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
-const ONLY_BUILD_STREET_GRAPH = process.env.ONLY_BUILD_STREET_GRAPH?.toLowerCase?.() === 'true' || false;
-const USE_PREBUILT_STREET_GRAPH = process.env.USE_PREBUILT_STREET_GRAPH?.toLowerCase?.() === 'true' || false;
+const ONLY_BUILD_STREET_GRAPH =
+  process.env.ONLY_BUILD_STREET_GRAPH?.toLowerCase?.() === 'true' || false;
+const USE_PREBUILT_STREET_GRAPH =
+  process.env.USE_PREBUILT_STREET_GRAPH?.toLowerCase?.() === 'true' || false;
 
 const start = promisify((task, cb) => gulp.series(task)(cb));
 
@@ -26,11 +28,7 @@ const start = promisify((task, cb) => gulp.series(task)(cb));
  * @returns date as string
  */
 function getDateString() {
-  return new Date()
-    .toISOString()
-    .slice(0, -5)
-    .concat('Z')
-    .replace(/:/g, '.');
+  return new Date().toISOString().slice(0, -5).concat('Z').replace(/:/g, '.');
 }
 
 /**
@@ -81,7 +79,9 @@ async function buildStreetOnlyGraph(name) {
   await start('router:store');
 
   if (!process.env.NOCLEANUP) {
-    process.stdout.write('Remove oldest street only graph data versions from storage\n');
+    process.stdout.write(
+      'Remove oldest street only graph data versions from storage\n',
+    );
     await start('storage:cleanupStreetOnlyGraphData');
   }
 
@@ -90,7 +90,9 @@ async function buildStreetOnlyGraph(name) {
       `${name} street only graph data updated, but partially falling back to older data :boom:`,
     );
   } else {
-    updateSlackMessage(`${name} street only graph data updated :white_check_mark:`);
+    updateSlackMessage(
+      `${name} street only graph data updated :white_check_mark:`,
+    );
   }
 }
 
@@ -225,7 +227,7 @@ async function buildWithPrebuiltStreetGraph(name) {
     await start('seed');
     process.stdout.write('Seeded\n');
   }
-  
+
   await start('gtfs:update');
 
   process.stdout.write('Build routing graph from prebuilt street only graph\n');
@@ -307,7 +309,9 @@ async function buildWithPrebuiltStreetGraph(name) {
       `${name} data updated from prebuilt street only graph, but partially falling back to older data :boom:`,
     );
   } else {
-    updateSlackMessage(`${name} data updated from prebuilt street only graph :white_check_mark:`);
+    updateSlackMessage(
+      `${name} data updated from prebuilt street only graph :white_check_mark:`,
+    );
   }
 }
 
@@ -318,11 +322,11 @@ async function update() {
   const name = router.id;
   try {
     if (ONLY_BUILD_STREET_GRAPH) {
-      await buildStreetOnlyGraph(name)
+      await buildStreetOnlyGraph(name);
     } else if (USE_PREBUILT_STREET_GRAPH) {
-      await buildWithPrebuiltStreetGraph(name)
+      await buildWithPrebuiltStreetGraph(name);
     } else {
-      await buildGraph(name)
+      await buildGraph(name);
     }
   } catch (err) {
     postSlackMessage(`${name} data update failed: ` + err.message);
