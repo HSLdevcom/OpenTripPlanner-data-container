@@ -132,7 +132,7 @@ module.exports = {
       .then(() => otpMatching(`${dataDir}/build/${router.id}`))
       .then(() => del(`${dataDir}/build/${router.id}/taggedStops.log`))
       .then(() => process.stdout.write('Graph build SUCCESS\n')),
-  buildOTPOnlyStreetGraphTask: router =>
+  buildOTPStreetOnlyGraphTask: router =>
     buildGraph(router)
       .then(() => process.stdout.write('Street only graph build SUCCESS\n')),
 };

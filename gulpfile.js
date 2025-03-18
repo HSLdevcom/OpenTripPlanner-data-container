@@ -10,10 +10,10 @@ const mapFit = require('./task/MapFit');
 const { validateBlobSize } = require('./task/BlobValidation');
 const { testOTPFile } = require('./task/OTPTest');
 const seed = require('./task/Seed');
-const { prepareRouterData, prepareRouterDataForOnlyStreetGraphBuild, prepareRouterDataForPrebuiltStreetGraphBuild } = require('./task/PrepareRouterData');
+const { prepareRouterData, prepareRouterDataForStreetOnlyGraphBuild, prepareRouterDataForPrebuiltStreetGraphBuild } = require('./task/PrepareRouterData');
 const del = require('del');
 const config = require('./config');
-const { buildOTPGraphTask, buildOTPOnlyStreetGraphTask } = require('./task/BuildOTPGraph');
+const { buildOTPGraphTask, buildOTPStreetOnlyGraphTask } = require('./task/BuildOTPGraph');
 const { renameGTFSFile } = require('./task/GTFSRename');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFromZip, addToZip } = require('./task/ZipTask');
@@ -261,17 +261,17 @@ gulp.task(
 );
 
 gulp.task(
-  'router:copyOnlyStreetGraphData',
+  'router:copyStreetOnlyGraphData',
   gulp.series('router:del', () =>
-    prepareRouterDataForOnlyStreetGraphBuild(config.router).pipe(
+    prepareRouterDataForStreetOnlyGraphBuild(config.router).pipe(
       gulp.dest(`${config.dataDir}/build/${config.router.id}`),
     ),
   ),
 );
 
 gulp.task(
-  'router:buildOnlyStreetGraph',
-  gulp.series('router:copyOnlyStreetGraphData', () => buildOTPOnlyStreetGraphTask(config.router)),
+  'router:buildStreetOnlyGraph',
+  gulp.series('router:copyStreetOnlyGraphData', () => buildOTPStreetOnlyGraphTask(config.router)),
 );
 
 gulp.task('router:store', () =>
@@ -284,6 +284,6 @@ gulp.task('storage:cleanup', () =>
   storageCleanup(config.storageDir, config.router.id, process.env.SEED_TAG),
 );
 
-gulp.task('storage:cleanupOnlyStreetGraphData', () =>
+gulp.task('storage:cleanupStreetOnlyGraphData', () =>
   storageCleanup(config.storageDir, config.router.id, `osm-builds/${process.env.SEED_TAG}`),
 );

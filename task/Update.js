@@ -36,7 +36,7 @@ function getDateString() {
 /**
  * This function only builds the street graph with OSM and DEM data.
  */
-async function buildOnlyStreetGraph(name) {
+async function buildStreetOnlyGraph(name) {
   if (!process.env.NOSEED) {
     process.stdout.write('Starting seeding\n');
     await start('seed');
@@ -70,8 +70,8 @@ async function buildOnlyStreetGraph(name) {
     postSlackMessage('OSM data update failed, using previous version :boom:');
   }
 
-  process.stdout.write('Build only street graph\n');
-  await start('router:buildOnlyStreetGraph');
+  process.stdout.write('Build street only graph\n');
+  await start('router:buildStreetOnlyGraph');
 
   const date = getDateString();
 
@@ -81,8 +81,8 @@ async function buildOnlyStreetGraph(name) {
   await start('router:store');
 
   if (!process.env.NOCLEANUP) {
-    process.stdout.write('Remove oldest only street graph data versions from storage\n');
-    await start('storage:cleanupOnlyStreetGraphData');
+    process.stdout.write('Remove oldest street only graph data versions from storage\n');
+    await start('storage:cleanupStreetOnlyGraphData');
   }
 
   if (global.hasFailures) {
@@ -318,7 +318,7 @@ async function update() {
   const name = router.id;
   try {
     if (ONLY_BUILD_STREET_GRAPH) {
-      await buildOnlyStreetGraph(name)
+      await buildStreetOnlyGraph(name)
     } else if (USE_PREBUILT_STREET_GRAPH) {
       await buildWithPrebuiltStreetGraph(name)
     } else {

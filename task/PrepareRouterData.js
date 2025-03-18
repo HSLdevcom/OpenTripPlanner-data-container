@@ -90,11 +90,11 @@ function prepareRouterData(router) {
 /**
  * Make router data ready for the street only graph build in opentripplanner.
  */
-function prepareRouterDataForOnlyStreetGraphBuild (router) {
+function prepareRouterDataForStreetOnlyGraphBuild (router) {
   const stream = through.obj();
 
   process.stdout.write(
-    'Collecting data and configuration files for only street graph build\n',
+    'Collecting data and configuration files for street only graph build\n',
   );
 
   stream.push(createFile(router, 'build-config.json', router.id));
@@ -173,6 +173,6 @@ function prepareRouterDataForPrebuiltStreetGraphBuild (router) {
 
 module.exports = {
   prepareRouterData,
-  prepareRouterDataForOnlyStreetGraphBuild,
+  prepareRouterDataForStreetOnlyGraphBuild,
   prepareRouterDataForPrebuiltStreetGraphBuild,
 };
