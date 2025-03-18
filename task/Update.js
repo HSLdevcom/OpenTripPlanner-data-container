@@ -79,8 +79,19 @@ async function buildOnlyStreetGraph(name) {
 
   process.stdout.write('Uploading street graph only build data to storage\n');
   await start('router:store');
-  
-  updateSlackMessage(`${name} street only graph data updated :white_check_mark:`);
+
+  if (!process.env.NOCLEANUP) {
+    process.stdout.write('Remove oldest only street graph data versions from storage\n');
+    await start('storage:cleanupOnlyStreetGraphData');
+  }
+
+  if (global.hasFailures) {
+    updateSlackMessage(
+      `${name} street only graph data updated, but partially falling back to older data :boom:`,
+    );
+  } else {
+    updateSlackMessage(`${name} street only graph data updated :white_check_mark:`);
+  }
 }
 
 /**

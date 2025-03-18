@@ -283,3 +283,7 @@ gulp.task('router:store', () =>
 gulp.task('storage:cleanup', () =>
   storageCleanup(config.storageDir, config.router.id, process.env.SEED_TAG),
 );
+
+gulp.task('storage:cleanupOnlyStreetGraphData', () =>
+  storageCleanup(config.storageDir, config.router.id, `osm-builds/${process.env.SEED_TAG}`),
+);
