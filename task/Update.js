@@ -228,7 +228,7 @@ async function buildWithPrebuiltStreetGraph(name) {
   
   await start('gtfs:update');
 
-  process.stdout.write('Build routing graph\n');
+  process.stdout.write('Build routing graph from prebuilt street only graph\n');
   await start('router:buildWithPrebuiltStreetGraph');
 
   if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
@@ -304,10 +304,10 @@ async function buildWithPrebuiltStreetGraph(name) {
 
   if (global.hasFailures) {
     updateSlackMessage(
-      `${name} data updated, but partially falling back to older data :boom:`,
+      `${name} data updated from prebuilt street only graph, but partially falling back to older data :boom:`,
     );
   } else {
-    updateSlackMessage(`${name} data updated :white_check_mark:`);
+    updateSlackMessage(`${name} data updated from prebuilt street only graph :white_check_mark:`);
   }
 }
 
