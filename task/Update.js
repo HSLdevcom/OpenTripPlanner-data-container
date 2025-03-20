@@ -14,10 +14,7 @@ const { router } = require('../config');
 const assert = require('assert');
 
 const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
-const ONLY_BUILD_STREET_GRAPH =
-  process.env.ONLY_BUILD_STREET_GRAPH?.toLowerCase?.() === 'true' || false;
-const USE_PREBUILT_STREET_GRAPH =
-  process.env.USE_PREBUILT_STREET_GRAPH?.toLowerCase?.() === 'true' || false;
+const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || '';
 
 const start = promisify((task, cb) => gulp.series(task)(cb));
 
@@ -321,12 +318,16 @@ async function update() {
 
   const name = router.id;
   try {
-    if (ONLY_BUILD_STREET_GRAPH) {
-      await buildStreetOnlyGraph(name);
-    } else if (USE_PREBUILT_STREET_GRAPH) {
-      await buildWithPrebuiltStreetGraph(name);
-    } else {
-      await buildGraph(name);
+    switch (SPLIT_BUILD_TYPE) {
+      case 'ONLY_BUILD_STREET_GRAPH':
+        await buildStreetOnlyGraph(name);
+        break;
+      case 'USE_PREBUILT_STREET_GRAPH':
+        await buildWithPrebuiltStreetGraph(name);
+        break;
+      default:
+        await buildGraph(name);
+        break;
     }
   } catch (err) {
     postSlackMessage(`${name} data update failed: ` + err.message);
