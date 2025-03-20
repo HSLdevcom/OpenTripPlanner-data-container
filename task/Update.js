@@ -268,7 +268,7 @@ async function buildWithPrebuiltStreetGraph(name) {
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
   process.stdout.write('Uploading data to storage\n');
-  await start('router:store');
+  await start('router:storeForPrebuiltStreetGraphDataBuild');
 
   process.stdout.write('Build and deploy Docker images\n');
   execFileSync('./otp-data-server/deploy.sh', [date], {

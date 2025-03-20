@@ -153,20 +153,20 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
     osmDirectories.sort(
       (date1, date2) => dirNameToDate(date2) - dirNameToDate(date1),
     );
-    const osmPath = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
-    process.stdout.write(`Using OSM data from ${osmPath} \n`);
+    global.osmPrebuildDir = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
+    process.stdout.write(`Using OSM data from ${global.osmPrebuildDir} \n`);
     // This is needed for gtfs data fitting and seeding.
     router.osm.forEach(osmId => {
       const name = osmId + '.pbf';
-      stream.push(createFile(router, name, osmPath));
+      stream.push(createFile(router, name, global.osmPrebuildDir));
     });
     // This is needed for seeding.
     if (router.dem) {
       const name = router.dem + '.tif';
-      stream.push(createFile(router, name, osmPath));
+      stream.push(createFile(router, name, global.osmPrebuildDir));
     }
     // This is the prebuilt street graph.
-    stream.push(createFile(router, 'streetGraph.obj', osmPath));
+    stream.push(createFile(router, 'streetGraph.obj', global.osmPrebuildDir));
   } else {
     throw new Error(`No OSM directories can be found!\n`);
   }
