@@ -59,75 +59,145 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) "NOCLEANUP" can be used to disable removal of historical data in storage
 - (Optional) "JAVA_OPTS" Java parameters for running OTP
 
-#### Data processing steps
+### Data processing steps
 
-Seed data can be retrieved with a single gulp command:
-
-1. `seed`
+- `seed`
 
 Downloads previous data from storage (env variable SEED_TAG can be used to customize which storage location is used)
-and extracts osm, dem and gtfs data from there and places it in 'data/seed' and 'data/ready' directories.
-Old data acts as backup in case fetching/validating new data fails.
+and then extracts osm, dem, and gtfs data and places it in the `data/seed` and `data/ready` directories.
+The old data acts as backup in case fetching/validating new data fails. The command uses the zipped contents of the latest build that built a complete graph (from prebuilt data or with no split build).
 
-2. `osm:update`
+- `dem:update`
 
-This command downloads required OSM packages from configured location, tests the file(s) with otp,
-and if tests pass data is copied to 'data/downloads/osm' directory.
+This command downloads required DEM information, after which data is copied to the `data/downloads/dem` directory.
 
-The data is then processed with the following steps:
+- `osm:update`
 
-3. `gtfs:dl`
-   Downloads a GTFS package from configured location, tests the file with otp, if
-   test passes data is copied to directory 'data/fit/gtfs'. The resulting zip is named <feedid>.zip.
+This command downloads required OSM packages from configured locations, tests the files with OTP,
+and if the tests pass, data is copied to the `data/downloads/osm` directory.
 
-4. `gtfs:fit`
-   Runs configured map fits. Copies data to directory 'data/filter/gtfs'.
+- `gtfs:update`
+   - `gtfs:dl`
 
-5. `gtfs:filter`
-   Runs configured filterings. Copies data to directory 'data/id/gtfs'.
+   Downloads a GTFS package from a configured location and tests the file with OTP, if
+   the test passes data is copied to the `data/fit/gtfs` directory. The resulting zip file is named `<feedid>.zip`.
 
-6. `gtfs:id`
-   Sets the gtfs feed id to <id> and copies data to directory 'data/ready/gtfs'.
+   - `gtfs:fit`
 
-Steps 3. - 6. can also be run together using a single `gtfs:update` command.
+   Runs configured map fits. Copies data to the `data/filter/gtfs` directory.
 
-Building the router from available (seeded or downloaded and processed) data:
+   - `gtfs:filter`
 
-7. `router:buildGraph`
+   Runs configured filters. Copies data to the `data/id/gtfs` directory.
+
+   - `gtfs:id`
+
+   Sets the gtfs feed id to `<id>` and copies data to the `data/ready/gtfs` directory.
+
+- `router:buildGraph`
+   - `router:copy`
+   - `buildOTPGraphTask(config.router)`
 
 Builds a new graph with all the new data sets (and maybe seeded data sets if there were issues with new data).
 
-8. `test.sh`
+- `router:buildStreetOnlyGraph`
+   - `router:copyStreetOnlyGraphData`
+   - `buildOTPStreetOnlyGraphTask(config.router)`
 
-Runs routing quality test bench defined in the repository 'hsldevcom/OTPQA'. OTPQA test sets are associated with GTFS packages.
-If there are quality regressions, a comma separated list of failed GTFS feed identifiers is is written to local file 'failed_feeds.txt'.
+Builds a new street only graph with all the new data sets (and maybe seeded data sets if there were issues with new data).
 
-9. `router:store`
+- `router:buildWithPrebuiltStreetGraph`
+   - `router:copyForPrebuiltStreetGraphDataBuild`
+   - `buildOTPGraphTask(config.router)`
+
+Builds a new graph from prebuilt street only data with new gtfs data sets (and maybe seeded data sets if there were issues with new data).
+
+- `test.sh`
+
+Runs routing quality test bench defined in the repository `hsldevcom/OTPQA`. OTPQA test sets are associated with GTFS packages.
+If there are quality regressions, a comma separated list of failed GTFS feed identifiers is is written to local file `failed_feeds.txt`.
+
+- `router:store`
 
 Stores the new data in storage (which can be a mounted storage volume).
 
-10. `deploy.sh`
+- `router:storeForPrebuiltStreetGraphDataBuild`
 
-Deploys new opentripplanner-data-server image with 'DOCKER_TAG' env variable (default 'v3') postfixed with the router name and
+Stores the new data in storage (which can be a mounted storage volume). Also copies the `report` directory from the street only build to the output directory under the name `osm-report`.
+
+- `deploy.sh`
+
+Deploys a new opentripplanner-data-server image with the `DOCKER_TAG` env variable (default `v3`) postfixed with the router name, and
 pushes the image to Dockerhub.
 
-Normally, when the application is running as a container, the script 'index.js' is run to execute all steps 1 - 10 described above.
-The end result of the build is a data server image uploaded into dockerhub.
+Normally, when the application is running as a container, the script `index.js` is run to execute all steps.
+The end result of the build is a data server image uploaded to dockerhub.
 
-Each data server image runs a http server listening to port 8080, serving both a data bundle required for building a graph,
-and a pre-built graph. For example, in HSL case: http://localhost:8080/router-hsl.zip and graph-hsl-$OTPVERSION.zip. The image
+Each data server image runs a http server listening to port `8080`, serving both a data bundle required for building a graph,
+and a pre-built graph. For example, in the HSL case: http://localhost:8080/router-hsl.zip and `graph-hsl-$OTPVERSION.zip`. The image
 does not include the data, the data needs to be mounted while running the container.
 
-11. `deploy-otp.sh`
+- `deploy-otp.sh`
 
-Tags opentripplanner image with using 'OTP_TAG' env variable (default 'v3') postfixed with the router name and pushes the image to Dockerhub.
+Tags an OTP image using the `OTP_TAG` env variable (default `v3`) postfixed with the router name and pushes the image to Dockerhub.
 
-This new opentripplanner image will automatically use the graph and configuration from the storage location where the build's end result
+This new OTP image will automatically use the graph and configuration from the storage location where the build's end result
 was stored at.
 
-12. `storage:cleanup`
+- `storage:cleanup`
 
-Keeps 10 latest versions of the data in storage and removes the rest.
+Keeps the 10 latest versions of the data in storage and removes the rest.
+
+- `storage:cleanupStreetOnlyGraphData`
+
+Keeps 10 latest versions of the street only build data in storage and removes the rest.
+
+#### Normal build
+
+1. `seed`
+2. `dem:update`
+3. `osm:update`
+4. `gtfs:update`
+   - `gtfs:dl`
+   - `gtfs:fit`
+   - `gtfs:filter`
+   - `gtfs:id`
+5. `router:buildGraph`
+   - `router:copy`
+   - `buildOTPGraphTask(config.router)`
+6. `test.sh`
+7. `router:store`
+8. `deploy.sh`
+9. `deploy-otp.sh`
+10. `storage:cleanup`
+
+#### Street only build
+
+1. `seed`
+2. `dem:update`
+3. `osm:update`
+4. `router:buildStreetOnlyGraph`
+   - `router:copyStreetOnlyGraphData`
+   - `buildOTPStreetOnlyGraphTask(config.router)`
+5. `router:store`
+6. `storage:cleanupStreetOnlyGraphData`
+
+#### Build from prebuilt street data
+
+1. `seed`
+2. `gtfs:update`
+   - `gtfs:dl`
+   - `gtfs:fit`
+   - `gtfs:filter`
+   - `gtfs:id`
+3. `router:buildWithPrebuiltStreetGraph`
+   - `router:copyForPrebuiltStreetGraphDataBuild`
+   - `buildOTPGraphTask(config.router)`
+4. `test.sh`
+5. `router:storeForPrebuiltStreetGraphDataBuild`
+6. `deploy.sh`
+7. `deploy-otp.sh`
+8. `storage:cleanup`
 
 ### otp-data-tools
 
