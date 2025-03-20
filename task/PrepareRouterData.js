@@ -124,7 +124,7 @@ function getDirectories(path) {
 }
 
 /**
- * Make router data ready for the street only graph build in opentripplanner.
+ * Make router data ready for the graph build from prebuilt data in opentripplanner.
  * In the prebuilt build case, only gtfs data is fetched from the data directory,
  * osm and dem data, as well as the prebuilt streetGraph.obj file is fetched from the osm-builds directory.
  */
