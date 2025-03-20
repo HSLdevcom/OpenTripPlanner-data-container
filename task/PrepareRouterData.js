@@ -59,6 +59,7 @@ function createAndProcessRouterConfig(router) {
 
 /**
  * Make router data ready for inclusion in opentripplanner.
+ * In the whole build case, all osm, dem, and gtfs data is fetched from the data directory.
  */
 function prepareRouterData(router) {
   const stream = through.obj();
@@ -89,6 +90,7 @@ function prepareRouterData(router) {
 
 /**
  * Make router data ready for the street only graph build in opentripplanner.
+ * In the street only build case, only osm and dem data is fetched from the data directory, gtfs data is not fetched at all.
  */
 function prepareRouterDataForStreetOnlyGraphBuild(router) {
   const stream = through.obj();
@@ -123,6 +125,8 @@ function getDirectories(path) {
 
 /**
  * Make router data ready for the street only graph build in opentripplanner.
+ * In the prebuilt build case, only gtfs data is fetched from the data directory,
+ * osm and dem data, as well as the prebuilt streetGraph.obj file is fetched from the osm-builds directory.
  */
 function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
   // check environmental variables which needs to be defined
