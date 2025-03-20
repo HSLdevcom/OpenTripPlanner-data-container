@@ -294,8 +294,8 @@ gulp.task('router:store', () =>
 gulp.task('router:storeForPrebuiltStreetGraphDataBuild', 
   gulp.series('router:store', () =>
     gulp
-      .src(`${global.osmPrebuildDir}/reports/*`, { buffer: false })
-      .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/osm-reports/`)),
+      .src(`${global.osmPrebuildDir}/report/*`, { buffer: false })
+      .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/osm-report/`)),
   ),
 );
 
