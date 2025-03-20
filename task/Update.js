@@ -14,7 +14,7 @@ const { router } = require('../config');
 const assert = require('assert');
 
 const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
-const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || '';
+const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
 
 const start = promisify((task, cb) => gulp.series(task)(cb));
 
