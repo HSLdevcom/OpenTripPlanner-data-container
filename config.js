@@ -15,6 +15,8 @@ const router = require(`./${process.env.ROUTER_NAME}/config`);
 const extraSrc =
   process.env.EXTRA_SRC !== undefined ? JSON.parse(process.env.EXTRA_SRC) : {};
 
+const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
+
 const usedSrc = [];
 
 // override source values if they are defined in extraSrc
@@ -89,4 +91,5 @@ module.exports = {
   storageDir: `${process.cwd()}/storage`,
   constants,
   passOBAfilter,
+  SPLIT_BUILD_TYPE,
 };

@@ -1,6 +1,6 @@
 const { postSlackMessage } = require('./util');
 const { update } = require('./task/Update');
-const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
+const { SPLIT_BUILD_TYPE } = require('./config.js');
 
 let message = '';
 

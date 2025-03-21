@@ -5,7 +5,7 @@ const { zipWithGlob, otpMatching, postSlackMessage } = require('../util');
 const { dataDir, constants } = require('../config.js');
 const graphBuildTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx12g';
-const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
+const { SPLIT_BUILD_TYPE } = require('./config.js');
 const dockerImage = `hsldevcom/opentripplanner:${graphBuildTag}`;
 
 const buildGraph = function (router) {
