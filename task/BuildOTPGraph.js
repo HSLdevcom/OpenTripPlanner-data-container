@@ -22,7 +22,7 @@ const buildGraph = function (router) {
     );
     const commit = version.toString().match(/commit: ([0-9a-f]+)/)[1];
 
-    let command = null;
+    let command;
     switch (SPLIT_BUILD_TYPE) {
       case 'ONLY_BUILD_STREET_GRAPH':
         command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --buildStreet --save`;
