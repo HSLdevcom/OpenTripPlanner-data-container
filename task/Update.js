@@ -10,11 +10,10 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const { postSlackMessage, updateSlackMessage } = require('../util');
 require('../gulpfile');
-const { router } = require('../config');
+const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
 
 const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
-const { SPLIT_BUILD_TYPE } = require('./config.js');
 
 const start = promisify((task, cb) => gulp.series(task)(cb));
 
