@@ -77,38 +77,39 @@ This command downloads required OSM packages from configured locations, tests th
 and if the tests pass, data is copied to the `data/downloads/osm` directory.
 
 - `gtfs:update`
-   - `gtfs:dl`
 
-   Downloads a GTFS package from a configured location and tests the file with OTP, if
-   the test passes data is copied to the `data/fit/gtfs` directory. The resulting zip file is named `<feedid>.zip`.
+  - `gtfs:dl`
 
-   - `gtfs:fit`
+  Downloads a GTFS package from a configured location and tests the file with OTP, if
+  the test passes data is copied to the `data/fit/gtfs` directory. The resulting zip file is named `<feedid>.zip`.
 
-   Runs configured map fits. Copies data to the `data/filter/gtfs` directory.
+  - `gtfs:fit`
 
-   - `gtfs:filter`
+  Runs configured map fits. Copies data to the `data/filter/gtfs` directory.
 
-   Runs configured filters. Copies data to the `data/id/gtfs` directory.
+  - `gtfs:filter`
 
-   - `gtfs:id`
+  Runs configured filters. Copies data to the `data/id/gtfs` directory.
 
-   Sets the gtfs feed id to `<id>` and copies data to the `data/ready/gtfs` directory.
+  - `gtfs:id`
+
+  Sets the gtfs feed id to `<id>` and copies data to the `data/ready/gtfs` directory.
 
 - `router:buildGraph`
-   - `router:copy`
-   - `buildOTPGraphTask(config.router)`
+  - `router:copy`
+  - `buildOTPGraphTask(config.router)`
 
 Builds a new graph with all the new data sets (and maybe seeded data sets if there were issues with new data).
 
 - `router:buildStreetOnlyGraph`
-   - `router:copyStreetOnlyGraphData`
-   - `buildOTPStreetOnlyGraphTask(config.router)`
+  - `router:copyStreetOnlyGraphData`
+  - `buildOTPStreetOnlyGraphTask(config.router)`
 
 Builds a new street only graph with all the new data sets (and maybe seeded data sets if there were issues with new data).
 
 - `router:buildWithPrebuiltStreetGraph`
-   - `router:copyForPrebuiltStreetGraphDataBuild`
-   - `buildOTPGraphTask(config.router)`
+  - `router:copyForPrebuiltStreetGraphDataBuild`
+  - `buildOTPGraphTask(config.router)`
 
 Builds a new graph from prebuilt street only data with new gtfs data sets (and maybe seeded data sets if there were issues with new data).
 

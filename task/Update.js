@@ -134,9 +134,9 @@ async function handleCleanup() {
  * This function only builds the street graph with OSM and DEM data.
  */
 async function buildStreetOnlyGraph(name) {
-  await handleSeeding()
+  await handleSeeding();
 
-  await handleOsmAndDemUpdate()
+  await handleOsmAndDemUpdate();
 
   process.stdout.write('Build street only graph\n');
   await start('router:buildStreetOnlyGraph');
@@ -169,20 +169,20 @@ async function buildStreetOnlyGraph(name) {
  * This function does the whole build.
  */
 async function buildGraph(name) {
-  await handleSeeding()
+  await handleSeeding();
 
-  await handleOsmAndDemUpdate()
+  await handleOsmAndDemUpdate();
 
   await start('gtfs:update');
 
   process.stdout.write('Build routing graph\n');
   await start('router:buildGraph');
 
-  handleTests()
+  handleTests();
 
   const logFile = 'failed_feeds.txt';
   if (fs.existsSync(logFile)) {
-    await handleGtfsFallback(logFile)
+    await handleGtfsFallback(logFile);
     // rebuild the graph
     process.stdout.write('Rebuild graph using fallback data\n');
     await start('router:buildGraph');
@@ -194,9 +194,9 @@ async function buildGraph(name) {
   process.stdout.write('Uploading data to storage\n');
   await start('router:store');
 
-  buildAndDeployDockerImages(date)
+  buildAndDeployDockerImages(date);
 
-  await handleCleanup()
+  await handleCleanup();
 
   if (global.hasFailures) {
     updateSlackMessage(
@@ -211,18 +211,18 @@ async function buildGraph(name) {
  * This function builds the graph from prebuilt street graph data.
  */
 async function buildWithPrebuiltStreetGraph(name) {
-  await handleSeeding()
+  await handleSeeding();
 
   await start('gtfs:update');
 
   process.stdout.write('Build routing graph from prebuilt street only graph\n');
   await start('router:buildWithPrebuiltStreetGraph');
 
-  handleTests()
+  handleTests();
 
   const logFile = 'failed_feeds.txt';
   if (fs.existsSync(logFile)) {
-    await handleGtfsFallback(logFile)
+    await handleGtfsFallback(logFile);
     // rebuild the graph
     process.stdout.write('Rebuild graph using fallback data\n');
     await start('router:buildWithPrebuiltStreetGraph');
@@ -234,9 +234,9 @@ async function buildWithPrebuiltStreetGraph(name) {
   process.stdout.write('Uploading data to storage\n');
   await start('router:storeForPrebuiltStreetGraphDataBuild');
 
-  buildAndDeployDockerImages(date)
+  buildAndDeployDockerImages(date);
 
-  await handleCleanup()
+  await handleCleanup();
 
   if (global.hasFailures) {
     updateSlackMessage(
