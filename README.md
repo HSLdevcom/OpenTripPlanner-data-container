@@ -111,8 +111,7 @@ It is possible to change the behaviour of the data builder by defining environme
   pushes the image to Dockerhub.<p>
   Normally, when the application is running as a container, the script `index.js` is run to execute all steps.
   The end result of the build is a data server image uploaded to dockerhub.<p>
-  Each data server image runs an http server listening to port `8080`, serving both a data bundle required for building a graph,
-  and a pre-built graph. For example, in the HSL case: http://localhost:8080/router-hsl.zip and `graph-hsl-$OTPVERSION.zip`. The image
+  Each data server image runs an http server listening to port `8080`. It serves a data bundle required for building a graph and a prebuilt graph. For example, in the HSL case: http://localhost:8080/router-hsl.zip and `graph-hsl-$OTPVERSION.zip`. The image
   does not include the data, the data needs to be mounted while running the container.
 
 - `deploy-otp.sh` tags an OTP image using the `OTP_TAG` env variable (default `v2`) postfixed with the router name and pushes the image to Dockerhub.
