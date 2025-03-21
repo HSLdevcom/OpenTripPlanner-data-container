@@ -108,11 +108,11 @@ If there are quality regressions, a comma separated list of failed GTFS feed ide
 pushes the image to Dockerhub.<p>
 Normally, when the application is running as a container, the script `index.js` is run to execute all steps.
 The end result of the build is a data server image uploaded to dockerhub.<p>
-Each data server image runs a http server listening to port `8080`, serving both a data bundle required for building a graph,
+Each data server image runs an http server listening to port `8080`, serving both a data bundle required for building a graph,
 and a pre-built graph. For example, in the HSL case: http://localhost:8080/router-hsl.zip and `graph-hsl-$OTPVERSION.zip`. The image
 does not include the data, the data needs to be mounted while running the container.
 
-- `deploy-otp.sh` tags an OTP image using the `OTP_TAG` env variable (default `v3`) postfixed with the router name and pushes the image to Dockerhub.
+- `deploy-otp.sh` tags an OTP image using the `OTP_TAG` env variable (default `v2`) postfixed with the router name and pushes the image to Dockerhub.
 This new OTP image will automatically use the graph and configuration from the storage location where the build's end result was stored at.
 
 - `storage:cleanup` keeps the 10 latest versions of the data in storage and removes the rest.
