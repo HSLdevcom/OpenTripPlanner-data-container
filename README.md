@@ -102,7 +102,7 @@ If there are quality regressions, a comma separated list of failed GTFS feed ide
 
 - `router:store` stores the new data in storage (which can be a mounted storage volume).
 
-- `router:storeForPrebuiltStreetGraphDataBuild` stores the new data in storage (which can be a mounted storage volume). Also copies the `report` directory from the street only build to the output directory under the name `osm-report`.
+- `router:storeForPrebuiltStreetGraphDataBuild` stores the new data in storage (which can be a mounted storage volume). Also copies the `report` directory from the street only build to the output directory under the name `street-report`.
 
 - `deploy.sh` deploys a new opentripplanner-data-server image with the `DOCKER_TAG` env variable (default `v3`) postfixed with the router name, and
 pushes the image to Dockerhub.<p>

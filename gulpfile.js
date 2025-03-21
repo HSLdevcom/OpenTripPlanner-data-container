@@ -297,7 +297,7 @@ gulp.task(
     gulp
       .src(`${global.osmPrebuildDir}/report/*`, { buffer: false })
       .pipe(
-        gulp.dest(`${config.storageDir}/${global.storageDirName}/osm-report/`),
+        gulp.dest(`${config.storageDir}/${global.storageDirName}/street-report/`),
       ),
   ),
 );
