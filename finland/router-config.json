@@ -206,7 +206,7 @@
       "url": "http://digitransit-proxy:8080/out/mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
       "frequency": "30s",
-      "fuzzyTripMatching": false,
+      "fuzzyTripMatching": true,
       "features": ["stop-position", "occupancy"]
     },
     {
@@ -215,7 +215,7 @@
       "frequency": "60s",
       "url": "http://digitransit-proxy:8080/out/mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
-      "fuzzyTripMatching": false,
+      "fuzzyTripMatching": true,
       "backwardsDelayPropagationType": "ALWAYS"
     },
     {
@@ -224,7 +224,7 @@
       "frequency": "30s",
       "url": "http://digitransit-proxy:8080/out/mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
-      "fuzzyTripMatching": false
+      "fuzzyTripMatching": true
     },
     {
       "id": "lappeenranta-bike-rental",
