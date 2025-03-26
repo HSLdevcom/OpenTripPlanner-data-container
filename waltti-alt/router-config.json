@@ -274,6 +274,23 @@
       "url": "http://digitransit-proxy:8080/out/lmj.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
       "feedId": "WalttiTest",
       "fuzzyTripMatching": false
+    },
+    {
+      "id": "tampere-trip-updates",
+      "type": "stop-time-updater",
+      "frequency": "60s",
+      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
+      "feedId": "tampere",
+      "fuzzyTripMatching": false,
+      "backwardsDelayPropagationType": "ALWAYS"
+    },
+    {
+      "id": "tampere-alerts",
+      "type": "real-time-alerts",
+      "frequency": "30s",
+      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
+      "feedId": "tampere",
+      "fuzzyTripMatching": false
     }
   ]
 }
