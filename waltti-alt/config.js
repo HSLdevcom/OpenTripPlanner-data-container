@@ -19,9 +19,7 @@ module.exports = {
         'fare_rules.txt': 'digitransit_fare_rules.txt',
       },
       {
-        headers: {
-          insecureHTTPParser: 'true',
-        },
+        insecureHTTPParser: true,
       },
     ),
     mapSrc(
