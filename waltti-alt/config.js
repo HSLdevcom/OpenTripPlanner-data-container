@@ -20,7 +20,7 @@ module.exports = {
       },
       {
         headers: {
-          'insecureHTTPParser': 'true',
+          insecureHTTPParser: 'true',
         },
       },
     ),
