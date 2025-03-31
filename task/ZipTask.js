@@ -33,13 +33,17 @@ function addFiles(zipFile, path, filesToAdd) {
               // nop
             }
           });
+          const writeStream = fs.createWriteStream(zipFile);
           zip
-            .generateAsync({ type: 'nodebuffer' })
-            .then(content => {
-              fs.writeFileSync(zipFile, content);
-              resolve(zip.generateNodeStream());
+            .generateNodeStream()
+            .pipe(writeStream)
+            .on('error', err => {
+              process.stderr.write(`Error writing zip file: ${err.message}\n`);
+              reject(err);
             })
-            .catch(err => reject(err));
+            .on('finish', () => {
+              resolve(zip.generateNodeStream());
+            });
         });
       }
     });
