@@ -65,12 +65,22 @@ function extractFiles(zipName, filesToExtract, path, cb) {
         name.endsWith(`${fileName}`),
       );
       if (file) {
-        return zip
-          .file(file)
-          .async('nodebuffer')
-          .then(fileData => {
-            fs.writeFileSync(`${path}/${fileName}`, fileData);
-          });
+        return new Promise((resolve, reject) => {
+          const writeStream = fs.createWriteStream(`${path}/${fileName}`);
+          zip
+            .file(file)
+            .nodeStream()
+            .pipe(writeStream)
+            .on('error', err => {
+              process.stderr.write(
+                `Error while extracting zip file: ${err.message}\n`,
+              );
+              reject(err);
+            })
+            .on('finish', function () {
+              resolve();
+            });
+        });
       } else {
         return Promise.resolve();
       }
