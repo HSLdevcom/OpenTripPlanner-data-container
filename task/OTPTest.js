@@ -8,7 +8,7 @@ const testTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx9g';
 
 /**
- * Builds an OTP graph with a source data file. If the build is succesful we can trust
+ * Builds an OTP graph with a source data file. If the build is successful we can trust
  * the file is good enough to be used.
  */
 function testWithOTP(otpFile, quiet = false) {
