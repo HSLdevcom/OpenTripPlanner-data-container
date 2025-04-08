@@ -58,7 +58,7 @@ gulp.task(
     'osm:download',
     () =>
       gulp
-        .src(`${osmDlDir}/*`)
+        .src(`${osmDlDir}/*`, { buffer: false })
         .pipe(validateBlobSize())
         .pipe(testOTPFile())
         .pipe(gulp.dest(osmDir)),
@@ -105,7 +105,7 @@ gulp.task(
     },
     () =>
       gulp
-        .src(`${tmpDir}/*`)
+        .src(`${tmpDir}/*`, { buffer: false })
         .pipe(renameGTFSFile())
         .pipe(replaceGTFSFilesTask(config.gtfsMap))
         .pipe(gulp.dest(gtfsDlDir))
@@ -117,7 +117,10 @@ gulp.task(
 
 // Add feedId to gtfs files in id dir, and moves files to directory 'ready'
 gulp.task('gtfs:id', () =>
-  gulp.src(`${idDir}/*`).pipe(setFeedIdTask()).pipe(gulp.dest(gtfsDir)),
+  gulp
+    .src(`${idDir}/*`, { buffer: false })
+    .pipe(setFeedIdTask())
+    .pipe(gulp.dest(gtfsDir)),
 );
 
 // Runs mapFit on gtfs files if fit is enabled, or just moves files to directory 'filter'
@@ -129,7 +132,7 @@ gulp.task(
         () => prepareFit(config),
         () =>
           gulp
-            .src(`${fitDir}/*`)
+            .src(`${fitDir}/*`, { buffer: false })
             .pipe(extractFromZip(['stops.txt']))
             .pipe(mapFit(config)) // modify backup of stops.txt
             .pipe(addToZip(['stops.txt']))
@@ -141,7 +144,7 @@ gulp.task(
 
 gulp.task('copyRules', () =>
   gulp
-    .src(`${config.router.id}/gtfs-rules/*`)
+    .src(`${config.router.id}/gtfs-rules/*`, { buffer: false })
     .pipe(gulp.dest(`${config.dataDir}/${config.router.id}/gtfs-rules`)),
 );
 
@@ -152,7 +155,7 @@ gulp.task(
     'copyRules',
     () =>
       gulp
-        .src(`${filterDir}/*.zip`)
+        .src(`${filterDir}/*.zip`, { buffer: false })
         .pipe(extractFromZip(config.passOBAfilter))
         .pipe(OBAFilterTask(config.gtfsMap))
         .pipe(addToZip(config.passOBAfilter))
@@ -171,7 +174,7 @@ gulp.task('gtfs:fallback', () => {
   const sources = global.failedFeeds
     .split(',')
     .map(feed => `${gtfsSeedDir}/${feed}-gtfs.zip`);
-  return gulp.src(sources).pipe(gulp.dest(gtfsDir));
+  return gulp.src(sources, { buffer: false }).pipe(gulp.dest(gtfsDir));
 });
 
 gulp.task('gtfs:del', () => del([gtfsSeedDir, gtfsDir]));
@@ -180,7 +183,7 @@ gulp.task(
   'gtfs:seed',
   gulp.series('gtfs:del', () =>
     gulp
-      .src(`${seedSourceDir}/*-gtfs.zip`)
+      .src(`${seedSourceDir}/*-gtfs.zip`, { buffer: false })
       .pipe(gulp.dest(gtfsSeedDir))
       .pipe(gulp.dest(gtfsDir)),
   ),
@@ -191,7 +194,9 @@ gulp.task('osm:del', () => del(osmDir));
 gulp.task(
   'osm:seed',
   gulp.series('osm:del', () =>
-    gulp.src(`${seedSourceDir}/*.pbf`).pipe(gulp.dest(osmDir)),
+    gulp
+      .src(`${seedSourceDir}/*.pbf`, { buffer: false })
+      .pipe(gulp.dest(osmDir)),
   ),
 );
 
@@ -200,7 +205,9 @@ gulp.task('dem:del', () => del(demDir));
 gulp.task(
   'dem:seed',
   gulp.series('dem:del', () =>
-    gulp.src(`${seedSourceDir}/*.tif`).pipe(gulp.dest(demDir)),
+    gulp
+      .src(`${seedSourceDir}/*.tif`, { buffer: false })
+      .pipe(gulp.dest(demDir)),
   ),
 );
 
