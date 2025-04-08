@@ -10,10 +10,17 @@ const mapFit = require('./task/MapFit');
 const { validateBlobSize } = require('./task/BlobValidation');
 const { testOTPFile } = require('./task/OTPTest');
 const seed = require('./task/Seed');
-const prepareRouterData = require('./task/PrepareRouterData');
+const {
+  prepareRouterData,
+  prepareRouterDataForStreetOnlyGraphBuild,
+  prepareRouterDataForPrebuiltStreetGraphBuild,
+} = require('./task/PrepareRouterData');
 const del = require('del');
 const config = require('./config');
-const { buildOTPGraphTask } = require('./task/BuildOTPGraph');
+const {
+  buildOTPGraphTask,
+  buildOTPStreetOnlyGraphTask,
+} = require('./task/BuildOTPGraph');
 const { renameGTFSFile } = require('./task/GTFSRename');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFromZip, addToZip } = require('./task/ZipTask');
@@ -246,12 +253,65 @@ gulp.task(
   gulp.series('router:copy', () => buildOTPGraphTask(config.router)),
 );
 
+gulp.task(
+  'router:copyForPrebuiltStreetGraphDataBuild',
+  gulp.series('router:del', () =>
+    prepareRouterDataForPrebuiltStreetGraphBuild(config.router).pipe(
+      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+    ),
+  ),
+);
+
+gulp.task(
+  'router:buildWithPrebuiltStreetGraph',
+  gulp.series('router:copyForPrebuiltStreetGraphDataBuild', () =>
+    buildOTPGraphTask(config.router),
+  ),
+);
+
+gulp.task(
+  'router:copyStreetOnlyGraphData',
+  gulp.series('router:del', () =>
+    prepareRouterDataForStreetOnlyGraphBuild(config.router).pipe(
+      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+    ),
+  ),
+);
+
+gulp.task(
+  'router:buildStreetOnlyGraph',
+  gulp.series('router:copyStreetOnlyGraphData', () =>
+    buildOTPStreetOnlyGraphTask(config.router),
+  ),
+);
+
 gulp.task('router:store', () =>
   gulp
     .src(`${config.dataDir}/build/${config.router.id}/**/*`, { buffer: false })
     .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}/`)),
 );
 
+gulp.task(
+  'router:storeForPrebuiltStreetGraphDataBuild',
+  gulp.series('router:store', () =>
+    gulp
+      .src(`${global.osmPrebuildDir}/report/*`, { buffer: false })
+      .pipe(
+        gulp.dest(
+          `${config.storageDir}/${global.storageDirName}/street-report/`,
+        ),
+      ),
+  ),
+);
+
 gulp.task('storage:cleanup', () =>
   storageCleanup(config.storageDir, config.router.id, process.env.SEED_TAG),
+);
+
+gulp.task('storage:cleanupStreetOnlyGraphData', () =>
+  storageCleanup(
+    config.storageDir,
+    config.router.id,
+    `osm-builds/${process.env.SEED_TAG}`,
+  ),
 );
