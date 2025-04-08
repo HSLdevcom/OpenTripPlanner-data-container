@@ -2,7 +2,7 @@ const fs = require('fs');
 const { exec, execSync } = require('child_process');
 const del = require('del');
 const { zipWithGlob, otpMatching, postSlackMessage } = require('../util');
-const { dataDir, constants } = require('../config.js');
+const { dataDir, constants, SPLIT_BUILD_TYPE } = require('../config.js');
 const graphBuildTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx12g';
 const dockerImage = `hsldevcom/opentripplanner:${graphBuildTag}`;
@@ -21,7 +21,19 @@ const buildGraph = function (router) {
     );
     const commit = version.toString().match(/commit: ([0-9a-f]+)/)[1];
 
-    const command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --build --save`;
+    let command;
+    switch (SPLIT_BUILD_TYPE) {
+      case 'ONLY_BUILD_STREET_GRAPH':
+        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --buildStreet --save`;
+        break;
+      case 'USE_PREBUILT_STREET_GRAPH':
+        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --loadStreet --save`;
+        break;
+      default:
+        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --build --save`;
+        break;
+    }
+
     const buildGraph = exec(command, { maxBuffer: constants.BUFFER_SIZE });
     const buildLog = fs.openSync(
       `${dataDir}/build/${router.id}/build.log`,
@@ -124,4 +136,8 @@ module.exports = {
       .then(() => otpMatching(`${dataDir}/build/${router.id}`))
       .then(() => del(`${dataDir}/build/${router.id}/taggedStops.log`))
       .then(() => process.stdout.write('Graph build SUCCESS\n')),
+  buildOTPStreetOnlyGraphTask: router =>
+    buildGraph(router).then(() =>
+      process.stdout.write('Street only graph build SUCCESS\n'),
+    ),
 };
