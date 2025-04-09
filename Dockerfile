@@ -1,7 +1,7 @@
 FROM docker:dind
 MAINTAINER Digitransit version: 1
 
-RUN apk add --update --no-cache bash curl nodejs yarn && rm -rf /var/cache/apk/*
+RUN apk add --update --no-cache bash zip curl nodejs yarn && rm -rf /var/cache/apk/*
 
 WORKDIR /opt/otp-data-builder
 
