@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
 const through = require('through2');
-const JSZip = require('jszip');
 const { parseId } = require('../util');
 const { dataDir } = require('../config.js');
 
@@ -13,36 +12,12 @@ const { dataDir } = require('../config.js');
  * @returns {Promise} A Promise that resolves when the operation is complete
  */
 function addFiles(zipFile, path, filesToAdd) {
-  return new Promise((resolve, reject) => {
-    const newZip = new JSZip();
-    fs.readFile(zipFile, function (err, data) {
-      if (err) {
-        process.stdout.write(`Error reading file ${err.message} \n`);
-        reject(err);
-      } else {
-        newZip.loadAsync(data).then(zip => {
-          filesToAdd.forEach(file => {
-            const filePath = `${path}/${file}`;
-            try {
-              const fileData = fs.readFileSync(filePath);
-              if (fileData) {
-                zip.file(`${file}`, fileData);
-              }
-            } catch {
-              process.stdout.write(`${filePath} not found\n`);
-              // nop
-            }
-          });
-          zip
-            .generateAsync({ type: 'nodebuffer' })
-            .then(content => {
-              fs.writeFileSync(zipFile, content);
-              resolve(zip.generateNodeStream());
-            })
-            .catch(err => reject(err));
-        });
-      }
-    });
+  execSync(
+    `zip -ur ${zipFile} ${filesToAdd.map(fileName => `${path}/${fileName}`).join(' ')}`,
+  );
+  process.stdout.write(`Added ${filesToAdd.join(', ')} to ${zipFile}\n`);
+  return new Promise(resolve => {
+    resolve(fs.createReadStream(zipFile));
   });
 }
 
@@ -54,25 +29,22 @@ function addFiles(zipFile, path, filesToAdd) {
  * @param {function} cb - callback to signal when finished
  */
 function extractFiles(zipName, filesToExtract, path, cb) {
-  const zip = new JSZip();
-  zip.loadAsync(fs.readFileSync(zipName)).then(() => {
-    const promises = filesToExtract.map(fileName => {
-      const file = Object.keys(zip.files).find(name =>
-        name.endsWith(`${fileName}`),
-      );
-      if (file) {
-        return zip
-          .file(file)
-          .async('nodebuffer')
-          .then(fileData => {
-            fs.writeFileSync(`${path}/${fileName}`, fileData);
-          });
-      } else {
-        return Promise.resolve();
-      }
-    });
-    Promise.all(promises).then(() => cb());
-  });
+  const filesString = filesToExtract
+    .filter(name => zipHasFile(zipName, name))
+    .join(' ');
+  execSync(`unzip -o -j ${zipName} ${filesString} -d ${path}`);
+  process.stdout.write(`Extracted ${filesString} from ${zipName} to ${path}\n`);
+  cb();
+}
+
+function zipHasFile(zipName, file) {
+  try {
+    execSync(`unzip -l ${zipName} | grep -q ${file}`);
+    return true;
+    // eslint-disable-next-line no-unused-vars
+  } catch (err) {
+    return false;
+  }
 }
 
 /**
