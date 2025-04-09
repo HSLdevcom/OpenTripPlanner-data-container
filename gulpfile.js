@@ -146,7 +146,8 @@ gulp.task(
             .pipe(gulp.dest(filterDir)),
         () => del(tmpDir),
       )
-    : () => gulp.src(`${fitDir}/*`).pipe(gulp.dest(filterDir)),
+    : () =>
+        gulp.src(`${fitDir}/*`, { buffer: false }).pipe(gulp.dest(filterDir)),
 );
 
 gulp.task('copyRules', () =>
