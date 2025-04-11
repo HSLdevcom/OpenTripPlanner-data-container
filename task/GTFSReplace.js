@@ -1,15 +1,26 @@
 const through = require('through2');
-const { parseId } = require('../util');
-const { renameFilesInZip, removeFilesFromZip } = require('./ZipTask');
+const { parseId, postSlackMessage } = require('../util');
+const {
+  renameFilesInZip,
+  removeFilesFromZip,
+  zipHasFile,
+} = require('./ZipTask');
 
 const replaceGTFSFiles = (replacements, fileName) => {
   const filesToRemove = [];
   const replacementsForFiles = {};
   for (const [fileToReplace, replacementFile] of Object.entries(replacements)) {
-    filesToRemove.push(fileToReplace);
     if (replacementFile) {
+      // If replacement file doesn't exist (anymore), don't do anything else than message
+      if (!zipHasFile(fileName, replacementFile)) {
+        postSlackMessage(
+          `${replacementFile} not found in ${fileName}. ${fileToReplace} is not replaced.`,
+        );
+        continue;
+      }
       replacementsForFiles[fileToReplace] = replacementFile;
     }
+    filesToRemove.push(fileToReplace);
   }
   removeFilesFromZip(fileName, filesToRemove);
   renameFilesInZip(fileName, replacementsForFiles);

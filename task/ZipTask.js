@@ -126,4 +126,5 @@ module.exports = {
   },
   removeFilesFromZip,
   renameFilesInZip,
+  zipHasFile,
 };
