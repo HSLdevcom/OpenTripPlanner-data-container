@@ -51,7 +51,7 @@ function removeFilesFromZip(zipName, filesToRemove) {
 }
 
 /**
- * Delete files from a zip archive
+ * Rename files in a zip archive
  * @param {string} zipName - zip file name
  * @param {object} oldNamesForFiles - object where the keys are the new names and values are the old names
  */
