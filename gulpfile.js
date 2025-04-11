@@ -41,6 +41,7 @@ const fitDir = `${config.dataDir}/fit`;
 const filterDir = `${config.dataDir}/filter`;
 const idDir = `${config.dataDir}/id`;
 const tmpDir = `${config.dataDir}/tmp`;
+const renamedDir = `${config.dataDir}/renamed`;
 
 /**
  * Download osm data
@@ -114,6 +115,7 @@ gulp.task(
       gulp
         .src(`${tmpDir}/*`, { buffer: false })
         .pipe(renameGTFSFile())
+        .pipe(gulp.dest(renamedDir))
         .pipe(replaceGTFSFilesTask(config.gtfsMap))
         .pipe(gulp.dest(gtfsDlDir))
         .pipe(testOTPFile())
