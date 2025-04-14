@@ -46,8 +46,10 @@ function removeFilesFromZip(zipName, filesToRemove) {
   const filesString = filesToRemove
     .filter(name => zipHasFile(zipName, name))
     .join(' ');
-  execSync(`zip -d ${zipName} ${filesString}`);
-  process.stdout.write(`Removed ${filesString} from ${zipName}\n`);
+  if (filesString.length > 0) {
+    execSync(`zip -d ${zipName} ${filesString}`);
+    process.stdout.write(`Removed ${filesString} from ${zipName}\n`);
+  }
 }
 
 /**
@@ -66,7 +68,7 @@ function renameFilesInZip(zipName, oldNamesForFiles) {
 
 function zipHasFile(zipName, file) {
   try {
-    execSync(`unzip -l ${zipName} | grep -q ${file}`);
+    execSync(`unzip -l ${zipName} | grep -qE '(^|\\s)${file}(\\s|$)'`);
     return true;
     // eslint-disable-next-line no-unused-vars
   } catch (err) {
