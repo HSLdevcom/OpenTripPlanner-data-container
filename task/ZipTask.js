@@ -60,10 +60,38 @@ function removeFilesFromZip(zipName, filesToRemove) {
 function renameFilesInZip(zipName, oldNamesForFiles) {
   for (const [newName, oldName] of Object.entries(oldNamesForFiles)) {
     if (zipHasFile(zipName, oldName)) {
-      execSync(`7z rn ${zipName} ${oldName} ${newName}`);
-      process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
+      renameFileInZip(zipName, oldName, newName);
     }
   }
+}
+
+/**
+ * Rename a file in a zip archive
+ * @param {string} zipName - zip file name
+ * @param {string} oldName - original name for the file in zip
+ * @param {string} newName - new name for the file in zip
+ */
+function renameFileInZip(zipName, oldName, newName) {
+  try {
+    execSync(`7z rn ${zipName} ${oldName} ${newName}`);
+  } catch (err) {
+    if (!err.message.match(/E_NOTIMPL/)) {
+      throw err;
+    }
+    // Some zip files don't support renaming files properly so we need to extract the files and rename them.
+    const tmpPathForFile = tmpRenamePath(zipName);
+    if (!fs.existsSync(tmpPathForFile)) {
+      fs.mkdirSync(tmpPathForFile, { recursive: true });
+    }
+    extractFiles(zipName, [oldName], tmpPathForFile, () => {});
+    removeFilesFromZip(zipName, [oldName]);
+    fs.renameSync(
+      `${tmpPathForFile}/${oldName}`,
+      `${tmpPathForFile}/${newName}`,
+    );
+    addFiles(zipName, tmpPathForFile, [newName]);
+  }
+  process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
 }
 
 function zipHasFile(zipName, file) {
@@ -89,6 +117,11 @@ function extractAllFiles(zipPath, destinationPath) {
 function tmpPath(fileName) {
   const id = parseId(fileName);
   return `${dataDir}/tmp/${id}`;
+}
+
+function tmpRenamePath(fileName) {
+  const id = parseId(fileName);
+  return `${dataDir}/tmp-rename/${id}`;
 }
 
 module.exports = {
