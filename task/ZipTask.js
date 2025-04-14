@@ -37,6 +37,33 @@ function extractFiles(zipName, filesToExtract, path, cb) {
   cb();
 }
 
+/**
+ * Delete files from a zip archive
+ * @param {string} zipName - zip file name
+ * @param {string[]} filesToRemove - An array of filenames to remove from the archive
+ */
+function removeFilesFromZip(zipName, filesToRemove) {
+  const filesString = filesToRemove
+    .filter(name => zipHasFile(zipName, name))
+    .join(' ');
+  execSync(`zip -d ${zipName} ${filesString}`);
+  process.stdout.write(`Removed ${filesString} from ${zipName}\n`);
+}
+
+/**
+ * Rename files in a zip archive
+ * @param {string} zipName - zip file name
+ * @param {object} oldNamesForFiles - object where the keys are the new names and values are the old names
+ */
+function renameFilesInZip(zipName, oldNamesForFiles) {
+  for (const [newName, oldName] of Object.entries(oldNamesForFiles)) {
+    if (zipHasFile(zipName, oldName)) {
+      execSync(`7z rn ${zipName} ${oldName} ${newName}`);
+      process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
+    }
+  }
+}
+
 function zipHasFile(zipName, file) {
   try {
     execSync(`unzip -l ${zipName} | grep -q ${file}`);
@@ -82,7 +109,6 @@ module.exports = {
       });
     });
   },
-
   addToZip: names => {
     if (!names?.length) {
       return through.obj(function (file, encoding, callback) {
@@ -98,4 +124,7 @@ module.exports = {
       });
     });
   },
+  removeFilesFromZip,
+  renameFilesInZip,
+  zipHasFile,
 };
