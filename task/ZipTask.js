@@ -12,10 +12,15 @@ const { dataDir } = require('../config.js');
  * @returns {Promise} A Promise that resolves when the operation is complete
  */
 function addFiles(zipFile, path, filesToAdd) {
-  execSync(
-    `zip -ur ${zipFile} ${filesToAdd.map(fileName => `${path}/${fileName}`).join(' ')}`,
-  );
-  process.stdout.write(`Added ${filesToAdd.join(', ')} to ${zipFile}\n`);
+  const existingFilePaths = filesToAdd
+    .map(fileName => `${path}/${fileName}`)
+    .filter(filePath => fs.existsSync(filePath));
+  if (existingFilePaths.length > 0) {
+    execSync(`zip -ur ${zipFile} ${existingFilePaths.join(' ')}`);
+    process.stdout.write(
+      `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
+    );
+  }
   return new Promise(resolve => {
     resolve(fs.createReadStream(zipFile));
   });
