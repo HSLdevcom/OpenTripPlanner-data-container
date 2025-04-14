@@ -41,6 +41,7 @@ const fitDir = `${config.dataDir}/fit`;
 const filterDir = `${config.dataDir}/filter`;
 const idDir = `${config.dataDir}/id`;
 const tmpDir = `${config.dataDir}/tmp`;
+const tmpRenameDir = `${config.dataDir}/tmp-rename`;
 const renamedDir = `${config.dataDir}/renamed`;
 
 /**
@@ -120,7 +121,7 @@ gulp.task(
         .pipe(gulp.dest(gtfsDlDir))
         .pipe(testOTPFile())
         .pipe(gulp.dest(fitDir)),
-    () => del(tmpDir),
+    () => del([tmpDir, tmpRenameDir]),
   ),
 );
 
