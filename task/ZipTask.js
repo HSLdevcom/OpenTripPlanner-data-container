@@ -78,7 +78,8 @@ function renameFilesInZip(zipName, oldNamesForFiles) {
  */
 function renameFileInZip(zipName, oldName, newName) {
   try {
-    execSync(`7z rn ${zipName} ${oldName} ${newName}`);
+    // Don't output anything to logs as E_NOTIMPL errors can be verbose
+    execSync(`7z rn ${zipName} ${oldName} ${newName}`, { stdio: 'pipe' });
   } catch (err) {
     if (!err.message.match(/E_NOTIMPL/)) {
       throw err;
