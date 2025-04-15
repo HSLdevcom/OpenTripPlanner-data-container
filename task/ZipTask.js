@@ -16,7 +16,7 @@ function addFiles(zipFile, path, filesToAdd) {
     .map(fileName => `${path}/${fileName}`)
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
-    execSync(`zip -ur ${zipFile} ${existingFilePaths.join(' ')}`);
+    execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`);
     process.stdout.write(
       `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
     );
