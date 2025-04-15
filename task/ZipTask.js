@@ -12,10 +12,15 @@ const { dataDir } = require('../config.js');
  * @returns {Promise} A Promise that resolves when the operation is complete
  */
 function addFiles(zipFile, path, filesToAdd) {
-  execSync(
-    `zip -ur ${zipFile} ${filesToAdd.map(fileName => `${path}/${fileName}`).join(' ')}`,
-  );
-  process.stdout.write(`Added ${filesToAdd.join(', ')} to ${zipFile}\n`);
+  const existingFilePaths = filesToAdd
+    .map(fileName => `${path}/${fileName}`)
+    .filter(filePath => fs.existsSync(filePath));
+  if (existingFilePaths.length > 0) {
+    execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`);
+    process.stdout.write(
+      `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
+    );
+  }
   return new Promise(resolve => {
     resolve(fs.createReadStream(zipFile));
   });
@@ -46,8 +51,10 @@ function removeFilesFromZip(zipName, filesToRemove) {
   const filesString = filesToRemove
     .filter(name => zipHasFile(zipName, name))
     .join(' ');
-  execSync(`zip -d ${zipName} ${filesString}`);
-  process.stdout.write(`Removed ${filesString} from ${zipName}\n`);
+  if (filesString.length > 0) {
+    execSync(`zip -d ${zipName} ${filesString}`);
+    process.stdout.write(`Removed ${filesString} from ${zipName}\n`);
+  }
 }
 
 /**
@@ -58,15 +65,44 @@ function removeFilesFromZip(zipName, filesToRemove) {
 function renameFilesInZip(zipName, oldNamesForFiles) {
   for (const [newName, oldName] of Object.entries(oldNamesForFiles)) {
     if (zipHasFile(zipName, oldName)) {
-      execSync(`7z rn ${zipName} ${oldName} ${newName}`);
-      process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
+      renameFileInZip(zipName, oldName, newName);
     }
   }
 }
 
+/**
+ * Rename a file in a zip archive
+ * @param {string} zipName - zip file name
+ * @param {string} oldName - original name for the file in zip
+ * @param {string} newName - new name for the file in zip
+ */
+function renameFileInZip(zipName, oldName, newName) {
+  try {
+    // Don't output anything to logs as E_NOTIMPL errors can be verbose
+    execSync(`7z rn ${zipName} ${oldName} ${newName}`, { stdio: 'pipe' });
+  } catch (err) {
+    if (!err.message.match(/E_NOTIMPL/)) {
+      throw err;
+    }
+    // Some zip files don't support renaming files properly so we need to extract the files and rename them.
+    const tmpPathForFile = tmpRenamePath(zipName);
+    if (!fs.existsSync(tmpPathForFile)) {
+      fs.mkdirSync(tmpPathForFile, { recursive: true });
+    }
+    extractFiles(zipName, [oldName], tmpPathForFile, () => {});
+    removeFilesFromZip(zipName, [oldName]);
+    fs.renameSync(
+      `${tmpPathForFile}/${oldName}`,
+      `${tmpPathForFile}/${newName}`,
+    );
+    addFiles(zipName, tmpPathForFile, [newName]);
+  }
+  process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
+}
+
 function zipHasFile(zipName, file) {
   try {
-    execSync(`unzip -l ${zipName} | grep -q ${file}`);
+    execSync(`unzip -l ${zipName} | grep -qE '(^|\\s)${file}(\\s|$)'`);
     return true;
     // eslint-disable-next-line no-unused-vars
   } catch (err) {
@@ -87,6 +123,11 @@ function extractAllFiles(zipPath, destinationPath) {
 function tmpPath(fileName) {
   const id = parseId(fileName);
   return `${dataDir}/tmp/${id}`;
+}
+
+function tmpRenamePath(fileName) {
+  const id = parseId(fileName);
+  return `${dataDir}/tmp-rename/${id}`;
 }
 
 module.exports = {
