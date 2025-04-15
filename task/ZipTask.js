@@ -16,7 +16,7 @@ function addFiles(zipFile, path, filesToAdd) {
     .map(fileName => `${path}/${fileName}`)
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
-    execSync(`zip -ur ${zipFile} ${existingFilePaths.join(' ')}`);
+    execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`);
     process.stdout.write(
       `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
     );
@@ -78,7 +78,8 @@ function renameFilesInZip(zipName, oldNamesForFiles) {
  */
 function renameFileInZip(zipName, oldName, newName) {
   try {
-    execSync(`7z rn ${zipName} ${oldName} ${newName}`);
+    // Don't output anything to logs as E_NOTIMPL errors can be verbose
+    execSync(`7z rn ${zipName} ${oldName} ${newName}`, { stdio: 'pipe' });
   } catch (err) {
     if (!err.message.match(/E_NOTIMPL/)) {
       throw err;
