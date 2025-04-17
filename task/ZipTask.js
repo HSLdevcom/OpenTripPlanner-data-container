@@ -9,14 +9,17 @@ const { dataDir } = require('../config.js');
  * @param {string} zipFile - The name of the zip file
  * @param {string} path - The path to the data directory containing files to be restored
  * @param {string[]} filesToAdd - An array of filenames to add to the zip file
+ * @param {boolean} junkPaths - adds files without keeping their original path names in files, but can cause problems in some cases
  * @returns {Promise} A Promise that resolves when the operation is complete
  */
-function addFiles(zipFile, path, filesToAdd) {
+function addFiles(zipFile, path, filesToAdd, junkPaths = false) {
   const existingFilePaths = filesToAdd
     .map(fileName => `${path}/${fileName}`)
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
-    execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`);
+    // TODO this mess might need to be cleaned up at some point
+    const flags = junkPaths ? '-uj' : '-u';
+    execSync(`zip ${flags} ${zipFile} ${existingFilePaths.join(' ')}`);
     process.stdout.write(
       `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
     );
@@ -95,7 +98,7 @@ function renameFileInZip(zipName, oldName, newName) {
       `${tmpPathForFile}/${oldName}`,
       `${tmpPathForFile}/${newName}`,
     );
-    addFiles(zipName, tmpPathForFile, [newName]);
+    addFiles(zipName, tmpPathForFile, [newName], true);
   }
   process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
 }
