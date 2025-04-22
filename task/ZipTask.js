@@ -129,6 +129,44 @@ function extractAllFiles(zipPath, destinationPath) {
   process.stdout.write(`Unzipped ${zipPath} to ${destinationPath}\n`);
 }
 
+/**
+ * @param {string} zipFile file to create
+ * @param {string[]} glob patterns for source files
+ * @param {string} zipDir files are put into this directory inside the zip
+ * @param {function} cb - callback to signal when finished
+ */
+function zipWithGlobIntoDir(zipFile, glob, zipDir, cb) {
+  try {
+    const tmpDir = tmpDirsPath(zipDir);
+    if (!fs.existsSync(tmpDir)) {
+      fs.mkdirSync(tmpDir, { recursive: true });
+    }
+    execSync(`cp ${glob.join(' ')} ${tmpDir}`);
+    execSync(`zip -r ${zipFile} ${tmpDir}`);
+    process.stdout.write(`Created ${zipFile}\n`);
+    cb();
+  } catch (err) {
+    process.stderr.write(`Error creating ${zipFile}\n`);
+    cb(err);
+  }
+}
+
+/**
+ * @param {string} zipFile file to create
+ * @param {string} dir source directory for files
+ * @param {function} cb - callback to signal when finished
+ */
+function zipDirContents(zipFile, dir, cb) {
+  try {
+    execSync(`zip -j ${zipFile} ${dir}/*`);
+    process.stdout.write(`Created ${zipFile}\n`);
+    cb();
+  } catch (err) {
+    process.stderr.write(`Error creating ${zipFile}\n`);
+    cb(err);
+  }
+}
+
 function tmpPath(fileName) {
   const id = parseId(fileName);
   return `${dataDir}/tmp/${id}`;
@@ -137,6 +175,10 @@ function tmpPath(fileName) {
 function tmpRenamePath(fileName) {
   const id = parseId(fileName);
   return `${dataDir}/tmp-rename/${id}`;
+}
+
+function tmpDirsPath(dirName) {
+  return `${dataDir}/tmp-dirs/${dirName}`;
 }
 
 module.exports = {
@@ -177,4 +219,6 @@ module.exports = {
   removeFilesFromZip,
   renameFilesInZip,
   zipHasFile,
+  zipWithGlobIntoDir,
+  zipDirContents,
 };

@@ -4,7 +4,7 @@ const through = require('through2');
 const fs = require('fs-extra');
 const path = require('path');
 const cloneable = require('cloneable-readable');
-const { zipDir } = require('../util');
+const { zipDirContents } = require('./ZipTask');
 const { dataToolImage } = require('../config.js');
 const { dataDir } = require('../config.js');
 const { postSlackMessage, parseId } = require('../util');
@@ -46,7 +46,7 @@ module.exports = {
             if (OBAFilter(src, dst, rule)) {
               fs.unlinkSync(`${dataDir}/${src}`);
               /* create zip named src from files in dst */
-              zipDir(`${dataDir}/${src}`, `${dataDir}/${dst}`, () => {
+              zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`, () => {
                 del(dstDir);
                 process.stdout.write(
                   `Filter ${gtfsFile} with rule ${rule} SUCCESS\n`,
