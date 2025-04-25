@@ -10,7 +10,10 @@ module.exports = {
       undefined,
       { 'trips.txt': 'trips2.txt' },
     ),
-    mapSrc('HSLlautta', 'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip')
+    mapSrc(
+      'HSLlautta',
+      'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip',
+    ),
     // src('Sipoo', 'https://koontikartta.navici.com/tiedostot/rae/sipoon_kunta_sibbo_kommun.zip')
   ],
   osm: ['hsl'],
