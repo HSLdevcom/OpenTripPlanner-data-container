@@ -27,7 +27,7 @@
     "maxDirectStreetDurationForMode": {
       "walk": "90m",
       "car": "90m",
-      "bicycle": "600m"
+      "bike": "600m"
     },
     "maxJourneyDuration": "12h",
     "streetRoutingTimeout": "6s",
