@@ -1,4 +1,4 @@
-name: Process v3 push or pr
+name: Process ${{ github.ref_name }} push or pr
 on:
   push:
     branches:
@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm install
-      - name: Build docker image from v3 and push it
+      - name: Build docker image from ${{ github.ref_name }} and push it
         run: ./.github/workflows/scripts/build_and_push_dev.sh
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
