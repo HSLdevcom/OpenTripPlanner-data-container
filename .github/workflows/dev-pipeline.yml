@@ -30,7 +30,7 @@ jobs:
       - name: Run linters
         run: npm run test
   docker-push:
-    if: github.ref == 'refs/heads/v3'
+    if: github.event_name != 'pull_request'
     needs:
       - lint
     runs-on: ubuntu-latest
