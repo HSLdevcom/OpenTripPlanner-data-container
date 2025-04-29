@@ -1,4 +1,4 @@
-name: Process ${{ github.ref_name }} push or pr
+name: Process push or pr
 on:
   push:
     branches:
