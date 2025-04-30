@@ -31,7 +31,7 @@ const buildGraph = function (router) {
         option = '--loadStreet';
         break;
       default:
-        option = 'build';
+        option = '--build';
         break;
     }
     const command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -e MOBILITY_API_KEY=${process.env.MOBILITY_API_KEY} -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} ${option} --save`;
