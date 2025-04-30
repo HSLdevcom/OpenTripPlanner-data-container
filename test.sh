@@ -24,7 +24,7 @@ echo -e "\n##### Testing new data #####\n"
 
 echo Starting otp...
 
-docker run --rm --name $OTPCONT -e JAVA_OPTS="$JAVA_OPTS" \
+docker run --rm --name $OTPCONT -e JAVA_OPTS="$JAVA_OPTS" -e MOBILITY_API_KEY=$"MOBILITY_API_KEY" \
     --mount type=bind,source=$(pwd)/logback-include-extensions.xml,target=/logback-include-extensions.xml \
     --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/graph.obj,target=/var/opentripplanner/graph.obj \
     --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/otp-config.json,target=/var/opentripplanner/otp-config.json \
