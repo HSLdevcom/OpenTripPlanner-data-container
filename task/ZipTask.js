@@ -160,7 +160,9 @@ function zipDirContents(zipFile, dir, cb) {
 }
 
 function createTmpDir(dirName, baseDirectory) {
+  const path = `${dataDir}/${baseDirectory}/${dirName}`;
   createDir(`${dataDir}/${baseDirectory}/${dirName}`);
+  return path;
 }
 
 module.exports = {
