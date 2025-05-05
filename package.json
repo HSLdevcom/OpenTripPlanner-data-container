@@ -27,7 +27,6 @@
     "fs-extra": "^11.1.1",
     "gulp": "^4.0.2",
     "json-2-csv": "^5.0.1",
-    "jszip": "^3.10.1",
     "osm-pbf-parser": "^2.3.0",
     "remove-bom-stream": "^2.0.0",
     "through2": "^4.0.2",

@@ -142,6 +142,15 @@ function dirNameToDate(dirName) {
   return date instanceof Date && !isNaN(date) ? date : null;
 }
 
+/**
+ * @param {string} dirPath dir to create including its path
+ */
+function createDir(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+}
+
 /*
  * id = feedid (String)
  * url = feed url (String)
@@ -166,4 +175,5 @@ module.exports = {
   parseId,
   dirNameToDate,
   mapSrc,
+  createDir,
 };

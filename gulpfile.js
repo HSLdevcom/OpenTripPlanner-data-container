@@ -1,5 +1,3 @@
-const fs = require('fs');
-const { execSync } = require('child_process');
 const gulp = require('gulp');
 const dl = require('./task/Download');
 const dlBlob = require('./task/DownloadDEMBlob');
@@ -23,7 +21,8 @@ const {
 } = require('./task/BuildOTPGraph');
 const { renameGTFSFile } = require('./task/GTFSRename');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
-const { extractFromZip, addToZip } = require('./task/ZipTask');
+const { extractFiles, addFiles } = require('./task/ZipTask');
+const { createDir } = require('./util');
 const storageCleanup = require('./task/StorageCleanup');
 
 const seedSourceDir = `${config.dataDir}/router-${config.router.id}`; // e.g. data/router-hsl
@@ -40,6 +39,7 @@ const gtfsSeedDir = `${config.dataDir}/seed`;
 const fitDir = `${config.dataDir}/fit`;
 const filterDir = `${config.dataDir}/filter`;
 const idDir = `${config.dataDir}/id`;
+const tmpIdDir = `${config.dataDir}/tmp-id`;
 const tmpDir = `${config.dataDir}/tmp`;
 const tmpRenameDir = `${config.dataDir}/tmp-rename`;
 const renamedDir = `${config.dataDir}/renamed`;
@@ -52,12 +52,8 @@ gulp.task('osm:download', async cb => {
   if (!config.osm) {
     return Promise.resolve();
   }
-  if (!fs.existsSync(osmDlDir)) {
-    execSync(`mkdir -p ${osmDlDir}`);
-  }
-  if (!fs.existsSync(osmDir)) {
-    execSync(`mkdir -p ${osmDir}`);
-  }
+  createDir(osmDlDir);
+  createDir(osmDir);
   await dl(config.osm, osmDlDir);
   cb();
 });
@@ -83,12 +79,8 @@ gulp.task('dem:update', () => {
   if (!config.dem) {
     return Promise.resolve();
   }
-  if (!fs.existsSync(demDlDir)) {
-    execSync(`mkdir -p ${demDlDir}`);
-  }
-  if (!fs.existsSync(demDir)) {
-    execSync(`mkdir -p ${demDir}`);
-  }
+  createDir(demDlDir);
+  createDir(demDir);
   return Promise.all(dlBlob(config.dem)).catch(() => {
     global.hasFailures = true;
   });
@@ -144,9 +136,9 @@ gulp.task(
         () =>
           gulp
             .src(`${fitDir}/*`, { buffer: false })
-            .pipe(extractFromZip(['stops.txt']))
+            .pipe(extractFiles(['stops.txt']))
             .pipe(mapFit(config)) // modify backup of stops.txt
-            .pipe(addToZip(['stops.txt']))
+            .pipe(addFiles(['stops.txt']))
             .pipe(gulp.dest(filterDir)),
         () => del(tmpDir),
       )
@@ -168,9 +160,9 @@ gulp.task(
     () =>
       gulp
         .src(`${filterDir}/*.zip`, { buffer: false })
-        .pipe(extractFromZip(config.passOBAfilter))
+        .pipe(extractFiles(config.passOBAfilter))
         .pipe(OBAFilterTask(config.gtfsMap))
-        .pipe(addToZip(config.passOBAfilter))
+        .pipe(addFiles(config.passOBAfilter))
         .pipe(gulp.dest(idDir)),
     () => del(tmpDir),
   ),
@@ -178,7 +170,9 @@ gulp.task(
 
 gulp.task(
   'gtfs:update',
-  gulp.series('gtfs:dl', 'gtfs:fit', 'gtfs:filter', 'gtfs:id'),
+  gulp.series('gtfs:dl', 'gtfs:fit', 'gtfs:filter', 'gtfs:id', () =>
+    del(tmpIdDir),
+  ),
 );
 
 // move listed packages from seed to ready

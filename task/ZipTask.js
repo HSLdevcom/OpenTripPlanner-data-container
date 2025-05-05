@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
 const through = require('through2');
-const { parseId } = require('../util');
+const { parseId, createDir } = require('../util');
 const { dataDir } = require('../config.js');
 
 /**
@@ -11,7 +11,7 @@ const { dataDir } = require('../config.js');
  * @param {string[]} filesToAdd - An array of filenames to add to the zip file
  * @returns {Promise} A Promise that resolves when the operation is complete
  */
-function addFiles(zipFile, path, filesToAdd) {
+function addToZip(zipFile, path, filesToAdd) {
   const existingFilePaths = filesToAdd
     .map(fileName => `${path}/${fileName}`)
     .filter(filePath => fs.existsSync(filePath));
@@ -42,7 +42,7 @@ function addFiles(zipFile, path, filesToAdd) {
  * @param {string} path - The path to the data directory where files are put
  * @param {function} cb - callback to signal when finished
  */
-function extractFiles(zipName, filesToExtract, path, cb) {
+function extractFromZip(zipName, filesToExtract, path, cb) {
   const filesString = filesToExtract
     .filter(name => zipHasFile(zipName, name))
     .join(' ');
@@ -94,17 +94,14 @@ function renameFileInZip(zipName, oldName, newName) {
       throw err;
     }
     // Some zip files don't support renaming files properly so we need to extract the files and rename them.
-    const tmpPathForFile = tmpRenamePath(zipName);
-    if (!fs.existsSync(tmpPathForFile)) {
-      fs.mkdirSync(tmpPathForFile, { recursive: true });
-    }
-    extractFiles(zipName, [oldName], tmpPathForFile, () => {});
+    const tmpPathForFile = createTmpDir(parseId(zipName), 'tmp-rename');
+    extractFromZip(zipName, [oldName], tmpPathForFile, () => {});
     removeFilesFromZip(zipName, [oldName]);
     fs.renameSync(
       `${tmpPathForFile}/${oldName}`,
       `${tmpPathForFile}/${newName}`,
     );
-    addFiles(zipName, tmpPathForFile, [newName]);
+    addToZip(zipName, tmpPathForFile, [newName]);
   }
   process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
 }
@@ -137,10 +134,7 @@ function extractAllFiles(zipPath, destinationPath) {
  */
 function zipWithGlobIntoDir(zipFile, glob, zipDir, cb) {
   try {
-    const tmpDir = tmpDirsPath(zipDir);
-    if (!fs.existsSync(tmpDir)) {
-      fs.mkdirSync(tmpDir, { recursive: true });
-    }
+    const tmpDir = createTmpDir(zipDir, 'tmp-dirs');
     execSync(`cp ${glob.join(' ')} ${tmpDir}`);
     execSync(`zip -r ${zipFile} ${tmpDir}`);
     process.stdout.write(`Created ${zipFile}\n`);
@@ -167,23 +161,13 @@ function zipDirContents(zipFile, dir, cb) {
   }
 }
 
-function tmpPath(fileName) {
-  const id = parseId(fileName);
-  return `${dataDir}/tmp/${id}`;
-}
-
-function tmpRenamePath(fileName) {
-  const id = parseId(fileName);
-  return `${dataDir}/tmp-rename/${id}`;
-}
-
-function tmpDirsPath(dirName) {
-  return `${dataDir}/tmp-dirs/${dirName}`;
+function createTmpDir(dirName, baseDirectory) {
+  createDir(`${dataDir}/${baseDirectory}/${dirName}`);
 }
 
 module.exports = {
   extractAllFiles,
-  extractFromZip: names => {
+  extractFiles: names => {
     if (!names?.length) {
       return through.obj(function (file, encoding, callback) {
         callback(null, file);
@@ -191,17 +175,14 @@ module.exports = {
     }
     return through.obj(function (file, encoding, callback) {
       const localFile = file.history[file.history.length - 1];
-      const path = tmpPath(localFile);
-      // Create a temp folder for files to be extracted
-      if (!fs.existsSync(path)) {
-        fs.mkdirSync(path, { recursive: true });
-      }
-      extractFiles(localFile, names, path, () => {
+      const path = createTmpDir(parseId(localFile), 'tmp');
+      extractFromZip(localFile, names, path, () => {
         callback(null, file);
       });
     });
   },
-  addToZip: names => {
+  extractFromZip,
+  addFiles: names => {
     if (!names?.length) {
       return through.obj(function (file, encoding, callback) {
         callback(null, file);
@@ -209,13 +190,14 @@ module.exports = {
     }
     return through.obj(function (file, encoding, callback) {
       const localFile = file.history[file.history.length - 1];
-      const path = tmpPath(localFile);
-      addFiles(localFile, path, names).then(newContents => {
+      const path = createTmpDir(parseId(localFile), 'tmp');
+      addToZip(localFile, path, names).then(newContents => {
         file.contents = newContents;
         callback(null, file);
       });
     });
   },
+  addToZip,
   removeFilesFromZip,
   renameFilesInZip,
   zipHasFile,
