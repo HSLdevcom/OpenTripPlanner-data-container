@@ -1,4 +1,5 @@
 const fs = require('fs');
+const cloneable = require('cloneable-readable');
 const { execSync } = require('child_process');
 const through = require('through2');
 const { parseId, createDir } = require('../util');
@@ -30,9 +31,6 @@ function addToZip(zipFile, path, filesToAdd) {
       `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
     );
   }
-  return new Promise(resolve => {
-    resolve(fs.createReadStream(zipFile));
-  });
 }
 
 /**
@@ -177,6 +175,7 @@ module.exports = {
       const localFile = file.history[file.history.length - 1];
       const path = createTmpDir(parseId(localFile), 'tmp');
       extractFromZip(localFile, names, path, () => {
+        file.contents = cloneable(fs.createReadStream(localFile));
         callback(null, file);
       });
     });
@@ -191,10 +190,9 @@ module.exports = {
     return through.obj(function (file, encoding, callback) {
       const localFile = file.history[file.history.length - 1];
       const path = createTmpDir(parseId(localFile), 'tmp');
-      addToZip(localFile, path, names).then(newContents => {
-        file.contents = newContents;
-        callback(null, file);
-      });
+      addToZip(localFile, path, names);
+      file.contents = cloneable(fs.createReadStream(localFile));
+      callback(null, file);
     });
   },
   addToZip,
