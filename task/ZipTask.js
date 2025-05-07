@@ -18,7 +18,9 @@ function addToZip(zipFile, path, filesToAdd) {
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
     try {
-      execSync(`zip -uj ${zipFile} ${filesToAdd.join(' ')}`, { stdio: 'pipe' });
+      execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`, {
+        stdio: 'pipe',
+      });
     } catch (err) {
       // Zip returns 12 code when the file(s) don't need to be updated as they already
       // exist in the zip in identical state.
