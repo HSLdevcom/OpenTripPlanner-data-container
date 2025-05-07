@@ -21,7 +21,7 @@ const {
 } = require('./task/BuildOTPGraph');
 const { renameGTFSFile } = require('./task/GTFSRename');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
-const { extractFiles, addFiles } = require('./task/ZipTask');
+const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const { createDir } = require('./util');
 const storageCleanup = require('./task/StorageCleanup');
 
@@ -136,9 +136,9 @@ gulp.task(
         () =>
           gulp
             .src(`${fitDir}/*`, { buffer: false })
-            .pipe(extractFiles(['stops.txt']))
+            .pipe(extractFilesTask(['stops.txt']))
             .pipe(mapFit(config)) // modify backup of stops.txt
-            .pipe(addFiles(['stops.txt']))
+            .pipe(addFilesTask(['stops.txt']))
             .pipe(gulp.dest(filterDir)),
         () => del(tmpDir),
       )
@@ -160,9 +160,9 @@ gulp.task(
     () =>
       gulp
         .src(`${filterDir}/*.zip`, { buffer: false })
-        .pipe(extractFiles(config.passOBAfilter))
+        .pipe(extractFilesTask(config.passOBAfilter))
         .pipe(OBAFilterTask(config.gtfsMap))
-        .pipe(addFiles(config.passOBAfilter))
+        .pipe(addFilesTask(config.passOBAfilter))
         .pipe(gulp.dest(idDir)),
     () => del(tmpDir),
   ),

@@ -168,7 +168,7 @@ function createTmpDir(dirName, baseDirectory) {
 
 module.exports = {
   extractAllFiles,
-  extractFiles: names => {
+  extractFilesTask: names => {
     if (!names?.length) {
       return through.obj(function (file, encoding, callback) {
         callback(null, file);
@@ -184,7 +184,7 @@ module.exports = {
     });
   },
   extractFromZip,
-  addFiles: names => {
+  addFilesTask: names => {
     if (!names?.length) {
       return through.obj(function (file, encoding, callback) {
         callback(null, file);
