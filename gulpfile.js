@@ -40,6 +40,7 @@ const fitDir = `${config.dataDir}/fit`;
 const filterDir = `${config.dataDir}/filter`;
 const idDir = `${config.dataDir}/id`;
 const tmpIdDir = `${config.dataDir}/tmp-id`;
+const testGtfsDir = `${config.dataDir}/test/gtfs`;
 const tmpDir = `${config.dataDir}/tmp`;
 const tmpRenameDir = `${config.dataDir}/tmp-rename`;
 const renamedDir = `${config.dataDir}/renamed`;
@@ -101,29 +102,27 @@ gulp.task(
   gulp.series(
     'del:fit',
     cb => {
-      dl(config.router.src, tmpDir).then(() => {
+      dl(config.router.src, gtfsDlDir).then(() => {
         cb();
       });
     },
     () =>
       gulp
-        .src(`${tmpDir}/*`, { buffer: false })
+        .src(`${gtfsDlDir}/*`, { buffer: false })
         .pipe(renameGTFSFile())
         .pipe(gulp.dest(renamedDir))
         .pipe(replaceGTFSFilesTask(config.gtfsMap))
-        .pipe(gulp.dest(gtfsDlDir))
-        .pipe(testOTPFile())
         .pipe(gulp.dest(fitDir)),
-    () => del([tmpDir, tmpRenameDir]),
+    () => del([tmpRenameDir]),
   ),
 );
 
-// Add feedId to gtfs files in id dir, and moves files to directory 'ready'
+// Add feedId to gtfs files in id dir, and moves files to directory 'test/gtfs'
 gulp.task('gtfs:id', () =>
   gulp
     .src(`${idDir}/*`, { buffer: false })
     .pipe(setFeedIdTask())
-    .pipe(gulp.dest(gtfsDir)),
+    .pipe(gulp.dest(testGtfsDir)),
 );
 
 // Runs mapFit on gtfs files if fit is enabled, or just moves files to directory 'filter'
@@ -168,10 +167,23 @@ gulp.task(
   ),
 );
 
+// Test gtfs files and move result to directory 'ready/gtfs'
+gulp.task('gtfs:test', () =>
+  gulp
+    .src(`${testGtfsDir}/*`, { buffer: false })
+    .pipe(testOTPFile())
+    .pipe(gulp.dest(gtfsDir)),
+);
+
 gulp.task(
   'gtfs:update',
-  gulp.series('gtfs:dl', 'gtfs:fit', 'gtfs:filter', 'gtfs:id', () =>
-    del(tmpIdDir),
+  gulp.series(
+    'gtfs:dl',
+    'gtfs:fit',
+    'gtfs:filter',
+    'gtfs:id',
+    'gtfs:test',
+    () => del(tmpIdDir),
   ),
 );
 
