@@ -46,7 +46,10 @@ module.exports = {
             if (OBAFilter(src, dst, rule)) {
               fs.unlinkSync(`${dataDir}/${src}`);
               /* create zip named src from files in dst */
-              zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`, () => {
+              zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`, err => {
+                if (err) {
+                  throw err;
+                }
                 del(dstDir);
                 process.stdout.write(
                   `Filter ${gtfsFile} with rule ${rule} SUCCESS\n`,
