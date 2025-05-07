@@ -6,7 +6,7 @@ const { parseId, createDir } = require('../util');
 const { dataDir } = require('../config.js');
 
 /**
- * Moves files from tmp folder to a zip file.
+ * Moves files to a zip.
  * @param {string} zipFile - The name of the zip file
  * @param {string} path - The path to the data directory containing files to be restored
  * @param {string[]} filesToAdd - An array of filenames to add to the zip file
@@ -17,15 +17,14 @@ function addToZip(zipFile, path, filesToAdd) {
     .map(fileName => `${path}/${fileName}`)
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
-    // Using -j flag sometimes causes problems but it is sometimes required to prune paths
-    // from file names inside the zip.
     try {
-      execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`, {
-        stdio: 'pipe',
-      });
-      // eslint-disable-next-line no-unused-vars
+      execSync(`zip -uj ${zipFile} ${filesToAdd.join(' ')}`, { stdio: 'pipe' });
     } catch (err) {
-      execSync(`zip -u ${zipFile} ${existingFilePaths.join(' ')}`);
+      // Zip returns 12 code when the file(s) don't need to be updated as they already
+      // exist in the zip in identical state.
+      if (err.status !== 12) {
+        throw err;
+      }
     }
     process.stdout.write(
       `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
