@@ -133,9 +133,9 @@ function extractAllFiles(zipPath, destinationPath) {
  */
 function zipWithGlobIntoDir(zipFile, glob, zipDir, cb) {
   try {
-    const tmpDir = createTmpDir(zipDir, 'tmp-dirs');
-    execSync(`cp ${glob.join(' ')} ${tmpDir}`);
-    execSync(`zip -r ${zipFile} ${tmpDir}`);
+    execSync(`rm -rf ${zipDir} && mkdir ${zipDir}`);
+    execSync(`cp ${glob.join(' ')} ${zipDir}`);
+    execSync(`zip -rm ${zipFile} ${zipDir}`);
     process.stdout.write(`Created ${zipFile}\n`);
     cb();
   } catch (err) {
