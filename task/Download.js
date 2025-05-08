@@ -1,7 +1,6 @@
 const fs = require('fs');
-const { execSync } = require('child_process');
 const axios = require('axios');
-const { postSlackMessage } = require('../util');
+const { postSlackMessage, createDir } = require('../util');
 
 function handleFail(url, err) {
   postSlackMessage(`${url} Download failed: ${err} :boom:`);
@@ -13,9 +12,7 @@ function handleFail(url, err) {
  */
 function download(entry, dir) {
   return new Promise(resolve => {
-    if (!fs.existsSync(dir)) {
-      execSync(`mkdir -p ${dir}`);
-    }
+    createDir(dir);
     process.stdout.write('Downloading ' + entry.url + '...\n');
     const name = entry.url.split('/').pop();
     const ext = name.indexOf('.') > 0 ? '.' + name.split('.').pop() : '';

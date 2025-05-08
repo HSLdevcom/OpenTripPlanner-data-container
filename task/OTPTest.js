@@ -3,7 +3,7 @@ const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants } = require('../config');
-const { postSlackMessage } = require('../util');
+const { postSlackMessage, createDir } = require('../util');
 const testTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx9g';
 
@@ -18,9 +18,7 @@ function testWithOTP(otpFile, quiet = false) {
     if (!fs.existsSync(otpFile)) {
       reject(new Error(`${otpFile} does not exist!\n`));
     } else {
-      if (!fs.existsSync(`${dataDir}/tmp`)) {
-        fs.mkdirSync(`${dataDir}/tmp`);
-      }
+      createDir(`${dataDir}/tmp`);
       fs.mkdtemp(`${dataDir}/tmp/router-build-test`, (err, folder) => {
         if (err) throw err;
         process.stdout.write(

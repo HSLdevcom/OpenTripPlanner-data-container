@@ -1,3 +1,5 @@
+const fs = require('fs');
+const cloneable = require('cloneable-readable');
 const through = require('through2');
 const { parseId, postSlackMessage } = require('../util');
 const {
@@ -38,6 +40,7 @@ module.exports = {
       } else {
         process.stdout.write(`Replacing files in source ${id} \n`);
         replaceGTFSFiles(replacements, file.path);
+        file.contents = cloneable(fs.createReadStream(file.path));
         callback(null, file);
       }
     });

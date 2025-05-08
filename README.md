@@ -76,14 +76,15 @@ It is possible to change the behaviour of the data builder by defining environme
 
 - `gtfs:update`
 
-  - `gtfs:dl` downloads a GTFS package from a configured location and tests the file with OTP, if
-    the test passes data is copied to the `data/fit/gtfs` directory. The resulting zip file is named `<feedid>.zip`.
+  - `gtfs:dl` downloads a GTFS package from a configured location and data is copied to the `data/fit` directory. The resulting zip file is named `<feedid>.zip`.
 
-  - `gtfs:fit` runs configured map fits. Copies data to the `data/filter/gtfs` directory.
+  - `gtfs:fit` runs configured map fits. Copies data to the `data/filter` directory.
 
-  - `gtfs:filter` runs configured filters. Copies data to the `data/id/gtfs` directory.
+  - `gtfs:filter` runs configured filters. Copies data to the `data/id` directory.
 
-  - `gtfs:id` sets the gtfs feed id to `<id>` and copies data to the `data/ready/gtfs` directory.
+  - `gtfs:id` sets the gtfs feed id to `<id>` and copies data to the `data/test/gtfs` directory.
+
+  - `gtfs:test` tests the file with OTP and if the test passes, data is copied to the `data/ready/gtfs` directory.
 
 - `router:buildGraph`
 
