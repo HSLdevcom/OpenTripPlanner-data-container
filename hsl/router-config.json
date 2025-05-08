@@ -24,7 +24,11 @@
       "maxDuration": "1h"
     },
     "elevatorBoardTime": 60,
-    "maxDirectStreetDuration": "90m",
+    "maxDirectStreetDurationForMode": {
+      "walk": "90m",
+      "car": "90m",
+      "bike": "180m"
+    },
     "maxJourneyDuration": "12h",
     "streetRoutingTimeout": "6s",
     "wheelchairAccessibility": {

@@ -1,7 +1,8 @@
 const fs = require('fs');
 const { exec, execSync } = require('child_process');
 const del = require('del');
-const { zipWithGlob, otpMatching, postSlackMessage } = require('../util');
+const { otpMatching, postSlackMessage } = require('../util');
+const { zipWithGlobIntoDir } = require('./ZipTask');
 const { dataDir, constants, SPLIT_BUILD_TYPE } = require('../config.js');
 const graphBuildTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx12g';
@@ -75,7 +76,7 @@ const packData = function (commit, router) {
 
     // create a zip file which includes all data required
     // for graph build and routing: gtfs, osm, dem + otp configs
-    zipWithGlob(
+    zipWithGlobIntoDir(
       `${path}/router-${router.id}.zip`,
       [
         `${path}/*gtfs.zip`,
@@ -97,7 +98,7 @@ const packData = function (commit, router) {
     process.stdout.write('Creating zip file for otp graph\n');
     // create a zip file for routing only
     // include  graph.obj, router-config.json and otp-config.json
-    zipWithGlob(
+    zipWithGlobIntoDir(
       `${path}/graph-${router.id}-${commit}.zip`,
       [
         `${path}/graph.obj`,
@@ -131,12 +132,15 @@ const packData = function (commit, router) {
 };
 
 module.exports = {
-  buildOTPGraphTask: router =>
+  buildOTPGraphTask: (router, cb) =>
     buildGraph(router)
       .then(resp => packData(resp.commit, resp.router))
       .then(() => otpMatching(`${dataDir}/build/${router.id}`))
       .then(() => del(`${dataDir}/build/${router.id}/taggedStops.log`))
-      .then(() => process.stdout.write('Graph build SUCCESS\n')),
+      .then(() => {
+        process.stdout.write('Graph build SUCCESS\n');
+        cb();
+      }),
   buildOTPStreetOnlyGraphTask: router =>
     buildGraph(router).then(() =>
       process.stdout.write('Street only graph build SUCCESS\n'),

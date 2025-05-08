@@ -101,7 +101,7 @@ module.exports = {
     ),
     mapSrc(
       'KotkaLautat',
-      'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip',
+      'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
       true,
       ['waltti/gtfs-rules/only-kotka-ferries.rule'],
     ),
