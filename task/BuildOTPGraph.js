@@ -77,12 +77,7 @@ const packData = function (commit, router) {
     // for graph build and routing: gtfs, osm, dem + otp configs
     zipWithGlobIntoDir(
       `${path}/router-${router.id}.zip`,
-      [
-        `${path}/*gtfs.zip`,
-        `${path}/*.json`,
-        ...osmFiles,
-        `${path}/*.tif`,
-      ],
+      [`${path}/*gtfs.zip`, `${path}/*.json`, ...osmFiles, `${path}/*.tif`],
       `router-${router.id}`,
       err => {
         if (err) {
