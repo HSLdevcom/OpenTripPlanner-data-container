@@ -131,15 +131,12 @@ const packData = function (commit, router) {
 };
 
 module.exports = {
-  buildOTPGraphTask: (router, cb) =>
+  buildOTPGraphTask: router =>
     buildGraph(router)
       .then(resp => packData(resp.commit, resp.router))
       .then(() => otpMatching(`${dataDir}/build/${router.id}`))
       .then(() => del(`${dataDir}/build/${router.id}/taggedStops.log`))
-      .then(() => {
-        process.stdout.write('Graph build SUCCESS\n');
-        cb();
-      }),
+      .then(() => process.stdout.write('Graph build SUCCESS\n')),
   buildOTPStreetOnlyGraphTask: router =>
     buildGraph(router).then(() =>
       process.stdout.write('Street only graph build SUCCESS\n'),
