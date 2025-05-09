@@ -82,7 +82,7 @@ const packData = function (commit, router) {
         `${path}/*gtfs.zip`,
         `${path}/*.json`,
         ...osmFiles,
-        `${path}/${router.dem}.tif`,
+        `${path}/*.tif`,
       ],
       `router-${router.id}`,
       err => {
