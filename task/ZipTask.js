@@ -134,7 +134,8 @@ function extractAllFiles(zipPath, destinationPath) {
 function zipWithGlobIntoDir(zipFile, glob, zipDir, cb) {
   try {
     execSync(`rm -rf ${zipDir} && mkdir ${zipDir}`);
-    execSync(`cp ${glob.join(' ')} ${zipDir}`);
+    // We don't want to command to fail if nothing matching a glob is found
+    execSync(`cp ${glob.join(' ')} ${zipDir} 2>/dev/null || :`);
     execSync(`zip -rm ${zipFile} ${zipDir}`);
     process.stdout.write(`Created ${zipFile}\n`);
     cb();
