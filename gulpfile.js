@@ -44,7 +44,6 @@ const testGtfsDir = `${config.dataDir}/test/gtfs`;
 const tmpDir = `${config.dataDir}/tmp`;
 const tmpRenameDir = `${config.dataDir}/tmp-rename`;
 const renamedDir = `${config.dataDir}/renamed`;
-const tmpDirs = `${config.dataDir}/tmp-dirs`;
 
 /**
  * Download osm data
@@ -268,11 +267,7 @@ gulp.task(
 
 gulp.task(
   'router:buildGraph',
-  gulp.series('router:copy', () =>
-    buildOTPGraphTask(config.router, () => {
-      del(tmpDirs);
-    }),
-  ),
+  gulp.series('router:copy', () => buildOTPGraphTask(config.router)),
 );
 
 gulp.task(
@@ -287,9 +282,7 @@ gulp.task(
 gulp.task(
   'router:buildWithPrebuiltStreetGraph',
   gulp.series('router:copyForPrebuiltStreetGraphDataBuild', () =>
-    buildOTPGraphTask(config.router, () => {
-      del(tmpDirs);
-    }),
+    buildOTPGraphTask(config.router),
   ),
 );
 
