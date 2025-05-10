@@ -207,9 +207,6 @@
       "feedId": "MATKA",
       "frequency": "30s",
       "fuzzyTripMatching": true,
-      "headers": {
-        "x-api-key": "${MOBILITY_API_KEY}"
-      },
       "features": ["stop-position", "occupancy"]
     },
     {
@@ -220,9 +217,6 @@
       "feedId": "MATKA",
       "fuzzyTripMatching": true,
       "backwardsDelayPropagationType": "ALWAYS",
-      "headers": {
-        "x-api-key": "${MOBILITY_API_KEY}"
-      }
     },
     {
       "id": "matka-alerts",
@@ -231,9 +225,6 @@
       "url": "https://mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
       "fuzzyTripMatching": true,
-      "headers": {
-        "x-api-key": "${MOBILITY_API_KEY}"
-      }
     },
     {
       "id": "lappeenranta-bike-rental",
