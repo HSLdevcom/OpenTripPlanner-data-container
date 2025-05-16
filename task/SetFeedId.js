@@ -10,7 +10,7 @@ const { dataDir } = require('../config.js');
 const FEED_INFO_FILE = 'feed_info.txt';
 
 function setFeedId(file, id, cb) {
-  const tmpFileDir = `${dataDir}/tmp-id`;
+  const tmpFileDir = `${dataDir}/tmp-id/${id}`;
   const tmpFeedInfoFile = `${tmpFileDir}/${FEED_INFO_FILE}`;
   if (!fs.existsSync(file)) {
     cb(`${file} does not exist`);
@@ -72,13 +72,16 @@ function setFeedId(file, id, cb) {
           fs.writeFileSync(tmpFeedInfoFile, csv);
         } else {
           cb('nop');
+          return;
         }
       } else {
         cb('nop');
+        return;
       }
     }
   } catch (err) {
     cb(err);
+    return;
   }
   addToZip(file, tmpFileDir, [FEED_INFO_FILE]);
   cb('edited');
@@ -96,6 +99,12 @@ module.exports = {
         gtfsFile + ' ' + 'Setting GTFS feed id to ' + id + '\n',
       );
       setFeedId(gtfsFile, id, action => {
+        if (action !== 'edited') {
+          process.stdout.write(
+            `Something went wrong with editing feed id: ${action}\n`,
+          );
+          throw new Error('Failed to edit feed id for ' + id);
+        }
         process.stdout.write(gtfsFile + ' ID ' + action + ' SUCCESS\n');
         file.contents = cloneable(fs.createReadStream(gtfsFile));
         callback(null, file);
