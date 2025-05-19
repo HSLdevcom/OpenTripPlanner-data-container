@@ -9,12 +9,11 @@ const { dataDir } = require('../config.js');
 
 const FEED_INFO_FILE = 'feed_info.txt';
 
-function setFeedId(file, id, cb) {
+function setFeedId(file, id) {
   const tmpFileDir = `${dataDir}/tmp-id/${id}`;
   const tmpFeedInfoFile = `${tmpFileDir}/${FEED_INFO_FILE}`;
   if (!fs.existsSync(file)) {
-    cb(`${file} does not exist`);
-    return;
+    return `${file} does not exist`;
   }
   createDir(tmpFileDir);
   try {
@@ -71,20 +70,17 @@ function setFeedId(file, id, cb) {
           const csv = converter.json2csv(json);
           fs.writeFileSync(tmpFeedInfoFile, csv);
         } else {
-          cb('nop');
-          return;
+          return 'nop';;
         }
       } else {
-        cb('nop');
-        return;
+        return 'nop';
       }
     }
   } catch (err) {
-    cb(err);
-    return;
+    return err;
   }
   addToZip(file, tmpFileDir, [FEED_INFO_FILE]);
-  cb('edited');
+  return 'edited';
 }
 
 module.exports = {
@@ -98,17 +94,16 @@ module.exports = {
       process.stdout.write(
         gtfsFile + ' ' + 'Setting GTFS feed id to ' + id + '\n',
       );
-      setFeedId(gtfsFile, id, action => {
-        if (action !== 'edited') {
-          process.stdout.write(
-            `Something went wrong with editing feed id: ${action}\n`,
-          );
-          throw new Error('Failed to edit feed id for ' + id);
-        }
-        process.stdout.write(gtfsFile + ' ID ' + action + ' SUCCESS\n');
-        file.contents = cloneable(fs.createReadStream(gtfsFile));
-        callback(null, file);
-      });
+      action = setFeedId(gtfsFile, id);
+      if (action !== 'edited') {
+        process.stdout.write(
+          `Something went wrong with editing feed id: ${action}\n`,
+        );
+        throw new Error('Failed to edit feed id for ' + id);
+      }
+      process.stdout.write(gtfsFile + ' ID ' + action + ' SUCCESS\n');
+      file.contents = cloneable(fs.createReadStream(gtfsFile));
+      callback(null, file);
     });
   },
 };
