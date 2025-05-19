@@ -102,7 +102,7 @@ module.exports = {
         throw new Error('Failed to edit feed id for ' + id);
       }
       process.stdout.write(gtfsFile + ' ID ' + action + ' SUCCESS\n');
-      file.contents = cloneable(fs.createReadStream(gtfsFile));
+      // file.contents = cloneable(fs.createReadStream(gtfsFile));
       callback(null, file);
     });
   },
