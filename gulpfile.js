@@ -155,6 +155,7 @@ gulp.task(
   'gtfs:filter',
   gulp.series(
     'copyRules',
+    'del:id',
     () =>
       gulp
         .src(`${filterDir}/*.zip`, { buffer: false })
