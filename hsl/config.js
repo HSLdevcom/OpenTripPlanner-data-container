@@ -14,6 +14,11 @@ module.exports = {
       'HSLlautta',
       'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip',
     ),
+    mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
     // src('Sipoo', 'https://koontikartta.navici.com/tiedostot/rae/sipoon_kunta_sibbo_kommun.zip')
   ],
   osm: ['hsl'],
