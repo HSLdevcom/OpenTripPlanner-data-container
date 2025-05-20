@@ -1,6 +1,7 @@
 const through = require('through2');
 const fs = require('fs');
 const csvParser = require('csv-parser');
+const cloneable = require('cloneable-readable');
 const removeBOM = require('remove-bom-stream');
 const { parseId } = require('../util');
 const { stringify } = require('csv-stringify');
