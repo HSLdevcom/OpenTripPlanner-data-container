@@ -94,7 +94,7 @@ module.exports = {
       process.stdout.write(
         gtfsFile + ' ' + 'Setting GTFS feed id to ' + id + '\n',
       );
-      action = setFeedId(gtfsFile, id);
+      const action = setFeedId(gtfsFile, id);
       if (action !== 'edited') {
         process.stdout.write(
           `Something went wrong with editing feed id: ${action}\n`,

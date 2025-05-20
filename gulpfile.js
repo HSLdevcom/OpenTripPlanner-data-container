@@ -183,7 +183,7 @@ gulp.task(
     'gtfs:filter',
     'gtfs:id',
     'gtfs:test',
-    // () => del(tmpIdDir),
+    () => del(tmpIdDir),
   ),
 );
 
