@@ -10,6 +10,7 @@
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
     "Co2Emissions": true,
-    "DebugRasterTiles": true
+    "DebugRasterTiles": true,
+    "FlexRouting": true
   }
 }
