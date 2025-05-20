@@ -70,7 +70,7 @@ function setFeedId(file, id) {
           const csv = converter.json2csv(json);
           fs.writeFileSync(tmpFeedInfoFile, csv);
         } else {
-          return 'nop';;
+          return 'nop';
         }
       } else {
         return 'nop';
