@@ -109,4 +109,5 @@ module.exports = {
     mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
   ],
   osm: ['kajaani', 'oulu', 'rovaniemi', 'southFinland', 'vaasa'],
+  dem: 'waltti',
 };
