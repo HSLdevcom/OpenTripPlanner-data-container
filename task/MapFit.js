@@ -121,6 +121,7 @@ module.exports = function mapFit(config) {
     process.stdout.write(`Fitting ${gtfsFile} to OSM stop locations ...\n`);
     transformStops(folder, config.fitMap, () => {
       process.stdout.write(gtfsFile + ' fit SUCCESS\n');
+      file.contents = cloneable(fs.createReadStream(gtfsFile));
       callback(null, file);
     });
   });
