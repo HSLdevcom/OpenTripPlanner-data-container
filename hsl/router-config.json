@@ -92,6 +92,12 @@
         "HSL:7849",
         "HSL:7999"
       ]
+    },
+    "flex": {
+      "maxTransferDuration": "1m",
+      "maxFlexTripDuration": "60m",
+      "maxAccessWalkDuration": "1m",
+      "maxEgressWalkDuration": "1m"
     }
   },
   "transit": {
