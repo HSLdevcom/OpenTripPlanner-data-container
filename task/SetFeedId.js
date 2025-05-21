@@ -1,7 +1,8 @@
 const fs = require('fs');
+const execSync = require('child_process').execSync;
 const converter = require('json-2-csv');
 const through = require('through2');
-const cloneable = require('cloneable-readable');
+// const cloneable = require('cloneable-readable');
 const { postSlackMessage, parseId } = require('../util');
 const { zipHasFile, extractFromZip, addToZip } = require('./ZipTask');
 const { createDir } = require('../util');
@@ -87,7 +88,7 @@ module.exports = {
   /**
    * Sets gtfs feed id in gtfs zip
    */
-  setFeedIdTask: () => {
+  setFeedIdTask: destPath => {
     return through.obj(function (file, encoding, callback) {
       const gtfsFile = file.history[file.history.length - 1];
       const id = parseId(gtfsFile);
@@ -102,8 +103,10 @@ module.exports = {
         throw new Error('Failed to edit feed id for ' + id);
       }
       process.stdout.write(gtfsFile + ' ID ' + action + ' SUCCESS\n');
-      file.contents = cloneable(fs.createReadStream(gtfsFile));
-      callback(null, file);
+      const cmd = `cp ${gtfsFile} ${destPath}`;
+      execSync(cmd, { stdio: [0, 1, 2] });
+      // file.contents = cloneable(fs.createReadStream(gtfsFile));
+      callback(null, null);
     });
   },
 };
