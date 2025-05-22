@@ -16,7 +16,7 @@ module.exports = {
     ),
     mapSrc(
       '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      'https://gtfsdata.blob.core.windows.net/hsl/02Taksi-espoo-test-gtfs.zip',
       false,
     ),
     // src('Sipoo', 'https://koontikartta.navici.com/tiedostot/rae/sipoon_kunta_sibbo_kommun.zip')
