@@ -10,7 +10,6 @@ const { dataDir } = require('../config.js');
  * @param {string} zipFile - The name of the zip file
  * @param {string} path - The path to the data directory containing files to be restored
  * @param {string[]} filesToAdd - An array of filenames to add to the zip file
- * @returns {Promise} A Promise that resolves when the operation is complete
  */
 function addToZip(zipFile, path, filesToAdd) {
   const existingFilePaths = filesToAdd
@@ -39,15 +38,13 @@ function addToZip(zipFile, path, filesToAdd) {
  * @param {string} zipName - zip file name
  * @param {string[]} filesToExtract - An array of filenames to extract from the archive
  * @param {string} path - The path to the data directory where files are put
- * @param {function} cb - callback to signal when finished
  */
-function extractFromZip(zipName, filesToExtract, path, cb) {
+function extractFromZip(zipName, filesToExtract, path) {
   const filesString = filesToExtract
     .filter(name => zipHasFile(zipName, name))
     .join(' ');
   execSync(`unzip -o -j ${zipName} ${filesString} -d ${path}`);
   process.stdout.write(`Extracted ${filesString} from ${zipName} to ${path}\n`);
-  cb();
 }
 
 /**
@@ -129,35 +126,35 @@ function extractAllFiles(zipPath, destinationPath) {
  * @param {string} zipFile file to create
  * @param {string[]} glob patterns for source files
  * @param {string} zipDir files are put into this directory inside the zip
- * @param {function} cb - callback to signal when finished
  */
-function zipWithGlobIntoDir(zipFile, glob, zipDir, cb) {
+function zipWithGlobIntoDir(zipFile, glob, zipDir) {
   try {
     execSync(`rm -rf ${zipDir} && mkdir ${zipDir}`);
     // We don't want to command to fail if nothing matching a glob is found
     execSync(`cp ${glob.join(' ')} ${zipDir} 2>/dev/null || :`);
     execSync(`zip -rm ${zipFile} ${zipDir}`);
     process.stdout.write(`Created ${zipFile}\n`);
-    cb();
+    return true;
+    // eslint-disable-next-line no-unused-vars
   } catch (err) {
     process.stderr.write(`Error creating ${zipFile}\n`);
-    cb(err);
+    return false;
   }
 }
 
 /**
  * @param {string} zipFile file to create
  * @param {string} dir source directory for files
- * @param {function} cb - callback to signal when finished
  */
-function zipDirContents(zipFile, dir, cb) {
+function zipDirContents(zipFile, dir) {
   try {
     execSync(`zip -j ${zipFile} ${dir}/*`);
     process.stdout.write(`Created ${zipFile}\n`);
-    cb();
+    return true;
+    // eslint-disable-next-line no-unused-vars
   } catch (err) {
     process.stderr.write(`Error creating ${zipFile}\n`);
-    cb(err);
+    return false;
   }
 }
 
@@ -178,10 +175,9 @@ module.exports = {
     return through.obj(function (file, encoding, callback) {
       const localFile = file.history[file.history.length - 1];
       const path = createTmpDir(parseId(localFile), 'tmp');
-      extractFromZip(localFile, names, path, () => {
-        file.contents = cloneable(fs.createReadStream(localFile));
-        callback(null, file);
-      });
+      extractFromZip(localFile, names, path);
+      file.contents = cloneable(fs.createReadStream(localFile));
+      callback(null, file);
     });
   },
   extractFromZip,

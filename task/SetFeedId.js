@@ -23,7 +23,7 @@ function setFeedId(file, id) {
   ${id}-fake-name,${id}-fake-url,${id}-fake-lang,${id}\n`;
       fs.writeFileSync(tmpFeedInfoFile, csv);
     } else {
-      extractFromZip(file, [FEED_INFO_FILE], tmpFileDir, () => {});
+      extractFromZip(file, [FEED_INFO_FILE], tmpFileDir);
       const data = fs.readFileSync(tmpFeedInfoFile, {
         encoding: 'utf8',
         flag: 'r',
