@@ -117,12 +117,19 @@ gulp.task(
 );
 
 // Add feedId to gtfs files in id dir, and moves files to directory 'test/gtfs'
-gulp.task('gtfs:id', () => {
-  createDir(testGtfsDir);
-  return gulp
-    .src(`${idDir}/*`, { buffer: false })
-    .pipe(setFeedIdTask(testGtfsDir));
-});
+gulp.task(
+  'gtfs:id',
+  gulp.series(
+    () =>
+      gulp
+        .src(`${idDir}/*`, { buffer: false })
+        .pipe(extractFilesTask(['feed_info.txt']))
+        .pipe(setFeedIdTask())
+        .pipe(addFilesTask(['feed_info.txt']))
+        .pipe(gulp.dest(testGtfsDir)),
+    () => del(tmpDir),
+  ),
+);
 
 // Runs mapFit on gtfs files if fit is enabled, or just moves files to directory 'filter'
 gulp.task(
