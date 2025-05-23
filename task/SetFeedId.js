@@ -71,17 +71,18 @@ function setFeedId(file, id) {
           const csv = converter.json2csv(json);
           fs.writeFileSync(tmpFeedInfoFile, csv);
         } else {
-          return 'nop';
+          process.stdout.write('Correct feed id was already set\n');
+          return 'ok';
         }
       } else {
-        return 'nop';
+        return 'JSON length zero';
       }
     }
   } catch (err) {
     return err;
   }
   addToZip(file, tmpFileDir, [FEED_INFO_FILE]);
-  return 'edited';
+  return 'ok';
 }
 
 module.exports = {
@@ -96,10 +97,8 @@ module.exports = {
         gtfsFile + ' ' + 'Setting GTFS feed id to ' + id + '\n',
       );
       const action = setFeedId(gtfsFile, id);
-      if (action !== 'edited') {
-        process.stdout.write(
-          `Something went wrong with editing feed id: ${action}\n`,
-        );
+      if (action !== 'ok') {
+        process.stdout.write(`Feed id editing failed: ${action}\n`);
         throw new Error('Failed to edit feed id for ' + id);
       }
       process.stdout.write(gtfsFile + ' ID ' + action + ' SUCCESS\n');
