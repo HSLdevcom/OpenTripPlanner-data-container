@@ -119,9 +119,8 @@ gulp.task(
 );
 
 // Add feedId to gtfs files in id dir, and moves files to directory 'test/gtfs'
-gulp.task(
-  'gtfs:id',
-  () => gulp
+gulp.task('gtfs:id', () =>
+  gulp
     .src(`${idDir}/*`, noBuf)
     .pipe(extractFilesTask(['feed_info.txt']))
     .pipe(setFeedIdTask())
