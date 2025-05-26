@@ -17,7 +17,7 @@ function addToZip(zipFile, path, filesToAdd) {
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
     try {
-      execSync(`zip -uj ${zipFile} ${existingFilePaths.join(' ')}`, {
+      execSync(`cd ${path} && zip -uj ${zipFile} ${filesToAdd.join(' ')}`, {
         stdio: 'pipe',
       });
     } catch (err) {
