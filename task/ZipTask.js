@@ -16,8 +16,10 @@ function addToZip(zipFile, path, filesToAdd) {
     .map(fileName => `${path}/${fileName}`)
     .filter(filePath => fs.existsSync(filePath));
   if (existingFilePaths.length > 0) {
+    const names = filesToAdd.join(' ');
+    const params = `${zipFile} ${names}`;
     try {
-      execSync(`cd ${path} && zip -uj ${zipFile} ${filesToAdd.join(' ')}`, {
+      execSync(`cd ${path} && zip -d ${params} && zip -uj ${params}`, {
         stdio: 'pipe',
       });
     } catch (err) {
