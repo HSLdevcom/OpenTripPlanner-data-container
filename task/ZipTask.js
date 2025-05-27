@@ -19,9 +19,16 @@ function addToZip(zipFile, path, filesToAdd) {
     const names = filesToAdd.join(' ');
     const params = `${zipFile} ${names}`;
     try {
-      execSync(`cd ${path} && zip -d ${params} && zip -uj ${params}`, {
-        stdio: 'pipe',
-      });
+      // remove old versions
+      execSync(`cd ${path} && zip -d ${params}`, { stdio: 'pipe' });
+    } catch (err) {
+      // Zip returns error 12 if file does not exist in zip
+      if (err.status !== 12) {
+        throw err;
+      }
+    }
+    try {
+      execSync(`cd ${path} && zip -u ${params}`, { stdio: 'pipe' });
     } catch (err) {
       // Zip returns 12 code when the file(s) don't need to be updated as they already
       // exist in the zip in identical state.
@@ -72,7 +79,10 @@ function removeFilesFromZip(zipName, filesToRemove) {
 function renameFilesInZip(zipName, oldNamesForFiles) {
   for (const [newName, oldName] of Object.entries(oldNamesForFiles)) {
     if (zipHasFile(zipName, oldName)) {
+      process.stdout.write(`renaming ${oldName} to ${newName}\n`);
       renameFileInZip(zipName, oldName, newName);
+    } else {
+      process.stdout.write(`${oldName} not in ${zipName}\n`);
     }
   }
 }
@@ -91,9 +101,10 @@ function renameFileInZip(zipName, oldName, newName) {
     if (!err.message.match(/E_NOTIMPL/)) {
       throw err;
     }
+
     // Some zip files don't support renaming files properly so we need to extract the files and rename them.
     const tmpPathForFile = createTmpDir(parseId(zipName), 'tmp-rename');
-    extractFromZip(zipName, [oldName], tmpPathForFile, () => {});
+    extractFromZip(zipName, [oldName], tmpPathForFile);
     removeFilesFromZip(zipName, [oldName]);
     fs.renameSync(
       `${tmpPathForFile}/${oldName}`,
