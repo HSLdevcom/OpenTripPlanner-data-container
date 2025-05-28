@@ -46,16 +46,17 @@ module.exports = {
             if (OBAFilter(src, dst, rule)) {
               fs.unlinkSync(`${dataDir}/${src}`);
               /* create zip named src from files in dst */
-              zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`, err => {
-                if (err) {
-                  throw err;
-                }
+              if (zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`)) {
                 del(dstDir);
                 process.stdout.write(
                   `Filter ${gtfsFile} with rule ${rule} SUCCESS\n`,
                 );
                 processRule(); // handle next rule
-              });
+              } else {
+                del(dstDir);
+                postSlackMessage(`OBA zip task failed :boom:`);
+                callback(null, null);
+              }
             } else {
               // failure
               del(dstDir);

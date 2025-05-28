@@ -76,39 +76,37 @@ const packData = function (commit, router) {
 
     // create a zip file which includes all data required
     // for graph build and routing: gtfs, osm, dem + otp configs
-    zipWithGlobIntoDir(
-      `${path}/router-${router.id}.zip`,
-      [`${path}/*gtfs.zip`, `${path}/*.json`, ...osmFiles, `${path}/*.tif`],
-      `router-${router.id}`,
-      err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      },
-    );
+    if (
+      zipWithGlobIntoDir(
+        `${path}/router-${router.id}.zip`,
+        [`${path}/*gtfs.zip`, `${path}/*.json`, ...osmFiles, `${path}/*.tif`],
+        `router-${router.id}`,
+      )
+    ) {
+      resolve();
+    } else {
+      reject('Zip creation failed');
+    }
   });
   const p2 = new Promise((resolve, reject) => {
     process.stdout.write('Creating zip file for otp graph\n');
     // create a zip file for routing only
     // include  graph.obj, router-config.json and otp-config.json
-    zipWithGlobIntoDir(
-      `${path}/graph-${router.id}-${commit}.zip`,
-      [
-        `${path}/graph.obj`,
-        `${path}/router-config.json`,
-        `${path}/otp-config.json`,
-      ],
-      router.id,
-      err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      },
-    );
+    if (
+      zipWithGlobIntoDir(
+        `${path}/graph-${router.id}-${commit}.zip`,
+        [
+          `${path}/graph.obj`,
+          `${path}/router-config.json`,
+          `${path}/otp-config.json`,
+        ],
+        router.id,
+      )
+    ) {
+      resolve();
+    } else {
+      reject('Zip creation failed');
+    }
   });
   const p3 = new Promise((resolve, reject) => {
     fs.writeFile(

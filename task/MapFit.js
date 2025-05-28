@@ -1,6 +1,7 @@
 const through = require('through2');
 const fs = require('fs');
 const csvParser = require('csv-parser');
+const cloneable = require('cloneable-readable');
 const removeBOM = require('remove-bom-stream');
 const { parseId } = require('../util');
 const { stringify } = require('csv-stringify');
@@ -121,6 +122,7 @@ module.exports = function mapFit(config) {
     process.stdout.write(`Fitting ${gtfsFile} to OSM stop locations ...\n`);
     transformStops(folder, config.fitMap, () => {
       process.stdout.write(gtfsFile + ' fit SUCCESS\n');
+      file.contents = cloneable(fs.createReadStream(gtfsFile));
       callback(null, file);
     });
   });

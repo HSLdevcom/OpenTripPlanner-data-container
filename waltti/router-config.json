@@ -43,6 +43,12 @@
         "costLimitFunction": "600 + 1.5x"
       },
       "nonTransitGeneralizedCostLimit": "400 + 1.5x"
+    },
+    "flex": {
+      "maxTransferDuration": "1m",
+      "maxFlexTripDuration": "30m",
+      "maxAccessWalkDuration": "1m",
+      "maxEgressWalkDuration": "1m"
     }
   },
   "transit": {
