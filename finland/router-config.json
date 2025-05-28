@@ -59,13 +59,13 @@
     },
     "alightSlackForMode": {
       "AIRPLANE": "1200s"
-    },
-    "flex" : {
-      "maxTransferDuration" : "1m",
-      "maxFlexTripDuration" : "30m",
-      "maxAccessWalkDuration" : "1m",
-      "maxEgressWalkDuration" : "1m"
     }
+  },
+  "flex": {
+    "maxTransferDuration": "1m",
+    "maxFlexTripDuration": "30m",
+    "maxAccessWalkDuration": "1m",
+    "maxEgressWalkDuration": "1m"
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
