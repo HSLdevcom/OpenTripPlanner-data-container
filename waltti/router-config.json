@@ -22,7 +22,13 @@
       "boardCost": 120
     },
     "accessEgress": {
-      "maxDuration": "1h"
+      "maxDuration": "1h",
+      "penalty": {
+      	"FLEXIBLE": {
+      	  "timePenalty": "10m + 1.9t",
+      	  "costFactor": 2
+      	}
+      }
     },
     "maxDirectStreetDuration": "2h",
     "maxDirectStreetDurationForMode": {
@@ -43,13 +49,13 @@
         "costLimitFunction": "600 + 1.5x"
       },
       "nonTransitGeneralizedCostLimit": "400 + 1.5x"
-    },
-    "flex": {
-      "maxTransferDuration": "1m",
-      "maxFlexTripDuration": "30m",
-      "maxAccessWalkDuration": "1m",
-      "maxEgressWalkDuration": "1m"
     }
+  },
+  "flex": {
+    "maxTransferDuration": "1m",
+    "maxFlexTripDuration": "30m",
+    "maxAccessWalkDuration": "1m",
+    "maxEgressWalkDuration": "1m"
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
