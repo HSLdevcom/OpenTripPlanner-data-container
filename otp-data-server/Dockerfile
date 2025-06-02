@@ -1,4 +1,4 @@
-FROM       alpine:latest
+FROM       alpine:3.21
 LABEL authors="Digitransit version: 2"
 
 RUN apk add --update --no-cache \
