@@ -24,10 +24,10 @@
     "accessEgress": {
       "maxDuration": "1h",
       "penalty": {
-      	"FLEXIBLE": {
-      	  "timePenalty": "10m + 1.9t",
-      	  "costFactor": 2
-      	}
+        "FLEXIBLE": {
+          "timePenalty": "10m + 1.9t",
+          "costFactor": 2
+        }
       }
     },
     "maxDirectStreetDuration": "2h",
