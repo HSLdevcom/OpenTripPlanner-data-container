@@ -34,10 +34,10 @@
         "CAR": 0
       },
       "penalty": {
-      	"FLEXIBLE": {
-      	  "timePenalty": "10m + 1.9t",
-      	  "costFactor": 2
-      	}
+        "FLEXIBLE": {
+          "timePenalty": "10m + 1.9t",
+          "costFactor": 2
+        }
       }
     },
     "maxDirectStreetDuration": "100h",
