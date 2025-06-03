@@ -70,8 +70,8 @@
   "flex": {
     "maxTransferDuration": "1m",
     "maxFlexTripDuration": "3h",
-    "maxAccessWalkDuration": "1m",
-    "maxEgressWalkDuration": "1m"
+    "maxAccessWalkDuration": "5m",
+    "maxEgressWalkDuration": "5m"
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
