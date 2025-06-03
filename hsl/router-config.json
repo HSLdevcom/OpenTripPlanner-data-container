@@ -101,10 +101,10 @@
     }
   },
   "flex": {
-    "maxTransferDuration": "1m",
+    "maxTransferDuration": "5m",
     "maxFlexTripDuration": "30m",
-    "maxAccessWalkDuration": "1m",
-    "maxEgressWalkDuration": "1m"
+    "maxAccessWalkDuration": "5m",
+    "maxEgressWalkDuration": "5m"
   },
   "transit": {
     "maxSearchWindow": "8h",
