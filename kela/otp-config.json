@@ -4,7 +4,6 @@
     "DebugUi": true,
     "APIServerInfo": true,
     "APIUpdaterStatus": false,
-    "APIBikeRental": false,
     "SandboxAPIMapboxVectorTilesApi": true,
     "FloatingBike": false,
     "ActuatorAPI": true,
