@@ -37,7 +37,7 @@
     "osmTagMapping": "finland",
     "includeOsmSubwayEntrances": true
   },
-  "emissions": {
+  "emission": {
     "carAvgCo2PerKm": 170,
     "carAvgOccupancy": 1.3
   }

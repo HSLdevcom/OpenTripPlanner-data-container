@@ -36,7 +36,7 @@
   "demDefaults": {
     "elevationUnitMultiplier": 0.1
   },
-  "emissions": {
+  "emission": {
     "carAvgCo2PerKm": 170,
     "carAvgOccupancy": 1.3
   }
