@@ -2,6 +2,7 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.95,
+    "elevatorBoardTime": 60,
     "bicycle": {
       "boardCost": 120,
       "reluctance": 1.7,
@@ -29,11 +30,9 @@
         }
       }
     },
-    "elevatorBoardTime": 60,
+    "maxDirectStreetDuration": "90m",
     "maxDirectStreetDurationForMode": {
-      "walk": "90m",
-      "car": "90m",
-      "bike": "180m"
+      "bike": "360m"
     },
     "maxJourneyDuration": "12h",
     "streetRoutingTimeout": "6s",
