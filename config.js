@@ -69,6 +69,10 @@ const osm = {
   ...extraOSM,
 };
 
+const osmPreprocessingSteps = {
+  hsl: 'https://geocoding.blob.core.windows.net/vrk/osm-preprocessing-hsl.txt',
+};
+
 const dem = {
   waltti:
     'https://elevdata.blob.core.windows.net/elevation/waltti/waltti-10m-elevation-model_20190927.tif',
@@ -84,7 +88,10 @@ module.exports = {
   gtfsMap,
   osm: router.osm.map(id => {
     return { id, url: osm[id] };
-  }), // array of id, url pairs
+  }), // array of id, url (OSM data) pairs
+  osmPreprocessingSteps: router.osm.map(id => {
+    return { id, url: osmPreprocessingSteps[id] };
+  }), // array of id, url (OSM preprocessing instruction data) pairs
   dem: router.dem ? [{ id: router.dem, url: dem[router.dem] }] : null, // currently only one DEM file is used
   dataToolImage: `hsldevcom/otp-data-tools:${process.env.TOOLS_TAG || 'v3'}`,
   dataDir: `${process.cwd()}/data`,
