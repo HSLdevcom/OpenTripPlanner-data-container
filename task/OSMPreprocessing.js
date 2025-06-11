@@ -6,6 +6,8 @@ const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage, osmPreprocessingURLs } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
+const Vinyl = require('vinyl');
+const cloneable = require('cloneable-readable');
 
 async function readPreprocessingInstructions(preprocessingInstructionsFile) {
   const preprocessingInstructions = [];
@@ -18,7 +20,7 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
     } else if (line === '') {
       process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
     } else {
-      throw Error(`'${line}' is not a valid preprocessing instruction!\n`)
+      throw Error(`'${line}' is not a valid preprocessing instruction!\n`);
     }
   });
   await once(rl, 'close');
@@ -60,8 +62,10 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
               if (c === 0) {
                 // The temporary directory is only deleted after the whole OSM pipeline is finished,
                 // instead of directly after the preprocessing is finished.
-                const outputFile = fs.createReadStream(`${dataDir}/tmp/${dir}/${osmFileName}`);
-                resolve(outputFile);
+                resolve(new Vinyl({
+                  path: osmFileName,
+                  contents: cloneable(fs.createReadStream(`${dataDir}/tmp/${dir}/${osmFileName}`)),
+                }));
                 process.stdout.write(osmFile + ' + ' + preprocessingInstructionsFile + ' OSM preprocessing SUCCESS\n');
               } else {
                 const log = lastLog.join('');
