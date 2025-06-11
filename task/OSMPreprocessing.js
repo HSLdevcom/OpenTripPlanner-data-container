@@ -29,19 +29,14 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
  * Runs the instructions listed in the OSM preprocessing file.
  * Only the osmfilter, osmconvert, and osmupdate commands can be used.
  */
-function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir) {
+function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId, osmFileName) {
   const lastLog = [];
 
   return new Promise((resolve, reject) => {
-    // This can be, for example, hsl, finland, or southFinland.
-    const osmId = osmFile.split('/').pop().split('.')[0];
     const preprocessingInstructionsFile = `${osmPreprocessingDlDir}/${osmId}.txt`;
 
     if (!fs.existsSync(osmFile)) {
       reject(new Error(`${osmFile} does not exist!\n`));
-    } else if (!osmPreprocessingURLs[osmId]) {
-      resolve(true);
-      process.stdout.write('No OSM preprocessing instructions for ' + osmId + '\n');
     } else if (!fs.existsSync(preprocessingInstructionsFile)) {
       reject(new Error(`${preprocessingInstructionsFile} does not exist!\n`));
     } else {
@@ -63,15 +58,17 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir) {
             );
             preprocessingCommand.on('exit', function (c) {
               if (c === 0) {
-                resolve(true);
+                // The temporary directory is only deleted after the whole OSM pipeline is finished,
+                // instead of directly after the preprocessing is finished.
+                const outputFile = fs.createReadStream(`${dataDir}/tmp/${dir}/${osmFileName}`);
+                resolve(outputFile);
                 process.stdout.write(osmFile + ' + ' + preprocessingInstructionsFile + ' OSM preprocessing SUCCESS\n');
               } else {
                 const log = lastLog.join('');
                 postSlackMessage(`${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom:`);
                 global.hasFailures = true;
-                resolve(false);
+                resolve(null);
               }
-              fse.removeSync(folder);
             });
             preprocessingCommand.stdout.on('data', function (data) {
               lastLog.push(data.toString());
@@ -98,7 +95,7 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir) {
             reject(e);
           }
         });
-        r.pipe(fs.createWriteStream(`${folder}/${osmFile.split('/').pop()}`));
+        r.pipe(fs.createWriteStream(`${folder}/${osmFileName}`));
       });
     }
   });
@@ -114,10 +111,17 @@ module.exports = {
         );
         return callback(null, file);
       }
-      preprocessWithFile(osmFile, true, osmPreprocessingDlDir)
-        .then(success => {
-          if (success) {
-            callback(null, file);
+      const osmFileName = osmFile.split('/').pop();
+      // This can be, for example, hsl, finland, or southFinland.
+      const osmId = osmFileName.split('.')[0];
+      if (!osmPreprocessingURLs[osmId]) {
+        process.stdout.write('No OSM preprocessing instructions for ' + osmId + '\n');
+        return callback(null, file);
+      }
+      preprocessWithFile(osmFile, true, osmPreprocessingDlDir, osmId, osmFileName)
+        .then(outputFile => {
+          if (outputFile) {
+            callback(null, outputFile);
           } else {
             callback(null, null);
           }
