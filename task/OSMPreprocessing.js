@@ -18,7 +18,7 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
     } else if (line === '') {
       process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
     } else {
-      // TODO invalid command
+      throw Error(`'${line}' is not a valid preprocessing instruction!\n`)
     }
   });
   await once(rl, 'close');
