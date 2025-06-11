@@ -1,10 +1,29 @@
 const fs = require('fs');
+const { once } = require('events');
 const readline = require('readline');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage, osmPreprocessingURLs } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
+
+async function readPreprocessingInstructions(preprocessingInstructionsFile) {
+  const preprocessingInstructions = [];
+  const rl = readline.createInterface({
+    input: fs.createReadStream(preprocessingInstructionsFile),
+  });
+  rl.on('line', (line) => {
+    if (/^(osmconvert|osmfilter|osmupdate).*$/.test(line)) {
+      preprocessingInstructions.push(line);
+    } else if (line === '') {
+      process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
+    } else {
+      // TODO invalid command
+    }
+  });
+  await once(rl, 'close');
+  return `-c '${preprocessingInstructions.join(' && ')}'`;
+}
 
 /**
  * Runs the instructions listed in the OSM preprocessing file.
@@ -34,27 +53,10 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir) {
         );
         const dir = folder.split('/').pop();
         const r = fs.createReadStream(osmFile);
-        r.on('end', () => {
+        r.on('end', async () => {
           try {
-            let concatenatedInstructions;
-            const preprocessingInstructions = [];
-
-            const rl = readline.createInterface({
-              input: fs.createReadStream(preprocessingInstructionsFile),
-            });
-            rl.on('line', line => {
-              if (/^(osmconvert|osmfilter|osmupdate).*$/.test(line)) {
-                preprocessingInstructions.push(line);
-              } else if (line === '') {
-                process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
-              } else {
-                // TODO invalid command
-              }
-            });
-            rl.on('close', () => {
-              concatenatedInstructions = `sh -c '${preprocessingInstructions.join(' && ')}'`;
-            });
-
+            const concatenatedInstructions = await readPreprocessingInstructions(preprocessingInstructionsFile);
+            process.stdout.write('Running command: ' + concatenatedInstructions + '\n');
             const preprocessingCommand = exec(
               `docker run -v ${dataDir}/tmp/${dir}:/tmp/osm-preprocessing -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
               { maxBuffer: constants.BUFFER_SIZE },
@@ -108,7 +110,7 @@ module.exports = {
       const osmFile = file.history[file.history.length - 1];
       if (process.env.SKIP_OSM_PREPROCESSING) {
         process.stdout.write(
-          'OSM preprocessing skipped because the SKIP_OTP_TESTS environment variable is set\n',
+          'OSM preprocessing skipped because the SKIP_OSM_PREPROCESSING environment variable is set\n',
         );
         return callback(null, file);
       }
