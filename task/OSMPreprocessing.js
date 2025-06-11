@@ -3,7 +3,7 @@ const readline = require('readline');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
-const { dataDir, constants, dataToolImage, osmPreprocessingSteps } = require('../config');
+const { dataDir, constants, dataToolImage, osmPreprocessingURLs } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
 
 /**
@@ -20,7 +20,7 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir) {
 
     if (!fs.existsSync(osmFile)) {
       reject(new Error(`${osmFile} does not exist!\n`));
-    } else if (!osmPreprocessingSteps[osmId]) {
+    } else if (!osmPreprocessingURLs[osmId]) {
       resolve(true);
       process.stdout.write('No OSM preprocessing instructions for ' + osmId + '\n');
     } else if (!fs.existsSync(preprocessingInstructionsFile)) {
@@ -45,6 +45,8 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir) {
             rl.on('line', line => {
               if (/^(osmconvert|osmfilter|osmupdate).*$/.test(line)) {
                 preprocessingInstructions.push(line);
+              } else if (line === '') {
+                process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
               } else {
                 // TODO invalid command
               }

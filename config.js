@@ -69,7 +69,7 @@ const osm = {
   ...extraOSM,
 };
 
-const osmPreprocessingSteps = {
+const osmPreprocessingURLs = {
   hsl: 'https://geocoding.blob.core.windows.net/vrk/osm-preprocessing-hsl.txt',
 };
 
@@ -89,9 +89,10 @@ module.exports = {
   osm: router.osm.map(id => {
     return { id, url: osm[id] };
   }), // array of id, url (OSM data) pairs
-  osmPreprocessingSteps: router.osm.map(id => {
-    return { id, url: osmPreprocessingSteps[id] };
+  osmPreprocessingInstructions: router.osm.map(id => {
+    return { id, url: osmPreprocessingURLs[id] };
   }), // array of id, url (OSM preprocessing instruction data) pairs
+  osmPreprocessingURLs,
   dem: router.dem ? [{ id: router.dem, url: dem[router.dem] }] : null, // currently only one DEM file is used
   dataToolImage: `hsldevcom/otp-data-tools:${process.env.TOOLS_TAG || 'v3'}`,
   dataDir: `${process.cwd()}/data`,
