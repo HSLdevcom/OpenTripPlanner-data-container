@@ -9,6 +9,7 @@
     "FloatingBike": true,
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
-    "Co2Emissions": true
+    "Co2Emissions": true,
+    "FlexRouting": true
   }
 }
