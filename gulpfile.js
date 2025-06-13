@@ -60,6 +60,7 @@ gulp.task('osm:download', async cb => {
   createDir(osmDir);
   await dl(config.osm, osmDlDir);
   if (config.osmPreprocessingInstructions) {
+    createDir(osmPreprocessingDlDir);
     await dl(config.osmPreprocessingInstructions, osmPreprocessingDlDir);
   }
   cb();

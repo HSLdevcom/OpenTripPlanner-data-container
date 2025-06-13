@@ -6,8 +6,6 @@ const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage, osmPreprocessingURLs } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
-const Vinyl = require('vinyl');
-const cloneable = require('cloneable-readable');
 
 async function readPreprocessingInstructions(preprocessingInstructionsFile) {
   const preprocessingInstructions = [];
@@ -55,17 +53,12 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
             const concatenatedInstructions = await readPreprocessingInstructions(preprocessingInstructionsFile);
             process.stdout.write('Running command: ' + concatenatedInstructions + '\n');
             const preprocessingCommand = exec(
-              `docker run -v ${dataDir}/tmp/${dir}:/tmp/osm-preprocessing -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
+              `docker run -v ${dataDir}/tmp/${dir}:/tmp/osm-preprocessing:rw -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
               { maxBuffer: constants.BUFFER_SIZE },
             );
             preprocessingCommand.on('exit', function (c) {
               if (c === 0) {
-                // The temporary directory is only deleted after the whole OSM pipeline is finished,
-                // instead of directly after the preprocessing is finished.
-                resolve(new Vinyl({
-                  path: osmFileName,
-                  contents: cloneable(fs.createReadStream(`${dataDir}/tmp/${dir}/${osmFileName}`)),
-                }));
+                resolve(fs.readFileSync(`${folder}/${osmFileName}`));
                 process.stdout.write(osmFile + ' + ' + preprocessingInstructionsFile + ' OSM preprocessing SUCCESS\n');
               } else {
                 const log = lastLog.join('');
@@ -73,6 +66,7 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
                 global.hasFailures = true;
                 resolve(null);
               }
+              fse.removeSync(folder);
             });
             preprocessingCommand.stdout.on('data', function (data) {
               lastLog.push(data.toString());
@@ -123,9 +117,10 @@ module.exports = {
         return callback(null, file);
       }
       preprocessWithFile(osmFile, true, osmPreprocessingDlDir, osmId, osmFileName)
-        .then(outputFile => {
-          if (outputFile) {
-            callback(null, outputFile);
+        .then(outputContents => {
+          if (outputContents) {
+            file.contents = outputContents;
+            callback(null, file);
           } else {
             callback(null, null);
           }
