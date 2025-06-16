@@ -89,7 +89,9 @@ module.exports = {
   osm: router.osm.map(id => {
     return { id, url: osm[id] };
   }), // array of id, url (OSM data) pairs
-  osmPreprocessingInstructions: router.osm.map(id => {
+  osmPreprocessingInstructions: router.osm.filter(id => {
+    return osmPreprocessingURLs[id];
+  }).map(id => {
     return { id, url: osmPreprocessingURLs[id] };
   }), // array of id, url (OSM preprocessing instruction data) pairs
   osmPreprocessingURLs,

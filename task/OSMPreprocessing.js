@@ -46,14 +46,13 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
         process.stdout.write(
           'Running OSM preprocessing instructions from ' + osmFile + ' in directory ' + folder + '...\n',
         );
-        const dir = folder.split('/').pop();
         const r = fs.createReadStream(osmFile);
         r.on('end', async () => {
           try {
             const concatenatedInstructions = await readPreprocessingInstructions(preprocessingInstructionsFile);
             process.stdout.write('Running command: ' + concatenatedInstructions + '\n');
             const preprocessingCommand = exec(
-              `docker run -v ${dataDir}/tmp/${dir}:/tmp/osm-preprocessing:rw -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
+              `docker run -v ${folder}:/tmp/osm-preprocessing:rw -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
               { maxBuffer: constants.BUFFER_SIZE },
             );
             preprocessingCommand.on('exit', function (c) {
