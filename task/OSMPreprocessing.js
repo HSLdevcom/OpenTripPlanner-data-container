@@ -9,6 +9,7 @@ const { postSlackMessage, createDir } = require('../util');
 
 async function readPreprocessingInstructions(preprocessingInstructionsFile) {
   const preprocessingInstructions = [];
+  const errorLines = [];
   const rl = readline.createInterface({
     input: fs.createReadStream(preprocessingInstructionsFile),
   });
@@ -18,10 +19,13 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
     } else if (line === '') {
       process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
     } else {
-      throw Error(`'${line}' is not a valid preprocessing instruction!\n`);
+      errorLines.push(line);
     }
   });
   await once(rl, 'close');
+  if (errorLines.length > 0) {
+    throw Error(`${errorLines.join(', ')} are not valid preprocessing instructions!\n`);
+  }
   return `-c '${preprocessingInstructions.join(' && ')}'`;
 }
 
@@ -87,7 +91,7 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
             });
           } catch (e) {
             const log = lastLog.join('');
-            postSlackMessage(`${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom:`);
+            postSlackMessage(`${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom: ${e}`);
             fse.removeSync(folder);
             reject(e);
           }
