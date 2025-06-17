@@ -4,7 +4,12 @@ const readline = require('readline');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
-const { dataDir, constants, dataToolImage, osmPreprocessingURLs } = require('../config');
+const {
+  dataDir,
+  constants,
+  dataToolImage,
+  osmPreprocessingURLs,
+} = require('../config');
 const { postSlackMessage, createDir } = require('../util');
 
 async function readPreprocessingInstructions(preprocessingInstructionsFile) {
@@ -13,18 +18,22 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
   const rl = readline.createInterface({
     input: fs.createReadStream(preprocessingInstructionsFile),
   });
-  rl.on('line', (line) => {
+  rl.on('line', line => {
     if (/^(osmconvert|osmfilter|osmupdate).*$/.test(line)) {
       preprocessingInstructions.push(line);
     } else if (line === '') {
-      process.stdout.write('Skipping empty line in ' + preprocessingInstructionsFile + '\n');
+      process.stdout.write(
+        'Skipping empty line in ' + preprocessingInstructionsFile + '\n',
+      );
     } else {
       errorLines.push(line);
     }
   });
   await once(rl, 'close');
   if (errorLines.length > 0) {
-    throw Error(`${errorLines.join(', ')} are not valid preprocessing instructions!\n`);
+    throw Error(
+      `${errorLines.join(', ')} are not valid preprocessing instructions!\n`,
+    );
   }
   return `-c '${preprocessingInstructions.join(' && ')}'`;
 }
@@ -33,7 +42,13 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
  * Runs the instructions listed in the OSM preprocessing file.
  * Only the osmfilter, osmconvert, and osmupdate commands can be used.
  */
-function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId, osmFileName) {
+function preprocessWithFile(
+  osmFile,
+  quiet = false,
+  osmPreprocessingDlDir,
+  osmId,
+  osmFileName,
+) {
   const lastLog = [];
 
   return new Promise((resolve, reject) => {
@@ -48,13 +63,22 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
       fs.mkdtemp(`${dataDir}/tmp/osm-preprocessing`, (err, folder) => {
         if (err) throw err;
         process.stdout.write(
-          'Running OSM preprocessing instructions from ' + osmFile + ' in directory ' + folder + '...\n',
+          'Running OSM preprocessing instructions from ' +
+            osmFile +
+            ' in directory ' +
+            folder +
+            '...\n',
         );
         const r = fs.createReadStream(osmFile);
         r.on('end', async () => {
           try {
-            const concatenatedInstructions = await readPreprocessingInstructions(preprocessingInstructionsFile);
-            process.stdout.write('Running command: ' + concatenatedInstructions + '\n');
+            const concatenatedInstructions =
+              await readPreprocessingInstructions(
+                preprocessingInstructionsFile,
+              );
+            process.stdout.write(
+              'Running command: ' + concatenatedInstructions + '\n',
+            );
             const preprocessingCommand = exec(
               `docker run -v ${folder}:/tmp/osm-preprocessing:rw -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
               { maxBuffer: constants.BUFFER_SIZE },
@@ -62,10 +86,17 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
             preprocessingCommand.on('exit', function (c) {
               if (c === 0) {
                 resolve(fs.readFileSync(`${folder}/${osmFileName}`));
-                process.stdout.write(osmFile + ' + ' + preprocessingInstructionsFile + ' OSM preprocessing SUCCESS\n');
+                process.stdout.write(
+                  osmFile +
+                    ' + ' +
+                    preprocessingInstructionsFile +
+                    ' OSM preprocessing SUCCESS\n',
+                );
               } else {
                 const log = lastLog.join('');
-                postSlackMessage(`${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom:`);
+                postSlackMessage(
+                  `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom:`,
+                );
                 global.hasFailures = true;
                 resolve(null);
               }
@@ -91,7 +122,9 @@ function preprocessWithFile(osmFile, quiet = false, osmPreprocessingDlDir, osmId
             });
           } catch (e) {
             const log = lastLog.join('');
-            postSlackMessage(`${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom: ${e}`);
+            postSlackMessage(
+              `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom: ${e}`,
+            );
             fse.removeSync(folder);
             reject(e);
           }
@@ -116,10 +149,18 @@ module.exports = {
       // This can be, for example, hsl, finland, or southFinland.
       const osmId = osmFileName.split('.')[0];
       if (!osmPreprocessingURLs[osmId]) {
-        process.stdout.write('No OSM preprocessing instructions for ' + osmId + '\n');
+        process.stdout.write(
+          'No OSM preprocessing instructions for ' + osmId + '\n',
+        );
         return callback(null, file);
       }
-      preprocessWithFile(osmFile, true, osmPreprocessingDlDir, osmId, osmFileName)
+      preprocessWithFile(
+        osmFile,
+        true,
+        osmPreprocessingDlDir,
+        osmId,
+        osmFileName,
+      )
         .then(outputContents => {
           if (outputContents) {
             file.contents = outputContents;
