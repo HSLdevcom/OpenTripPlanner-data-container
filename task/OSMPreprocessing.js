@@ -64,6 +64,8 @@ function preprocessWithFile(
         if (err) throw err;
         process.stdout.write(
           'Running OSM preprocessing instructions from ' +
+            preprocessingInstructionsFile +
+            ' for ' +
             osmFile +
             ' in directory ' +
             folder +
