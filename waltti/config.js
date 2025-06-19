@@ -17,7 +17,16 @@ module.exports = {
     ),
     mapSrc('Mikkeli', 'https://tvv.fra1.digitaloceanspaces.com/227.zip', true),
     mapSrc('Vaasa', 'https://tvv.fra1.digitaloceanspaces.com/249.zip', true),
-    mapSrc('Joensuu', 'https://tvv.fra1.digitaloceanspaces.com/207.zip', true),
+    mapSrc(
+      'Joensuu',
+      'https://tvv.fra1.digitaloceanspaces.com/207.zip',
+      true,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
+    ),
     mapSrc('FOLI', 'http://data.foli.fi/gtfs/gtfs.zip'),
     mapSrc(
       'Lahti',
