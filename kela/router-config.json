@@ -46,6 +46,9 @@
     },
     "intersectionTraversalModel": "CONSTANT"
   },
+  "gtfsApi": {
+    "tracingTags": ["digitransit-subscription-key"]
+  },
   "transit": {
     "dynamicSearchWindow": {
       "minWindow": "2h"

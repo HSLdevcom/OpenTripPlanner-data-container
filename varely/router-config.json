@@ -45,6 +45,9 @@
       "nonTransitGeneralizedCostLimit": "400 + 1.5x"
     }
   },
+  "gtfsApi": {
+    "tracingTags": ["digitransit-subscription-key"]
+  },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
     "dynamicSearchWindow": {
