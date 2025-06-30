@@ -61,6 +61,9 @@
       "AIRPLANE": "1200s"
     }
   },
+  "gtfsApi": {
+    "tracingTags": ["digitransit-subscription-key"]
+  },
   "flex": {
     "maxTransferDuration": "1m",
     "maxFlexTripDuration": "3h",

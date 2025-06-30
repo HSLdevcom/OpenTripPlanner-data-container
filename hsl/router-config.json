@@ -100,6 +100,9 @@
       ]
     }
   },
+  "gtfsApi": {
+    "tracingTags": ["digitransit-subscription-key"]
+  },
   "flex": {
     "maxTransferDuration": "5m",
     "maxFlexTripDuration": "30m",
