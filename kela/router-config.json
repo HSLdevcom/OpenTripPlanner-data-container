@@ -47,7 +47,7 @@
     "intersectionTraversalModel": "CONSTANT"
   },
   "gtfsApi": {
-    "tracingTags": ["digitransit-subscription-key"]
+    "tracingTags": ["digitransit-subscription-id"]
   },
   "transit": {
     "dynamicSearchWindow": {
