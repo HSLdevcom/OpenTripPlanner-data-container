@@ -46,7 +46,7 @@
     }
   },
   "gtfsApi": {
-    "tracingTags": ["digitransit-subscription-key"]
+    "tracingTags": ["digitransit-subscription-id"]
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],

@@ -62,7 +62,7 @@
     }
   },
   "gtfsApi": {
-    "tracingTags": ["digitransit-subscription-key"]
+    "tracingTags": ["digitransit-subscription-id"]
   },
   "flex": {
     "maxTransferDuration": "1m",
