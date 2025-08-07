@@ -47,7 +47,7 @@ async function handleOsmAndDemUpdate() {
 
   // OSM update is more complicated. Download often fails, so there is a retry loop,
   // which breaks when a big enough file gets loaded
-  if (!process.env.FREEZE_OSM) {
+  if (!process.env.USE_SEEDED_OSM) {
     global.blobSizeOk = false; // ugly hack but gulp does not return any values from tasks
     for (let i = 0; i < 3; i++) {
       await start('osm:update');

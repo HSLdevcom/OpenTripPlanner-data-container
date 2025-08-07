@@ -62,7 +62,7 @@ It is possible to change the behaviour of the data builder by defining environme
   - `ONLY_BUILD_STREET_GRAPH` to only build the street graph
   - `USE_PREBUILT_STREET_GRAPH` to use the prebuilt street graph to finish a complete graph build
   - All other values default to `NO_SPLIT_BUILD` which indicates that the build is run as normal
-- (Optional) `FREEZE_OSM` skips OSM updating and uses existing seed version
+- (Optional) `USE_SEEDED_OSM` skips OSM updating and uses existing seed version
 
 ### Data processing steps
 
