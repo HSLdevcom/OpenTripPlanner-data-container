@@ -52,11 +52,11 @@ async function handleOsmAndDemUpdate() {
     for (let i = 0; i < 3; i++) {
       await start('osm:update');
       if (global.blobSizeOk) {
-	break;
+        break;
       }
       if (i < 2) {
-	// sleep 10 mins before next attempt
-	await new Promise(resolve => setTimeout(resolve, 600000));
+        // sleep 10 mins before next attempt
+        await new Promise(resolve => setTimeout(resolve, 600000));
       }
     }
     if (!global.blobSizeOk) {
