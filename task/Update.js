@@ -64,7 +64,9 @@ async function handleOsmAndDemUpdate() {
       postSlackMessage('OSM data update failed, using previous version :boom:');
     }
   } else {
-    process.stdout.write('Skipping OSM update and using existing seeded data\n');
+    process.stdout.write(
+      'Skipping OSM update and using existing seeded data\n',
+    );
   }
 }
 
