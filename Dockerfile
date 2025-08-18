@@ -8,4 +8,4 @@ ADD . /opt/otp-data-builder/
 
 RUN yarn install
 
-CMD ( dockerd-entrypoint.sh --log-level=error > /dev/null 2>&1 & ) && unset DOCKER_HOST && sleep 180 && node index.js
+CMD ( dockerd-entrypoint.sh --log-level=error > /dev/null 2>&1 & ) && unset DOCKER_HOST && sleep 300 && node index.js
