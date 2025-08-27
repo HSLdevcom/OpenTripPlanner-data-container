@@ -1,6 +1,6 @@
 FROM docker:dind
 
-RUN apk add --update --no-cache bash zip p7zip curl nodejs yarn && rm -rf /var/cache/apk/*
+RUN apk add --update --no-cache bash zip p7zip curl nodejs yarn bind-tools && rm -rf /var/cache/apk/*
 
 WORKDIR /opt/otp-data-builder
 
