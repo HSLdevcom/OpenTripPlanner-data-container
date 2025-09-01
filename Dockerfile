@@ -15,7 +15,7 @@ CMD ( dockerd-entrypoint.sh --log-level=error > /dev/null 2>&1 & ) && \
         sleep 1; \
     done && \
     echo "Docker is running!" && \
-    until [ "$(dig +short slack.com)" ]; do \
+    until [[ -n $(nslookup slack.com | awk -F: '/^Address: / { print $2}' | xargs) ]]; do \
         echo "Waiting for DNS resolution to work."; \
         sleep 1; \
     done && \
