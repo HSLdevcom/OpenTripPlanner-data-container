@@ -52,11 +52,7 @@
     },
     "unpreferredCost": "1 + 0.4x",
     "unpreferred": {
-      "routes": [
-        "Lappeenranta:100",
-        "Lappeenranta:101",
-        "Lappeenranta:110"
-      ]
+      "routes": ["Lappeenranta:100", "Lappeenranta:101", "Lappeenranta:110"]
     }
   },
   "gtfsApi": {
