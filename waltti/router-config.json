@@ -49,6 +49,14 @@
         "costLimitFunction": "600 + 1.5x"
       },
       "nonTransitGeneralizedCostLimit": "400 + 1.5x"
+    },
+    "unpreferredCost": "1 + 0.4x",
+    "unpreferred": {
+      "routes": [
+        "Lappeenranta:100",
+        "Lappeenranta:101",
+        "Lappeenranta:110"
+      ]
     }
   },
   "gtfsApi": {
