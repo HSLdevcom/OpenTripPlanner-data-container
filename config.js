@@ -54,8 +54,7 @@ const extraOSM =
 
 const osm = {
   estonia: 'https://download.geofabrik.de/europe/estonia-latest.osm.pbf',
-  finland:
-    'https://karttapalvelu.storage.hsldev.com/finland.osm/finland.osm.pbf',
+  finland: 'https://download.geofabrik.de/europe/finland-latest.osm.pbf',
   hsl: 'https://karttapalvelu.storage.hsldev.com/hsl.osm/hsl.osm.pbf',
   kajaani:
     'https://karttapalvelu.storage.hsldev.com/waltti.osm/kajaani.osm.pbf',
