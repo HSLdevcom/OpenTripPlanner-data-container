@@ -324,12 +324,21 @@ gulp.task('router:store', () =>
 
 gulp.task(
   'router:storeForPrebuiltStreetGraphDataBuild',
-  gulp.series('router:store', () =>
+  gulp.series(
+    'router:store',
+    () =>
+      gulp
+        .src(`${global.osmPrebuildDir}/report/*`, noBuf)
+        .pipe(
+          gulp.dest(
+            `${config.storageDir}/${global.storageDirName}/street-report/`,
+          ),
+        ),
     gulp
-      .src(`${global.osmPrebuildDir}/report/*`, noBuf)
+      .src(`${global.osmPrebuildDir}/build.log`, noBuf)
       .pipe(
         gulp.dest(
-          `${config.storageDir}/${global.storageDirName}/street-report/`,
+          `${config.storageDir}/${global.storageDirName}/street-build.log`,
         ),
       ),
   ),
