@@ -670,16 +670,6 @@
       "url": "http://digitransit-proxy:8080/out/varely.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
       "feedId": "VARELY",
       "fuzzyTripMatching": false
-    },
-    {
-      "id": "bolt-helsinki-scooter-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "network": "bolt_helsinki",
-      "url": "https://mds.bolt.eu/gbfs/2/10/gbfs",
-      "geofencingZones": true,
-      "rentalPickupTypes": ["free_floating"]
     }
   ]
 }
