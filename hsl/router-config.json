@@ -295,16 +295,6 @@
       "frequency": "30s",
       "fuzzyTripMatching": true,
       "features": ["stop-position", "occupancy"]
-    },
-    {
-      "id": "bolt-helsinki-scooter-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "network": "bolt_helsinki",
-      "url": "https://mds.bolt.eu/gbfs/2/10/gbfs",
-      "geofencingZones": true,
-      "rentalPickupTypes": ["free_floating"]
     }
   ]
 }
