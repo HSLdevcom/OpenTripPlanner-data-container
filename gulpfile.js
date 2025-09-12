@@ -1,4 +1,5 @@
 const gulp = require('gulp');
+const rename = require('gulp-rename');
 const dl = require('./task/Download');
 const dlBlob = require('./task/DownloadDEMBlob');
 const { setFeedIdTask } = require('./task/SetFeedId');
@@ -334,13 +335,11 @@ gulp.task(
             `${config.storageDir}/${global.storageDirName}/street-report/`,
           ),
         ),
-    gulp
-      .src(`${global.osmPrebuildDir}/build.log`, noBuf)
-      .pipe(
-        gulp.dest(
-          `${config.storageDir}/${global.storageDirName}/street-build.log`,
-        ),
-      ),
+    () =>
+      gulp
+        .src(`${global.osmPrebuildDir}/build.log`, noBuf)
+        .pipe(rename('street-build.log'))
+        .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}`)),
   ),
 );
 
