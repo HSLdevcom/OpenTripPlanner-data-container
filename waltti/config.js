@@ -10,13 +10,13 @@ module.exports = {
     ),
     mapSrc(
       'Kotka',
-       'https://tvv.fra1.digitaloceanspaces.com/217.zip',
-        true,
-        undefined,
-        {
-          'fare_attributes.txt': 'digitransit_fare_attributes.txt',
-          'fare_rules.txt': 'digitransit_fare_rules.txt',
-        },
+      'https://tvv.fra1.digitaloceanspaces.com/217.zip',
+      true,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
     ),
     mapSrc('Kouvola', 'https://tvv.fra1.digitaloceanspaces.com/219.zip', true),
     mapSrc(
