@@ -47,20 +47,26 @@ async function handleOsmAndDemUpdate() {
 
   // OSM update is more complicated. Download often fails, so there is a retry loop,
   // which breaks when a big enough file gets loaded
-  global.blobSizeOk = false; // ugly hack but gulp does not return any values from tasks
-  for (let i = 0; i < 3; i++) {
-    await start('osm:update');
-    if (global.blobSizeOk) {
-      break;
+  if (!process.env.USE_SEEDED_OSM) {
+    global.blobSizeOk = false; // ugly hack but gulp does not return any values from tasks
+    for (let i = 0; i < 3; i++) {
+      await start('osm:update');
+      if (global.blobSizeOk) {
+        break;
+      }
+      if (i < 2) {
+        // sleep 10 mins before next attempt
+        await new Promise(resolve => setTimeout(resolve, 600000));
+      }
     }
-    if (i < 2) {
-      // sleep 10 mins before next attempt
-      await new Promise(resolve => setTimeout(resolve, 600000));
+    if (!global.blobSizeOk) {
+      global.hasFailures = true;
+      postSlackMessage('OSM data update failed, using previous version :boom:');
     }
-  }
-  if (!global.blobSizeOk) {
-    global.hasFailures = true;
-    postSlackMessage('OSM data update failed, using previous version :boom:');
+  } else {
+    process.stdout.write(
+      'Skipping OSM update and using existing seeded data\n',
+    );
   }
 }
 

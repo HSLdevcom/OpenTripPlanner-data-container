@@ -54,8 +54,7 @@ const extraOSM =
 
 const osm = {
   estonia: 'https://download.geofabrik.de/europe/estonia-latest.osm.pbf',
-  finland:
-    'https://karttapalvelu.storage.hsldev.com/finland.osm/finland.osm.pbf',
+  finland: 'https://download.geofabrik.de/europe/finland-latest.osm.pbf',
   hsl: 'https://karttapalvelu.storage.hsldev.com/hsl.osm/hsl.osm.pbf',
   kajaani:
     'https://karttapalvelu.storage.hsldev.com/waltti.osm/kajaani.osm.pbf',
@@ -67,6 +66,10 @@ const osm = {
   vaasa: 'https://karttapalvelu.storage.hsldev.com/waltti.osm/vaasa.osm.pbf',
   varely: 'https://karttapalvelu.storage.hsldev.com/finland.osm/varely.osm.pbf',
   ...extraOSM,
+};
+
+const osmPreprocessingURLs = {
+  hsl: 'https://geocoding.blob.core.windows.net/vrk/osm-preprocessing-hsl.txt',
 };
 
 const dem = {
@@ -84,7 +87,15 @@ module.exports = {
   gtfsMap,
   osm: router.osm.map(id => {
     return { id, url: osm[id] };
-  }), // array of id, url pairs
+  }), // array of id, url (OSM data) pairs
+  osmPreprocessingInstructions: router.osm
+    .filter(id => {
+      return osmPreprocessingURLs[id];
+    })
+    .map(id => {
+      return { id, url: osmPreprocessingURLs[id] };
+    }), // array of id, url (OSM preprocessing instruction data) pairs
+  osmPreprocessingURLs,
   dem: router.dem ? [{ id: router.dem, url: dem[router.dem] }] : null, // currently only one DEM file is used
   dataToolImage: `hsldevcom/otp-data-tools:${process.env.TOOLS_TAG || 'v3'}`,
   dataDir: `${process.cwd()}/data`,

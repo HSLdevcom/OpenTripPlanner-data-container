@@ -333,6 +333,16 @@
       "utilizationsFrequencySec": 600,
       "utilizationsUrl": "https://parking.fintraffic.fi/api/v1/utilizations.json?limit=-1",
       "hubsUrl": "https://parking.fintraffic.fi/api/v1/hubs.json?limit=-1"
+    },
+    {
+      "id": "bolt-helsinki-scooter-rental",
+      "type": "vehicle-rental",
+      "sourceType": "gbfs",
+      "frequency": "30s",
+      "network": "bolt_helsinki",
+      "url": "https://mds.bolt.eu/gbfs/2/10/gbfs",
+      "geofencingZones": true,
+      "rentalPickupTypes": ["free_floating"]
     }
   ]
 }

@@ -13,6 +13,11 @@ module.exports = {
       'https://resources.02taksi.fi/digitransit_02_taksi.zip',
       false,
     ),
+    mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
   ],
   osm: ['finland', 'estonia'],
 };

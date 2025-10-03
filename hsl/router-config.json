@@ -2,6 +2,7 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.95,
+    "elevatorBoardTime": 60,
     "bicycle": {
       "boardCost": 120,
       "reluctance": 1.7,
@@ -29,11 +30,9 @@
         }
       }
     },
-    "elevatorBoardTime": 60,
+    "maxDirectStreetDuration": "90m",
     "maxDirectStreetDurationForMode": {
-      "walk": "90m",
-      "car": "90m",
-      "bike": "180m"
+      "bike": "360m"
     },
     "maxJourneyDuration": "12h",
     "streetRoutingTimeout": "6s",
@@ -96,9 +95,13 @@
         "HSL:7848",
         "HSL:7848A",
         "HSL:7849",
-        "HSL:7999"
+        "HSL:7999",
+        "HSL:4343"
       ]
     }
+  },
+  "gtfsApi": {
+    "tracingTags": ["digitransit-subscription-id"]
   },
   "flex": {
     "maxTransferDuration": "5m",
@@ -292,16 +295,6 @@
       "frequency": "30s",
       "fuzzyTripMatching": true,
       "features": ["stop-position", "occupancy"]
-    },
-    {
-      "id": "bolt-helsinki-scooter-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "network": "bolt_helsinki",
-      "url": "https://mds.bolt.eu/gbfs/2/10/gbfs",
-      "geofencingZones": true,
-      "rentalPickupTypes": ["free_floating"]
     }
   ]
 }

@@ -1,4 +1,5 @@
 const gulp = require('gulp');
+const rename = require('gulp-rename');
 const dl = require('./task/Download');
 const dlBlob = require('./task/DownloadDEMBlob');
 const { setFeedIdTask } = require('./task/SetFeedId');
@@ -7,6 +8,7 @@ const prepareFit = require('./task/PrepareFit');
 const mapFit = require('./task/MapFit');
 const { validateBlobSize } = require('./task/BlobValidation');
 const { testOTPFile } = require('./task/OTPTest');
+const { runOSMPreprocessing } = require('./task/OSMPreprocessing');
 const seed = require('./task/Seed');
 const {
   prepareRouterData,
@@ -28,6 +30,7 @@ const storageCleanup = require('./task/StorageCleanup');
 const seedSourceDir = `${config.dataDir}/router-${config.router.id}`; // e.g. data/router-hsl
 
 const osmDlDir = `${config.dataDir}/downloads/osm`;
+const osmPreprocessingDlDir = `${config.dataDir}/downloads/osm-preprocessing`;
 const demDlDir = `${config.dataDir}/downloads/dem`;
 const gtfsDlDir = `${config.dataDir}/downloads/gtfs`;
 
@@ -57,6 +60,10 @@ gulp.task('osm:download', async cb => {
   createDir(osmDlDir);
   createDir(osmDir);
   await dl(config.osm, osmDlDir);
+  if (config.osmPreprocessingInstructions) {
+    createDir(osmPreprocessingDlDir);
+    await dl(config.osmPreprocessingInstructions, osmPreprocessingDlDir);
+  }
   cb();
 });
 
@@ -68,6 +75,7 @@ gulp.task(
       gulp
         .src(`${osmDlDir}/*`, noBuf)
         .pipe(validateBlobSize())
+        .pipe(runOSMPreprocessing(osmPreprocessingDlDir))
         .pipe(testOTPFile())
         .pipe(gulp.dest(osmDir)),
     () => del(tmpDir),
@@ -317,14 +325,21 @@ gulp.task('router:store', () =>
 
 gulp.task(
   'router:storeForPrebuiltStreetGraphDataBuild',
-  gulp.series('router:store', () =>
-    gulp
-      .src(`${global.osmPrebuildDir}/report/*`, noBuf)
-      .pipe(
-        gulp.dest(
-          `${config.storageDir}/${global.storageDirName}/street-report/`,
+  gulp.series(
+    'router:store',
+    () =>
+      gulp
+        .src(`${global.osmPrebuildDir}/report/*`, noBuf)
+        .pipe(
+          gulp.dest(
+            `${config.storageDir}/${global.storageDirName}/street-report/`,
+          ),
         ),
-      ),
+    () =>
+      gulp
+        .src(`${global.osmPrebuildDir}/build.log`, noBuf)
+        .pipe(rename('street-build.log'))
+        .pipe(gulp.dest(`${config.storageDir}/${global.storageDirName}`)),
   ),
 );
 
