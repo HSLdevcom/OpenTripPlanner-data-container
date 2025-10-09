@@ -4,12 +4,7 @@ const readline = require('readline');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
-const {
-  dataDir,
-  constants,
-  dataToolImage,
-  osmPreprocessingURLs,
-} = require('../config');
+const { dataDir, constants, dataToolImage } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
 
 async function readPreprocessingInstructions(preprocessingInstructionsFile) {
@@ -45,19 +40,23 @@ async function readPreprocessingInstructions(preprocessingInstructionsFile) {
 function preprocessWithFile(
   osmFile,
   quiet = false,
-  osmPreprocessingDlDir,
+  osmPreprocessingDir,
   osmId,
   osmFileName,
 ) {
   const lastLog = [];
 
   return new Promise((resolve, reject) => {
-    const preprocessingInstructionsFile = `${osmPreprocessingDlDir}/${osmId}.txt`;
+    const preprocessingInstructionsFile = `${osmPreprocessingDir}/${osmId}.txt`;
 
     if (!fs.existsSync(osmFile)) {
       reject(new Error(`${osmFile} does not exist!\n`));
     } else if (!fs.existsSync(preprocessingInstructionsFile)) {
-      reject(new Error(`${preprocessingInstructionsFile} does not exist!\n`));
+      reject(
+        new Error(
+          `No OSM preprocessing instructions for ${osmId}. ${preprocessingInstructionsFile} does not exist!\n`,
+        ),
+      );
     } else {
       createDir(`${dataDir}/tmp`);
       fs.mkdtemp(`${dataDir}/tmp/osm-preprocessing`, (err, folder) => {
@@ -138,7 +137,7 @@ function preprocessWithFile(
 }
 
 module.exports = {
-  runOSMPreprocessing: osmPreprocessingDlDir => {
+  runOSMPreprocessing: osmPreprocessingDir => {
     return through.obj(function (file, encoding, callback) {
       const osmFile = file.history[file.history.length - 1];
       if (process.env.SKIP_OSM_PREPROCESSING) {
@@ -150,19 +149,7 @@ module.exports = {
       const osmFileName = osmFile.split('/').pop();
       // This can be, for example, hsl, finland, or southFinland.
       const osmId = osmFileName.split('.')[0];
-      if (!osmPreprocessingURLs[osmId]) {
-        process.stdout.write(
-          'No OSM preprocessing instructions for ' + osmId + '\n',
-        );
-        return callback(null, file);
-      }
-      preprocessWithFile(
-        osmFile,
-        true,
-        osmPreprocessingDlDir,
-        osmId,
-        osmFileName,
-      )
+      preprocessWithFile(osmFile, true, osmPreprocessingDir, osmId, osmFileName)
         .then(outputContents => {
           if (outputContents) {
             file.contents = outputContents;
@@ -171,7 +158,8 @@ module.exports = {
             callback(null, null);
           }
         })
-        .catch(() => {
+        .catch(err => {
+          process.stdout.write(err.message);
           callback(null, null);
         });
     });
