@@ -30,7 +30,6 @@ const storageCleanup = require('./task/StorageCleanup');
 const seedSourceDir = `${config.dataDir}/router-${config.router.id}`; // e.g. data/router-hsl
 
 const osmDlDir = `${config.dataDir}/downloads/osm`;
-const osmPreprocessingDlDir = `${config.dataDir}/downloads/osm-preprocessing`;
 const demDlDir = `${config.dataDir}/downloads/dem`;
 const gtfsDlDir = `${config.dataDir}/downloads/gtfs`;
 
@@ -60,10 +59,6 @@ gulp.task('osm:download', async cb => {
   createDir(osmDlDir);
   createDir(osmDir);
   await dl(config.osm, osmDlDir);
-  if (config.osmPreprocessingInstructions) {
-    createDir(osmPreprocessingDlDir);
-    await dl(config.osmPreprocessingInstructions, osmPreprocessingDlDir);
-  }
   cb();
 });
 
@@ -75,7 +70,7 @@ gulp.task(
       gulp
         .src(`${osmDlDir}/*`, noBuf)
         .pipe(validateBlobSize())
-        .pipe(runOSMPreprocessing(osmPreprocessingDlDir))
+        .pipe(runOSMPreprocessing(`${config.router.id}/osm-preprocessing`))
         .pipe(testOTPFile())
         .pipe(gulp.dest(osmDir)),
     () => del(tmpDir),
