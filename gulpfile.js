@@ -62,15 +62,26 @@ gulp.task('osm:download', async cb => {
   cb();
 });
 
+gulp.task('osm:copyPreprocessingFiles', () =>
+  gulp
+    .src(`${config.router.id}/osm-preprocessing/*.sh`, noBuf)
+    .pipe(gulp.dest(`${config.dataDir}/${config.router.id}/osm-preprocessing`)),
+);
+
 gulp.task(
   'osm:update',
   gulp.series(
+    'osm:copyPreprocessingFiles',
     'osm:download',
     () =>
       gulp
         .src(`${osmDlDir}/*`, noBuf)
         .pipe(validateBlobSize())
-        .pipe(runOSMPreprocessing(`${config.router.id}/osm-preprocessing`))
+        .pipe(
+          runOSMPreprocessing(
+            `${config.dataDir}/${config.router.id}/osm-preprocessing`,
+          ),
+        )
         .pipe(testOTPFile())
         .pipe(gulp.dest(osmDir)),
     () => del(tmpDir),

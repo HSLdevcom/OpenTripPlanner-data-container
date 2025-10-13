@@ -1,41 +1,12 @@
 const fs = require('fs');
-const { once } = require('events');
-const readline = require('readline');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
 
-async function readPreprocessingInstructions(preprocessingInstructionsFile) {
-  const preprocessingInstructions = [];
-  const errorLines = [];
-  const rl = readline.createInterface({
-    input: fs.createReadStream(preprocessingInstructionsFile),
-  });
-  rl.on('line', line => {
-    if (/^(osmconvert|osmfilter|osmupdate).*$/.test(line)) {
-      preprocessingInstructions.push(line);
-    } else if (line === '') {
-      process.stdout.write(
-        'Skipping empty line in ' + preprocessingInstructionsFile + '\n',
-      );
-    } else {
-      errorLines.push(line);
-    }
-  });
-  await once(rl, 'close');
-  if (errorLines.length > 0) {
-    throw Error(
-      `${errorLines.join(', ')} are not valid preprocessing instructions!\n`,
-    );
-  }
-  return `-c '${preprocessingInstructions.join(' && ')}'`;
-}
-
 /**
- * Runs the instructions listed in the OSM preprocessing file.
- * Only the osmfilter, osmconvert, and osmupdate commands can be used.
+ * Runs the instructions listed in the OSM preprocessing bash script.
  */
 function preprocessWithFile(
   osmFile,
@@ -47,7 +18,7 @@ function preprocessWithFile(
   const lastLog = [];
 
   return new Promise((resolve, reject) => {
-    const preprocessingInstructionsFile = `${osmPreprocessingDir}/${osmId}.txt`;
+    const preprocessingInstructionsFile = `${osmPreprocessingDir}/${osmId}.sh`;
 
     if (!fs.existsSync(osmFile)) {
       reject(new Error(`${osmFile} does not exist!\n`));
@@ -73,15 +44,13 @@ function preprocessWithFile(
         const r = fs.createReadStream(osmFile);
         r.on('end', async () => {
           try {
-            const concatenatedInstructions =
-              await readPreprocessingInstructions(
-                preprocessingInstructionsFile,
-              );
             process.stdout.write(
-              'Running command: ' + concatenatedInstructions + '\n',
+              'Running commands from file: ' +
+                preprocessingInstructionsFile +
+                '\n',
             );
             const preprocessingCommand = exec(
-              `docker run -v ${folder}:/tmp/osm-preprocessing:rw -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} ${concatenatedInstructions}`,
+              `docker run -v ${folder}:/tmp/osm-preprocessing:rw -v ${preprocessingInstructionsFile}:/tmp/preprocessing.sh:ro -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} /tmp/preprocessing.sh`,
               { maxBuffer: constants.BUFFER_SIZE },
             );
             preprocessingCommand.on('exit', function (c) {
