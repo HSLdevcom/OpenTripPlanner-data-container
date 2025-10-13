@@ -187,6 +187,7 @@ When creating OSM preprocessing instructions you should:
 1. Name the bash file as follows: `<osm_id_of_osm_file>.sh`. Valid file names can be e.g. `hsl.sh` or `southFinland.sh`.
 2. Place the file in the `osm-preprocessing` directory of the config you want to use.
 3. Make sure that the name of the output file is the same as the input file e.g. `hsl.pbf`.
-4. Make sure that you do not reuse input and output filenames in commands.
-For example, do not use: `osmfilter hsl.o5m -o=hsl.o5m ...` you can instead use `osmfilter hsl.o5m -o=hsl2.o5m ...`.
+4. Make sure that you do not reuse input and output filenames in commands:
+   - INCORRECT `osmfilter hsl.o5m -o=hsl.o5m ...`
+   - CORRECT `osmfilter hsl.o5m -o=hsl2.o5m ...`
 5. Test the script by running it locally and verifying that the output makes sense.
