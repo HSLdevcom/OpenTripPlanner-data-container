@@ -35,6 +35,11 @@ module.exports = {
       ['kela/gtfs-rules/remove-route-color.rule'],
     ),
     mapSrc(
+      'kela_lautat',
+      'https://mobility.mobility-database.fintraffic.fi/static/kelalautat.zip',
+      false,
+    ),
+    mapSrc(
       'matkahuolto',
       mhAddress,
       false,
