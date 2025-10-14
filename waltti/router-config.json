@@ -22,13 +22,7 @@
       "boardCost": 120
     },
     "accessEgress": {
-      "maxDuration": "1h",
-      "penalty": {
-        "FLEXIBLE": {
-          "timePenalty": "10m + 1.9t",
-          "costFactor": 2
-        }
-      }
+      "maxDuration": "1h"
     },
     "maxDirectStreetDuration": "2h",
     "maxDirectStreetDurationForMode": {
@@ -57,12 +51,6 @@
   },
   "gtfsApi": {
     "tracingTags": ["digitransit-subscription-id"]
-  },
-  "flex": {
-    "maxTransferDuration": "5m",
-    "maxFlexTripDuration": "30m",
-    "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m"
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
