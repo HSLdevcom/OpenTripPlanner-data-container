@@ -94,10 +94,6 @@ module.exports = {
       },
     ),
     mapSrc(
-      'tampereDRT',
-      'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_kutsuliikenne.zip',
-    ),
-    mapSrc(
       'Pori',
       'https://tvv.fra1.digitaloceanspaces.com/231.zip',
       true,
