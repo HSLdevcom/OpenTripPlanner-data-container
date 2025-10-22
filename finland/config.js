@@ -5,7 +5,7 @@ module.exports = {
   src: [
     mapSrc(
       'HSL',
-      'https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip',
+      'https://infopalvelut.storage.hsldev.com/gtfs/hsl_google_transit.zip',
       false,
       ['finland/gtfs-rules/hsl-no-trains.rule'],
       { 'trips.txt': 'trips2.txt' },
