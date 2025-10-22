@@ -101,9 +101,7 @@
     }
   },
   "gtfsApi": {
-    "tracingTags": [
-      "digitransit-subscription-id"
-    ]
+    "tracingTags": ["digitransit-subscription-id"]
   },
   "flex": {
     "maxTransferDuration": "5m",
@@ -113,13 +111,7 @@
   },
   "transit": {
     "maxSearchWindow": "8h",
-    "pagingSearchWindowAdjustments": [
-      "8h",
-      "2h",
-      "2h",
-      "2h",
-      "2h"
-    ],
+    "pagingSearchWindowAdjustments": ["8h", "2h", "2h", "2h", "2h"],
     "dynamicSearchWindow": {
       "minWindow": "1h"
     },
@@ -285,9 +277,7 @@
       "network": "vantaa",
       "url": "http://digitransit-proxy:8080/out/vantaa-api.giravolta.io/api-opendata/gbfs/2_3/gbfs",
       "overloadingAllowed": true,
-      "rentalPickupTypes": [
-        "station"
-      ]
+      "rentalPickupTypes": ["station"]
     },
     {
       "id": "hsl-bike-rental",
@@ -304,10 +294,7 @@
       "feedId": "HSL",
       "frequency": "30s",
       "fuzzyTripMatching": true,
-      "features": [
-        "stop-position",
-        "occupancy"
-      ]
+      "features": ["stop-position", "occupancy"]
     }
   ]
 }
