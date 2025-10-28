@@ -124,12 +124,12 @@ module.exports = {
             file.contents = outputContents;
             callback(null, file);
           } else {
-            callback(null, null);
+            callback(null, file);
           }
         })
         .catch(err => {
           process.stdout.write(err.message);
-          callback(null, null);
+          callback(null, file);
         });
     });
   },
