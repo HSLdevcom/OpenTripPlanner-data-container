@@ -12,6 +12,12 @@ module.exports = {
     mapSrc(
       'tampere',
       'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_mattersoft.zip',
+      false,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
     ),
   ],
   osm: ['oulu', 'southFinland'],
