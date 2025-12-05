@@ -580,16 +580,6 @@
       "overloadingAllowed": true
     },
     {
-      "id": "lahti-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "60s",
-      "network": "freebike_lahti",
-      "url": "http://digitransit-proxy:8080/out/tkhslahtistorage.blob.core.windows.net/gbfs/gbfs.json",
-      "overloadingAllowed": true,
-      "rentalPickupTypes": ["station"]
-    },
-    {
       "id": "vantaa-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
