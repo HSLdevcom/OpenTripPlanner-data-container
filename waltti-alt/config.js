@@ -19,6 +19,19 @@ module.exports = {
         'fare_rules.txt': 'digitransit_fare_rules.txt',
       },
     ),
+    mapSrc(
+      'digitraffic',
+      'https://rata.digitraffic.fi/api/v1/trains/gtfs-passenger-stops.zip',
+      false,
+      undefined,
+      undefined,
+      {
+        headers: {
+          'Accept-Encoding': 'gzip',
+          'Digitraffic-User': 'Digitransit/OTP-dataloading',
+        },
+      },
+    ),
   ],
   osm: ['oulu', 'southFinland'],
 };
