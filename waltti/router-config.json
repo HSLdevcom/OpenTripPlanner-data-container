@@ -479,6 +479,16 @@
       "overloadingAllowed": true
     },
     {
+      "id": "mankeli-bike-rental",
+      "network": "freebike_lahti",
+      "type": "vehicle-rental",
+      "sourceType": "gbfs",
+      "frequency": "60s",
+      "url": "http://digitransit-proxy:8080/out/tkhslahtistorage.blob.core.windows.net/gbfs/gbfs.json",
+      "overloadingAllowed": true,
+      "rentalPickupTypes": ["station"]
+    },
+    {
       "id": "liipi",
       "type": "vehicle-parking",
       "sourceType": "liipi",
