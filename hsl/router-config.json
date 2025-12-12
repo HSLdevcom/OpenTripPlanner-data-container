@@ -270,6 +270,25 @@
       "hubsUrl": "https://parking.fintraffic.fi/api/v1/hubs.json?limit=-1"
     },
     {
+      "id": "vantaa-bike-rental",
+      "type": "vehicle-rental",
+      "sourceType": "gbfs",
+      "frequency": "30s",
+      "network": "vantaa",
+      "url": "http://digitransit-proxy:8080/out/vantaa-api.giravolta.io/api-opendata/gbfs/2_3/gbfs",
+      "overloadingAllowed": true,
+      "rentalPickupTypes": ["station"]
+    },
+    {
+      "id": "hsl-bike-rental",
+      "type": "vehicle-rental",
+      "sourceType": "smoove",
+      "frequency": "30s",
+      "network": "smoove",
+      "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
+      "overloadingAllowed": true
+    },
+    {
       "type": "vehicle-positions",
       "url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
       "feedId": "HSL",
