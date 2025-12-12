@@ -445,32 +445,6 @@
       "fuzzyTripMatching": false
     },
     {
-      "id": "lappeenranta-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "url": "http://digitransit-proxy:8080/out/stables.donkey.bike/api/public/gbfs/2/donkey_lappeenranta/gbfs.json",
-      "overloadingAllowed": true,
-      "rentalPickupTypes": ["station"]
-    },
-    {
-      "id": "kotka-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "url": "http://digitransit-proxy:8080/out/stables.donkey.bike/api/public/gbfs/2/donkey_kotka/gbfs.json",
-      "overloadingAllowed": true,
-      "rentalPickupTypes": ["station"]
-    },
-    {
-      "id": "kouvola-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "url": "http://digitransit-proxy:8080/out/stables.donkey.bike/api/public/gbfs/2/donkey_kouvola/gbfs.json",
-      "overloadingAllowed": true
-    },
-    {
       "id": "turku-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
@@ -497,15 +471,6 @@
       "url": "http://digitransit-proxy:8080/out/bosse.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
       "feedId": "Raasepori",
       "fuzzyTripMatching": false
-    },
-    {
-      "id": "tampere-bike-rental",
-      "network": "inurba_tampere",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "url": "https://gbfs.urbansharing.com/tampere.onurbansharing.com/gbfs.json",
-      "overloadingAllowed": true
     },
     {
       "id": "salo-trip-updates",
