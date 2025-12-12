@@ -479,6 +479,15 @@
       "overloadingAllowed": true
     },
     {
+      "id": "vilkku-bike-rental",
+      "network": "freebike_kuopio",
+      "type": "vehicle-rental",
+      "sourceType": "gbfs",
+      "frequency": "30s",
+      "url": "http://digitransit-proxy:8080/out/tkhskuopiostrg.blob.core.windows.net/gbfs/gbfs.json",
+      "overloadingAllowed": true
+    },
+    {
       "id": "mankeli-bike-rental",
       "network": "freebike_lahti",
       "type": "vehicle-rental",
