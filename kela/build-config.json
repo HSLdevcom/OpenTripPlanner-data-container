@@ -17,7 +17,7 @@
       }
     }
   ],
-    "transferParametersForMode": {
+  "transferParametersForMode": {
     "CAR": {
       "disableDefaultTransfers": true,
       "carsAllowedStopMaxTransferDuration": "2h"
