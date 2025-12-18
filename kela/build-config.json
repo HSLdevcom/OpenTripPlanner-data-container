@@ -17,7 +17,6 @@
       }
     },
     { "modes": "CAR" }
-
   ],
   "transferParametersForMode": {
     "CAR": {
