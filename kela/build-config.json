@@ -15,7 +15,9 @@
       "wheelchairAccessibility": {
         "enabled": true
       }
-    }
+    },
+    { "modes": "CAR" }
+
   ],
   "transferParametersForMode": {
     "CAR": {
