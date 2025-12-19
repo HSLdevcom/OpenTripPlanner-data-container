@@ -22,7 +22,13 @@
     },
     "accessEgress": {
       "maxDuration": "8h",
-      "maxStopCount": "400"
+      "maxStopCount": "400",
+      "maxDurationForMode": {
+        "CAR": "3h"
+      },
+      "maxStopCountForMode": {
+        "CAR": 0
+      }
     },
     "maxDirectStreetDuration": "100h",
     "maxDirectStreetDurationForMode": {
