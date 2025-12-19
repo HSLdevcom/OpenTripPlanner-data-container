@@ -24,7 +24,7 @@
       "maxDuration": "8h",
       "maxStopCount": "400",
       "maxDurationForMode": {
-        "CAR": "8h"
+        "CAR": "3h"
       },
       "maxStopCountForMode": {
         "CAR": 0
