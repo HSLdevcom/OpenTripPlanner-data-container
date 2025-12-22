@@ -185,6 +185,14 @@
         "cacheMaxSeconds": 60
       },
       {
+        "name": "areaStops",
+        "type": "areaStop",
+        "mapper": "OTPRR",
+        "maxZoom": 20,
+        "minZoom": 5,
+        "cacheMaxSeconds": 43200
+      },
+      {
         "name": "stations",
         "type": "Station",
         "mapper": "Digitransit",
