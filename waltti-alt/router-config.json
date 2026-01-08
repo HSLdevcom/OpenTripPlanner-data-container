@@ -2,7 +2,9 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.95,
-    "elevatorBoardTime": 60,
+    "elevator": {
+      "boardSlack": "60s"
+    },
     "bicycle": {
       "boardCost": 120,
       "reluctance": 1.7,
