@@ -72,7 +72,7 @@ module.exports = {
     mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
-    mapSrc('Viro', 'https://peatus.ee/gtfs/gtfs.zip'),
+    mapSrc('Viro', 'https://mobility.mobility-database.fintraffic.fi/static/viro.zip'),
     mapSrc(
       'Raasepori',
       'https://tvv.fra1.digitaloceanspaces.com/232.zip',
