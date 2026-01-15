@@ -18,6 +18,16 @@ module.exports = {
       'https://resources.02taksi.fi/digitransit_02_taksi.zip',
       false,
     ),
+    mapSrc(
+      'KirkkonummiE',
+      'https://gtfsdata.blob.core.windows.net/hsl/hsl_flex_test1-gtfs.zip',
+      false,
+    ),
+    mapSrc(
+      'KirkkonummiP',
+      'https://gtfsdata.blob.core.windows.net/hsl/hsl_flex_test2-gtfs.zip',
+      false,
+    ),
   ],
   osm: ['finland', 'estonia'],
 };
