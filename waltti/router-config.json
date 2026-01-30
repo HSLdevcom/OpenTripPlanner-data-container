@@ -6,16 +6,17 @@
       "boardSlack": "60s"
     },
     "bicycle": {
-      "boardCost": 120,
+      "speed": 5.55,
       "reluctance": 1.7,
+      "boardCost": 120,
       "optimization": "safest-streets"
     },
     "car": {
       "reluctance": 10.0
     },
     "walk": {
-      "speed": 1.3,
-      "reluctance": 1.75,
+      "speed": 1.2,
+      "reluctance": 1.8,
       "stairsReluctance": 1.2,
       "stairsTimeFactor": 2,
       "escalator": {
@@ -62,18 +63,10 @@
     "maxNumberOfTransfers": 12,
     "transferCacheRequests": [
       {
-        "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        }
+        "modes": "WALK"
       },
       {
         "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "wheelchairAccessibility": {
           "enabled": true
         }
@@ -81,31 +74,12 @@
       {
         "modes": "WALK",
         "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
+          "speed": 1.67
         }
       },
       {
         "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          }
-        }
-      },
-      {
-        "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
-        },
-        "bicycle": {
-          "speed": 5.55,
           "rental": {
             "useAvailabilityInformation": true
           }
