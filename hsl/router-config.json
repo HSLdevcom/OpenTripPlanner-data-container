@@ -276,6 +276,7 @@
       "overloadingAllowed": true
     },
     {
+      "id": "hsl-vehicle-positions",
       "type": "vehicle-positions",
       "url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
       "feedId": "HSL",
