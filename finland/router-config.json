@@ -572,15 +572,6 @@
       "rentalPickupTypes": ["station"]
     },
     {
-      "id": "hsl-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "smoove",
-      "frequency": "30s",
-      "network": "smoove",
-      "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "overloadingAllowed": true
-    },
-    {
       "id": "turku-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
