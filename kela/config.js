@@ -40,7 +40,6 @@ module.exports = {
       false,
       [
         'kela/gtfs-rules/matkahuolto.rule',
-        'kela/gtfs-rules/remove-matching-route.rule',
         'kela/gtfs-rules/remove-route-color.rule',
       ],
       { 'transfers.txt': null },

@@ -1,6 +1,2 @@
-# Onnibus mega (has no support for Kela fare)
-{"op":"remove", "match":{"file":"agency.txt", "agency_id":"4820"}}
-{"op":"remove", "match":{"file":"agency.txt", "agency_id":"7247"}}
-
 # Länsilinjat duplicates
 {"op":"remove", "match":{"file":"agency.txt", "agency_id":"299"}}
