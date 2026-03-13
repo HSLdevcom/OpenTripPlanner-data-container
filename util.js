@@ -80,6 +80,7 @@ function distance(lat1, lon1, lat2, lon2) {
 async function match(line, connectedStream, unconnectedStream) {
   let res = UNCONNECTED.exec(line);
   if (res != null) {
+    // eslint-disable-next-line
     const [stopid, stopcode, jorelon, jorelat] = res.slice(1);
     unconnectedStream.write([stopcode, jorelat, jorelon].join(',') + '\n');
     return;
