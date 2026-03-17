@@ -25,11 +25,11 @@
   "transferParametersForMode": {
     "CAR": {
       "disableDefaultTransfers": true,
-      "carsAllowedStopMaxTransferDuration": "2h"
+      "carsAllowedStopMaxTransferDuration": "90m"
     },
     "BIKE": {
       "maxTransferDuration": "30m",
-      "carsAllowedStopMaxTransferDuration": "2h"
+      "carsAllowedStopMaxTransferDuration": "90m"
     }
   },
   "boardingLocationTags": ["ref", "ref:findt", "ref:findr"],
