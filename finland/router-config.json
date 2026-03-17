@@ -30,7 +30,7 @@
       "maxDurationForMode": {
         "CAR_TO_PARK": "2h",
         "BIKE": "2h",
-        "CAR": "3h"
+        "CAR": "90m"
       },
       "maxStopCountForMode": {
         "BIKE": 0,
@@ -69,9 +69,10 @@
   },
   "flex": {
     "maxTransferDuration": "1m",
-    "maxFlexTripDuration": "3h",
+    "maxFlexTripDuration": "1h",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m"
+    "maxEgressWalkDuration": "5m",
+    "maxFlexStopCount": 300
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
