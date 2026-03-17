@@ -2,6 +2,7 @@
   "otpFeatures": {
     "GtfsGraphQlApi": true,
     "DebugUi": true,
+    "CostlyAssertions": false,
     "APIServerInfo": true,
     "APIUpdaterStatus": false,
     "SandboxAPIMapboxVectorTilesApi": true,
