@@ -563,16 +563,6 @@
       "rentalPickupTypes": ["station"]
     },
     {
-      "id": "vantaa-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "network": "vantaa",
-      "url": "http://digitransit-proxy:8080/out/vantaa-api.giravolta.io/api-opendata/gbfs/2_3/gbfs",
-      "overloadingAllowed": true,
-      "rentalPickupTypes": ["station"]
-    },
-    {
       "id": "turku-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
@@ -597,6 +587,16 @@
       "frequency": "30s",
       "url": "https://gbfs.urbansharing.com/tampere.onurbansharing.com/gbfs.json",
       "overloadingAllowed": true
+    },
+    {
+      "id": "hsl-bike-rental",
+      "type": "vehicle-rental",
+      "sourceType": "gbfs",
+      "network": "hsl",
+      "frequency": "30s",
+      "url": "http://digitransit-proxy:8080/out/gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
+      "overloadingAllowed": true,
+      "rentalPickupTypes": ["station"]
     },
     {
       "id": "liipi",
