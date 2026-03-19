@@ -16,6 +16,11 @@ module.exports = {
       true,
     ),
     mapSrc(
+      'flixbus',
+      'https://mobility.mobility-database.fintraffic.fi/static/Flixbus.zip',
+      true,
+    ),
+    mapSrc(
       'CAR_FERRIES',
       'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
       true,
