@@ -74,7 +74,7 @@
     "tracingTags": ["digitransit-subscription-id"]
   },
   "flex": {
-    "maxTransferDuration": "1m",
+    "maxTransferDuration": "5m",
     "maxFlexTripDuration": "1h",
     "maxAccessWalkDuration": "5m",
     "maxEgressWalkDuration": "5m",
