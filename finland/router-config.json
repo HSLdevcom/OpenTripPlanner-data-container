@@ -38,8 +38,8 @@
       },
       "penalty": {
         "FLEXIBLE": {
-          "timePenalty": "10m + 1.9t",
-          "costFactor": 2
+          "timePenalty": "10m + 3t",
+          "costFactor": 3
         }
       }
     },

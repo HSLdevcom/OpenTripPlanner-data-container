@@ -25,7 +25,13 @@
       "boardCost": 120
     },
     "accessEgress": {
-      "maxDuration": "1h"
+      "maxDuration": "1h",
+      "penalty": {
+        "FLEXIBLE": {
+          "timePenalty": "10m + 3t",
+          "costFactor": 3
+        }
+      }
     },
     "maxDirectStreetDuration": "4h",
     "maxDirectStreetDurationForMode": {
