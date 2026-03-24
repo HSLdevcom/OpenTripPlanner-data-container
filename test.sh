@@ -34,7 +34,7 @@ docker run --rm --name $OTPCONT -e JAVA_OPTS="$JAVA_OPTS" -e MOBILITY_API_KEY=$"
 
 echo Getting otp ip..
 timeout=$(($(date +%s) + 480))
-until IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $OTPCONT) || [[ $(date +%s) -gt $timeout ]]; do sleep 1;done;
+until IP=$(docker inspect --format '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $OTPCONT) || [[ $(date +%s) -gt $timeout ]]; do sleep 1;done;
 
 if [ "$IP" == "" ]; then
   echo Could not get ip. failing test

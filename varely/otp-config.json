@@ -2,11 +2,13 @@
   "otpFeatures": {
     "GtfsGraphQlApi": true,
     "DebugUi": true,
+    "CostlyAssertions": false,
     "APIServerInfo": true,
     "APIUpdaterStatus": false,
     "SandboxAPIMapboxVectorTilesApi": true,
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
-    "DebugRasterTiles": true
+    "DebugRasterTiles": true,
+    "FlexRouting": true
   }
 }

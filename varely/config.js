@@ -14,6 +14,11 @@ module.exports = {
     ),
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
+    mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
   ],
   osm: ['varely'],
 };

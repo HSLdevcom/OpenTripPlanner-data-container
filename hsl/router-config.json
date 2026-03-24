@@ -2,10 +2,13 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.95,
-    "elevatorBoardTime": 60,
+    "elevator": {
+      "boardSlack": "60s"
+    },
     "bicycle": {
-      "boardCost": 120,
+      "speed": 5.55,
       "reluctance": 1.7,
+      "boardCost": 120,
       "optimization": "safest-streets"
     },
     "car": {
@@ -13,8 +16,8 @@
     },
     "walk": {
       "speed": 1.28,
-      "reluctance": 1.75,
-      "stairsReluctance": 1.65,
+      "reluctance": 1.8,
+      "stairsReluctance": 1.2,
       "stairsTimeFactor": 2,
       "escalator": {
         "speed": 0.65
@@ -25,8 +28,8 @@
       "maxDuration": "1h",
       "penalty": {
         "FLEXIBLE": {
-          "timePenalty": "10m + 1.9t",
-          "costFactor": 2
+          "timePenalty": "20m + 3t",
+          "costFactor": 1
         }
       }
     },
@@ -107,7 +110,8 @@
     "maxTransferDuration": "5m",
     "maxFlexTripDuration": "30m",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m"
+    "maxEgressWalkDuration": "5m",
+    "maxFlexStopCount": 100
   },
   "transit": {
     "maxSearchWindow": "8h",
@@ -117,16 +121,10 @@
     },
     "transferCacheRequests": [
       {
-        "modes": "WALK",
-        "walk": {
-          "reluctance": 1.8
-        }
+        "modes": "WALK"
       },
       {
         "modes": "WALK",
-        "walk": {
-          "reluctance": 1.8
-        },
         "wheelchairAccessibility": {
           "enabled": true
         }
@@ -134,30 +132,12 @@
       {
         "modes": "WALK",
         "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
+          "speed": 1.67
         }
       },
       {
         "modes": "BICYCLE",
-        "walk": {
-          "reluctance": 1.8
-        },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          }
-        }
-      },
-      {
-        "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
-        },
-        "bicycle": {
-          "speed": 5.55,
           "rental": {
             "useAvailabilityInformation": true
           }
@@ -183,6 +163,14 @@
         "maxZoom": 20,
         "minZoom": 5,
         "cacheMaxSeconds": 60
+      },
+      {
+        "name": "areaStops",
+        "type": "areaStop",
+        "mapper": "OTPRR",
+        "maxZoom": 20,
+        "minZoom": 5,
+        "cacheMaxSeconds": 43200
       },
       {
         "name": "stations",
@@ -270,25 +258,17 @@
       "hubsUrl": "https://parking.fintraffic.fi/api/v1/hubs.json?limit=-1"
     },
     {
-      "id": "vantaa-bike-rental",
+      "id": "hsl-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
+      "network": "hsl",
       "frequency": "30s",
-      "network": "vantaa",
-      "url": "http://digitransit-proxy:8080/out/vantaa-api.giravolta.io/api-opendata/gbfs/2_3/gbfs",
+      "url": "http://digitransit-proxy:8080/out/gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
       "overloadingAllowed": true,
       "rentalPickupTypes": ["station"]
     },
     {
-      "id": "hsl-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "smoove",
-      "frequency": "30s",
-      "network": "smoove",
-      "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "overloadingAllowed": true
-    },
-    {
+      "id": "hsl-vehicle-positions",
       "type": "vehicle-positions",
       "url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
       "feedId": "HSL",

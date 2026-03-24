@@ -2,10 +2,13 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.99,
-    "elevatorBoardTime": 60,
+    "elevator": {
+      "boardSlack": "60s"
+    },
     "bicycle": {
-      "boardCost": 120,
+      "speed": 5.55,
       "reluctance": 1.7,
+      "boardCost": 120,
       "optimization": "safest-streets"
     },
     "car": {
@@ -13,9 +16,9 @@
       "boardCost": 600
     },
     "walk": {
-      "speed": 1.3,
-      "reluctance": 1.75,
-      "stairsReluctance": 1.65,
+      "speed": 1.2,
+      "reluctance": 1.8,
+      "stairsReluctance": 1.2,
       "stairsTimeFactor": 2,
       "escalator": {
         "speed": 0.65
@@ -27,11 +30,17 @@
       "maxDurationForMode": {
         "CAR_TO_PARK": "2h",
         "BIKE": "2h",
-        "CAR": "3h"
+        "CAR": "90m"
       },
       "maxStopCountForMode": {
         "BIKE": 0,
         "CAR": 0
+      },
+      "penalty": {
+        "FLEXIBLE": {
+          "timePenalty": "20m + 3t",
+          "costFactor": 1
+        }
       }
     },
     "maxDirectStreetDuration": "100h",
@@ -62,10 +71,11 @@
     }
   },
   "flex": {
-    "maxTransferDuration": "1m",
-    "maxFlexTripDuration": "3h",
+    "maxTransferDuration": "5m",
+    "maxFlexTripDuration": "1h",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m"
+    "maxEgressWalkDuration": "5m",
+    "maxFlexStopCount": 300
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
@@ -74,18 +84,10 @@
     },
     "transferCacheRequests": [
       {
-        "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        }
+        "modes": "WALK"
       },
       {
         "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "wheelchairAccessibility": {
           "enabled": true
         }
@@ -93,42 +95,19 @@
       {
         "modes": "WALK",
         "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
+          "speed": 1.67
         }
       },
       {
         "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "bicycle": {
-          "speed": 5.55,
           "rental": {
             "useAvailabilityInformation": true
           }
         }
       },
       {
-        "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
-        },
-        "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          }
-        }
-      },
-      {
-        "modes": "CAR",
-        "walk": {
-          "speed": 1.3,
-          "reluctance": 1.75
-        }
+        "modes": "CAR"
       }
     ]
   },
@@ -286,25 +265,6 @@
       "rentalPickupTypes": ["station"]
     },
     {
-      "id": "vantaa-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "gbfs",
-      "frequency": "30s",
-      "network": "vantaa",
-      "url": "http://digitransit-proxy:8080/out/vantaa-api.giravolta.io/api-opendata/gbfs/2_3/gbfs",
-      "overloadingAllowed": true,
-      "rentalPickupTypes": ["station"]
-    },
-    {
-      "id": "hsl-bike-rental",
-      "type": "vehicle-rental",
-      "sourceType": "smoove",
-      "frequency": "30s",
-      "network": "smoove",
-      "url": "http://digitransit-proxy:8080/out/helsinki-fi.smoove.pro/api-public/stations",
-      "overloadingAllowed": true
-    },
-    {
       "id": "turku-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
@@ -329,6 +289,16 @@
       "frequency": "30s",
       "url": "https://gbfs.urbansharing.com/tampere.onurbansharing.com/gbfs.json",
       "overloadingAllowed": true
+    },
+    {
+      "id": "hsl-bike-rental",
+      "type": "vehicle-rental",
+      "sourceType": "gbfs",
+      "network": "hsl",
+      "frequency": "30s",
+      "url": "http://digitransit-proxy:8080/out/gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
+      "overloadingAllowed": true,
+      "rentalPickupTypes": ["station"]
     },
     {
       "id": "liipi",

@@ -3,28 +3,34 @@ const { mapSrc } = require('../util');
 module.exports = {
   id: 'waltti-alt',
   src: [
-    mapSrc(
-      'WalttiTest',
-      'http://digitransit-proxy:8080/out/lmjadmin.mattersoft.fi/feeds/229.zip',
-      true,
-    ),
     mapSrc('TurkuTrunkroutes', 'http://data-test.foli.fi/gtfs/gtfs.zip', true),
     mapSrc(
-      'Lahti',
-      'https://www.lsl.fi/tiedostot/testidata',
-      true,
+      'tampere',
+      'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_mattersoft.zip',
+      false,
       undefined,
       {
         'fare_attributes.txt': 'digitransit_fare_attributes.txt',
         'fare_rules.txt': 'digitransit_fare_rules.txt',
       },
+    ),
+    mapSrc(
+      'digitraffic',
+      'https://rata.digitraffic.fi/api/v1/trains/gtfs-passenger-stops.zip',
+      false,
+      undefined,
+      undefined,
       {
-        insecureHTTPParser: true,
+        headers: {
+          'Accept-Encoding': 'gzip',
+          'Digitraffic-User': 'Digitransit/OTP-dataloading',
+        },
       },
     ),
     mapSrc(
-      'tampere',
-      'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_mattersoft.zip',
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
     ),
   ],
   osm: ['oulu', 'southFinland'],

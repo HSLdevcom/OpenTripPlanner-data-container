@@ -2,6 +2,7 @@
   "dataImportReport": true,
   "areaVisibility": true,
   "staticParkAndRide": false,
+  "includeInclinedEdgeLevelInfo": true,
   "subwayAccessTime": 0,
   "maxAreaNodes": 1000,
   "maxTransferDuration": "1h",
@@ -24,11 +25,11 @@
   "transferParametersForMode": {
     "CAR": {
       "disableDefaultTransfers": true,
-      "carsAllowedStopMaxTransferDuration": "2h"
+      "carsAllowedStopMaxTransferDuration": "90m"
     },
     "BIKE": {
       "maxTransferDuration": "30m",
-      "carsAllowedStopMaxTransferDuration": "2h"
+      "carsAllowedStopMaxTransferDuration": "90m"
     }
   },
   "boardingLocationTags": ["ref", "ref:findt", "ref:findr"],

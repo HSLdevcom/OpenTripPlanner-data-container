@@ -49,7 +49,13 @@ module.exports = {
     ),
     mapSrc(
       'Kuopio',
-      'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip',
+      'https://tvv.fra1.digitaloceanspaces.com/221.zip',
+      true,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
     ),
     mapSrc(
       'OULU',
@@ -92,10 +98,6 @@ module.exports = {
           'Digitraffic-User': 'Digitransit/OTP-dataloading',
         },
       },
-    ),
-    mapSrc(
-      'tampereDRT',
-      'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_kutsuliikenne.zip',
     ),
     mapSrc(
       'Pori',
