@@ -5,13 +5,21 @@ module.exports = {
   src: [
     mapSrc(
       'MATKA',
-      'https://mobility.mobility-database.fintraffic.fi/static/finland_gtfs.zip',
+      'https://mobility.mobility-database.fintraffic.fi/static/Digitransit_main.zip',
       true,
     ),
     mapSrc(
-      '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
-      false,
+      'flixbus',
+      'https://mobility.mobility-database.fintraffic.fi/static/flixbus_only.zip',
+    ),
+    mapSrc(
+      'CAR_FERRIES',
+      'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
+      true,
+    ),
+    mapSrc(
+      'Viro',
+      'https://mobility.mobility-database.fintraffic.fi/static/viro.zip',
     ),
     mapSrc(
       '02Taksi',
