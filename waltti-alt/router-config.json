@@ -2,19 +2,22 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.95,
-    "elevatorBoardTime": 60,
+    "elevator": {
+      "boardSlack": "60s"
+    },
     "bicycle": {
-      "boardCost": 120,
+      "speed": 5.55,
       "reluctance": 1.7,
+      "boardCost": 120,
       "optimization": "safest-streets"
     },
     "car": {
       "reluctance": 10.0
     },
     "walk": {
-      "speed": 1.3,
-      "reluctance": 1.75,
-      "stairsReluctance": 1.65,
+      "speed": 1.2,
+      "reluctance": 1.8,
+      "stairsReluctance": 1.2,
       "stairsTimeFactor": 2,
       "escalator": {
         "speed": 0.65
@@ -22,7 +25,13 @@
       "boardCost": 120
     },
     "accessEgress": {
-      "maxDuration": "1h"
+      "maxDuration": "1h",
+      "penalty": {
+        "FLEXIBLE": {
+          "timePenalty": "20m + 3t",
+          "costFactor": 1
+        }
+      }
     },
     "maxDirectStreetDuration": "4h",
     "maxDirectStreetDurationForMode": {
@@ -48,6 +57,13 @@
   "gtfsApi": {
     "tracingTags": ["digitransit-subscription-id"]
   },
+  "flex": {
+    "maxTransferDuration": "5m",
+    "maxFlexTripDuration": "30m",
+    "maxAccessWalkDuration": "5m",
+    "maxEgressWalkDuration": "5m",
+    "maxFlexStopCount": 100
+  },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
     "dynamicSearchWindow": {
@@ -56,18 +72,10 @@
     "maxNumberOfTransfers": 12,
     "transferCacheRequests": [
       {
-        "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        }
+        "modes": "WALK"
       },
       {
         "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "wheelchairAccessibility": {
           "enabled": true
         }
@@ -75,31 +83,12 @@
       {
         "modes": "WALK",
         "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
+          "speed": 1.67
         }
       },
       {
         "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "bicycle": {
-          "speed": 5.55,
-          "rental": {
-            "useAvailabilityInformation": true
-          }
-        }
-      },
-      {
-        "modes": "BICYCLE",
-        "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
-        },
-        "bicycle": {
-          "speed": 5.55,
           "rental": {
             "useAvailabilityInformation": true
           }

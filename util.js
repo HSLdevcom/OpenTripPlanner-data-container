@@ -60,7 +60,7 @@ async function updateSlackMessage(text) {
 }
 
 const UNCONNECTED =
-  /Could not connect ([A-Z]?[a-z]?\d{4}) at \((\d+\.\d+), (\d+\.\d+)/;
+  /Could not connect .*:(\d*) \(([A-Z]?[a-z]?\d{4})\) at \((\d+\.\d+), (\d+\.\d+)/;
 const CONNECTED =
   /Connected {.*:(\d*) lat,lng=(\d+\.\d+),(\d+\.\d+)} \(([A-Z]?[a-z]?\d{4})\) to (.*) at \((\d+\.\d+), (\d+\.\d+)/;
 
@@ -80,7 +80,8 @@ function distance(lat1, lon1, lat2, lon2) {
 async function match(line, connectedStream, unconnectedStream) {
   let res = UNCONNECTED.exec(line);
   if (res != null) {
-    const [stopcode, jorelon, jorelat] = res.slice(1);
+    // eslint-disable-next-line
+    const [stopid, stopcode, jorelon, jorelat] = res.slice(1);
     unconnectedStream.write([stopcode, jorelat, jorelon].join(',') + '\n');
     return;
   }

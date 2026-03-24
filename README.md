@@ -63,6 +63,8 @@ It is possible to change the behaviour of the data builder by defining environme
   - `USE_PREBUILT_STREET_GRAPH` to use the prebuilt street graph to finish a complete graph build
   - All other values default to `NO_SPLIT_BUILD` which indicates that the build is run as normal
 - (Optional) `USE_SEEDED_OSM` skips OSM updating and uses existing seed version
+- (Optional) `SKIP_OSM_PREPROCESSING` skips OSM preprocessing even if an instruction file is defined
+- (Optional) `SKIP_OTP_TESTS` skips OTP tests
 
 ### Data processing steps
 
@@ -175,3 +177,17 @@ It is possible to change the behaviour of the data builder by defining environme
 Contains tools, such as the OneBusAway gtfs filter, for gtfs manipulation.
 It uses the [opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli](https://registry.hub.docker.com/r/opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli) as the base image.
 These tools are packaged inside a docker container and are used during the data build process.
+
+#### OSM preprocessing
+
+OSM preprocessing is done if a bash script is defined for a specific config and a specific OSM file.
+See [hsl.sh](hsl/osm-preprocessing/hsl.sh) for an example.
+
+When creating OSM preprocessing instructions you should:
+1. Name the bash file as follows: `<osm_id>.sh`. Valid file names can be e.g. `hsl.sh` or `southFinland.sh`.
+2. Place the file in the `osm-preprocessing` directory of the config you want to use.
+3. Make sure that the name of the output file is the same as the input file. The file has to be named `<osm_id>.pbf`, e.g. `hsl.pbf` or `southFinland.pbf`.
+4. Make sure that you do not reuse input and output filenames in commands:
+   - INCORRECT `osmfilter hsl.o5m -o=hsl.o5m ...`
+   - CORRECT `osmfilter hsl.o5m -o=hsl2.o5m ...`
+5. Test the script by running it locally and verifying that the output makes sense.

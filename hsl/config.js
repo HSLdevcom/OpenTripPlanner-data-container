@@ -5,20 +5,22 @@ module.exports = {
   src: [
     mapSrc(
       'HSL',
-      'https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip',
+      'https://infopalvelut.storage.hsldev.com/gtfs/hsl_google_transit.zip',
       false,
       undefined,
       { 'trips.txt': 'trips2.txt' },
     ),
     mapSrc(
-      'HSLlautta',
-      'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip',
-    ),
-    mapSrc(
       '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi_espoo.zip',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
       false,
     ),
+    /*
+    mapSrc(
+      'HSLlautta',
+      'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip',
+      ),
+    */
     // src('Sipoo', 'https://koontikartta.navici.com/tiedostot/rae/sipoon_kunta_sibbo_kommun.zip')
   ],
   osm: ['hsl'],

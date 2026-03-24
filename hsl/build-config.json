@@ -2,6 +2,7 @@
   "dataImportReport": true,
   "areaVisibility": true,
   "staticParkAndRide": false,
+  "includeInclinedEdgeLevelInfo": true,
   "subwayAccessTime": 0,
   "maxAreaNodes": 1000,
   "maxTransferDuration": "26m",

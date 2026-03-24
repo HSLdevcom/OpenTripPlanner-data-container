@@ -2,18 +2,22 @@
   "routingDefaults": {
     "transferSlack": "1m30s",
     "waitReluctance": 0.99,
-    "elevatorBoardTime": 60,
+    "elevator": {
+      "boardSlack": "60s"
+    },
     "bicycle": {
-      "boardCost": 120,
-      "reluctance": 1.7
+      "speed": 5.55,
+      "reluctance": 1.7,
+      "boardCost": 120
     },
     "car": {
-      "reluctance": 10.0
+      "reluctance": 10.0,
+      "boardCost": 600
     },
     "walk": {
-      "speed": 1.3,
-      "reluctance": 1.75,
-      "stairsReluctance": 1.65,
+      "speed": 1.2,
+      "reluctance": 1.8,
+      "stairsReluctance": 1.2,
       "stairsTimeFactor": 2,
       "escalator": {
         "speed": 0.65
@@ -22,7 +26,13 @@
     },
     "accessEgress": {
       "maxDuration": "8h",
-      "maxStopCount": "400"
+      "maxStopCount": "400",
+      "maxDurationForMode": {
+        "CAR": "60m"
+      },
+      "maxStopCountForMode": {
+        "CAR": 0
+      }
     },
     "maxDirectStreetDuration": "100h",
     "maxDirectStreetDurationForMode": {
@@ -56,18 +66,10 @@
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
     "transferCacheRequests": [
       {
-        "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        }
+        "modes": "WALK"
       },
       {
         "modes": "WALK",
-        "walk": {
-          "speed": 1.2,
-          "reluctance": 1.8
-        },
         "wheelchairAccessibility": {
           "enabled": true
         }
@@ -75,9 +77,11 @@
       {
         "modes": "WALK",
         "walk": {
-          "speed": 1.67,
-          "reluctance": 1.8
+          "speed": 1.67
         }
+      },
+      {
+        "modes": "CAR"
       }
     ]
   },
