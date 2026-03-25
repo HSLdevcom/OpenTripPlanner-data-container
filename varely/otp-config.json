@@ -8,7 +8,6 @@
     "SandboxAPIMapboxVectorTilesApi": true,
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
-    "DebugRasterTiles": true,
-    "FlexRouting": true
+    "DebugRasterTiles": true
   }
 }
