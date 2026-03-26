@@ -49,7 +49,13 @@ module.exports = {
     ),
     mapSrc(
       'Kuopio',
-      'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip',
+      'https://tvv.fra1.digitaloceanspaces.com/221.zip',
+      true,
+      undefined,
+      {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
     ),
     mapSrc(
       'OULU',
@@ -121,6 +127,11 @@ module.exports = {
     ),
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
+    mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
   ],
   osm: ['kajaani', 'oulu', 'rovaniemi', 'southFinland', 'vaasa'],
 };
