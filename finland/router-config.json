@@ -30,7 +30,7 @@
       "maxDurationForMode": {
         "CAR_TO_PARK": "2h",
         "BIKE": "2h",
-        "CAR": "90m"
+        "CAR": "2h"
       },
       "maxStopCountForMode": {
         "BIKE": 0,
