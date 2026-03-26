@@ -28,10 +28,10 @@
       "maxDuration": "8h",
       "maxStopCount": "400",
       "maxDurationForMode": {
-        "CAR": "1m"
+        "CAR": "60m"
       },
       "maxStopCountForMode": {
-        "CAR": 1
+        "CAR": 0
       }
     },
     "maxDirectStreetDuration": "100h",
@@ -79,6 +79,9 @@
         "walk": {
           "speed": 1.67
         }
+      },
+      {
+        "modes": "CAR"
       }
     ]
   },
