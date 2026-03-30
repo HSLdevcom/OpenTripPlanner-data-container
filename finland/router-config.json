@@ -598,7 +598,7 @@
       "id": "hsl-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
-      "network": "hsl",
+      "network": "smoove",
       "frequency": "30s",
       "url": "http://digitransit-proxy:8080/out/gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
       "overloadingAllowed": true,
