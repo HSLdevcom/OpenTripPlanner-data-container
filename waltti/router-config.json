@@ -63,7 +63,7 @@
   },
   "flex": {
     "maxTransferDuration": "5m",
-    "maxFlexTripDuration": "25m",
+    "maxFlexTripDuration": "30m",
     "maxAccessWalkDuration": "5m",
     "maxEgressWalkDuration": "5m"
   },
