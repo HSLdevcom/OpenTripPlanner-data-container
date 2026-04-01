@@ -28,7 +28,7 @@
       "maxDuration": "1h",
       "penalty": {
         "FLEXIBLE": {
-          "timePenalty": "30m + 5t",
+          "timePenalty": "5m + 5t",
           "costFactor": 1
         }
       }
