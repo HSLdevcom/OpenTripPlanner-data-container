@@ -30,7 +30,7 @@
       "maxDurationForMode": {
         "CAR_TO_PARK": "2h",
         "BIKE": "2h",
-        "CAR": "90m"
+        "CAR": "2h"
       },
       "maxStopCountForMode": {
         "BIKE": 0,
@@ -38,7 +38,7 @@
       },
       "penalty": {
         "FLEXIBLE": {
-          "timePenalty": "20m + 3t",
+          "timePenalty": "5m + 5t",
           "costFactor": 1
         }
       }
@@ -72,10 +72,9 @@
   },
   "flex": {
     "maxTransferDuration": "5m",
-    "maxFlexTripDuration": "1h",
+    "maxFlexTripDuration": "40m",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m",
-    "maxFlexStopCount": 300
+    "maxEgressWalkDuration": "5m"
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
@@ -294,7 +293,7 @@
       "id": "hsl-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
-      "network": "hsl",
+      "network": "smoove",
       "frequency": "30s",
       "url": "http://digitransit-proxy:8080/out/gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
       "overloadingAllowed": true,

@@ -21,7 +21,7 @@
   "transferParametersForMode": {
     "CAR": {
       "disableDefaultTransfers": true,
-      "carsAllowedStopMaxTransferDuration": "60m"
+      "carsAllowedStopMaxTransferDuration": "2h"
     }
   },
   "boardingLocationTags": ["ref", "ref:findt", "ref:findr"],

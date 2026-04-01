@@ -28,7 +28,7 @@
       "maxDuration": "1h",
       "penalty": {
         "FLEXIBLE": {
-          "timePenalty": "20m + 3t",
+          "timePenalty": "5m + 5t",
           "costFactor": 1
         }
       }
@@ -110,8 +110,7 @@
     "maxTransferDuration": "5m",
     "maxFlexTripDuration": "30m",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m",
-    "maxFlexStopCount": 100
+    "maxEgressWalkDuration": "5m"
   },
   "transit": {
     "maxSearchWindow": "8h",
@@ -261,7 +260,7 @@
       "id": "hsl-bike-rental",
       "type": "vehicle-rental",
       "sourceType": "gbfs",
-      "network": "hsl",
+      "network": "smoove",
       "frequency": "30s",
       "url": "http://digitransit-proxy:8080/out/gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
       "overloadingAllowed": true,
