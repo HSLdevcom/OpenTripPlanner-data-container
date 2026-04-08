@@ -139,6 +139,8 @@ async function handleCleanup() {
  * This function only builds the street graph with OSM and DEM data.
  */
 async function buildStreetOnlyGraph(name) {
+  await handleCleanup();
+
   await handleSeeding();
 
   await handleOsmAndDemUpdate();
@@ -174,6 +176,8 @@ async function buildStreetOnlyGraph(name) {
  * This function does the whole build.
  */
 async function buildGraph(name) {
+  await handleCleanup();
+
   await handleSeeding();
 
   await handleOsmAndDemUpdate();
@@ -201,8 +205,6 @@ async function buildGraph(name) {
 
   buildAndDeployDockerImages(date);
 
-  await handleCleanup();
-
   if (global.hasFailures) {
     updateSlackMessage(
       `${name} data updated, but partially falling back to older data :boom:`,
@@ -216,6 +218,8 @@ async function buildGraph(name) {
  * This function builds the graph from prebuilt street graph data.
  */
 async function buildWithPrebuiltStreetGraph(name) {
+  await handleCleanup();
+
   await handleSeeding();
 
   await start('gtfs:update');
@@ -240,8 +244,6 @@ async function buildWithPrebuiltStreetGraph(name) {
   await start('router:storeForPrebuiltStreetGraphDataBuild');
 
   buildAndDeployDockerImages(date);
-
-  await handleCleanup();
 
   if (global.hasFailures) {
     updateSlackMessage(
