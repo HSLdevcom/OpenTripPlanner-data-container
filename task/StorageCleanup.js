@@ -43,9 +43,10 @@ function isCorrectRouter(basePath, file, routerId) {
 }
 
 /*
- * Keeps 10 valid latest versions and removes the rest.
+ * Keeps KEEP_VERSIONS (default 10) valid latest versions and removes the rest.
  */
 function deleteOldVersions(sourceDir, routerId, tag) {
+  const savedCount = process.env.KEEP_VERSIONS ?? '10';
   const basePath = `${sourceDir}/${tag}`;
   if (!fs.existsSync(basePath)) {
     return Promise(res => res());
@@ -55,7 +56,7 @@ function deleteOldVersions(sourceDir, routerId, tag) {
       .readdirSync(basePath)
       .filter(file => isCorrectRouter(basePath, file, routerId))
       .sort(sortByDate)
-      .slice(0, -10);
+      .slice(0, -savedCount);
     return filesToDelete.map(file => del(`${basePath}/${file}/${routerId}`));
   });
 }
