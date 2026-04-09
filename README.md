@@ -65,6 +65,7 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `USE_SEEDED_OSM` skips OSM updating and uses existing seed version
 - (Optional) `SKIP_OSM_PREPROCESSING` skips OSM preprocessing even if an instruction file is defined
 - (Optional) `SKIP_OTP_TESTS` skips OTP tests
+- (Optional) `KEEP_VERSIONS` how many old versions of data to keep, default 10
 
 ### Data processing steps
 
