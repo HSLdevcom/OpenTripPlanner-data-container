@@ -185,7 +185,7 @@
       "url": "http://digitransit-proxy:8080/out/lmj.mattersoft.fi/api/gtfsrealtime/v1.0/feed/vehicleposition",
       "feedId": "WalttiTest",
       "fuzzyTripMatching": false
-    }
+    },
     {
       "id": "foli-trip-updates",
       "type": "stop-time-updater",
