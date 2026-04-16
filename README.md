@@ -12,10 +12,10 @@ for consumption by Digitransit maintained OTP version 2.x instances.
 ### otp-data-builder
 
 The actual data builder application. This is a node.js application that fetches
-and processes new gtfs/osm data. It's build around gulp and all separate steps of
-databuilding process can also be called directly from the source tree. The only
-required external dependency is docker. Docker is used for launching external
-commands that do for example data manipulation.
+and processes new gtfs/osm data. It's built around gulp and all separate steps of
+the databuilding process can also be called directly from the source tree. The only
+required external dependency is Docker. Docker is used for launching external
+commands that do, for example, data manipulation.
 
 install gulp cli:
 `yarn global add gulp-cli`
