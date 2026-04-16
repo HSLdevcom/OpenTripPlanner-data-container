@@ -10,7 +10,6 @@
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
     "Emission": true,
-    "DebugRasterTiles": true,
-    "FlexRouting": true
+    "DebugRasterTiles": true
   }
 }
