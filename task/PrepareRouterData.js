@@ -22,6 +22,31 @@ const extraUpdaters =
     ? JSON.parse(process.env.EXTRA_UPDATERS)
     : {};
 
+function createAndProcessBuildConfig(router) {
+  process.stdout.write('copying build-config.json...\n');
+  const configName = `${router.id}/build-config.json`;
+  const buildConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
+  const transitFeeds = buildConfig.transitFeeds || [];
+  if (router.netex) {
+    router.netex.forEach(src => {
+      const feed = {
+	type: 'netex',
+	feedId: src.id,
+	source: 'file:///var/opentripplanner/' + src.id + '-netex.zip',
+	groupFilePattern: src.groupFilePattern,
+	sharedFilePattern: src.sharedFilePattern,
+      };
+      transitFeeds.push(feed);
+    });
+    buildConfig.transitFeeds = transitFeeds;
+  }
+  const file = new Vinyl({
+    path: 'build-config.json',
+    contents: Buffer.from(JSON.stringify(buildConfig, null, 2)),
+  });
+  return file;
+}
+
 // Prepares router-config.json data for opentripplanner and applies edits/additions made in EXTRA_UPDATERS env var
 function createAndProcessRouterConfig(router) {
   process.stdout.write('copying router-config.json...\n');
@@ -68,8 +93,8 @@ function prepareRouterData(router) {
     'Collecting data and configuration files for graph build\n',
   );
 
-  stream.push(createFile(router, 'build-config.json', router.id));
   stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
   router.osm.forEach(osmId => {
     const name = osmId + '.pbf';
@@ -83,6 +108,12 @@ function prepareRouterData(router) {
     const name = src.id + '-gtfs.zip';
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
+  if (router.netex) {
+    router.netex.forEach(src => {
+      const name = src.id + '-netex.zip';
+      stream.push(createFile(router, name, `${dataDir}/ready/netex`));
+    });
+  }
   stream.end();
 
   return stream;
@@ -99,8 +130,8 @@ function prepareRouterDataForStreetOnlyGraphBuild(router) {
     'Collecting data and configuration files for street only graph build\n',
   );
 
-  stream.push(createFile(router, 'build-config.json', router.id));
   stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
   router.osm.forEach(osmId => {
     const name = osmId + '.pbf';
@@ -145,6 +176,12 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
     const name = src.id + '-gtfs.zip';
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
+  if (router.netex) {
+    router.netex.forEach(src => {
+      const name = src.id + '-netex.zip';
+      stream.push(createFile(router, name, `${dataDir}/ready/netex`));
+    });
+  }
 
   const osmDirectories = getDirectories(
     `${storageDir}/osm-builds/${process.env.DOCKER_TAG}`,

@@ -183,6 +183,7 @@ async function buildGraph(name) {
   await handleOsmAndDemUpdate();
 
   await start('gtfs:update');
+  await start('netex:update');
 
   process.stdout.write('Build routing graph\n');
   await start('router:buildGraph');
@@ -223,6 +224,7 @@ async function buildWithPrebuiltStreetGraph(name) {
   await handleSeeding();
 
   await start('gtfs:update');
+  await start('netex:update');
 
   process.stdout.write('Build routing graph from prebuilt street only graph\n');
   await start('router:buildWithPrebuiltStreetGraph');

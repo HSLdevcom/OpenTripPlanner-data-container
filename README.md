@@ -17,17 +17,14 @@ the databuilding process can also be called directly from the source tree. The o
 required external dependency is Docker. Docker is used for launching external
 commands that do, for example, data manipulation.
 
-install gulp cli:
-`yarn global add gulp-cli`
-
-install app deps:
-`yarn`
+install application and development dependecies:
+`yarn install`
 
 update osm data:
-`ROUTER_NAME=hsl gulp osm:update`
+`ROUTER_NAME=hsl yarn gulp osm:update`
 
 download new gtfs data for waltti:
-`ROUTER_NAME=waltti gulp gtfs:dl`
+`ROUTER_NAME=waltti yarn gulp gtfs:dl`
 
 #### Configuration
 

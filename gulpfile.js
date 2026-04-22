@@ -8,6 +8,7 @@ const prepareFit = require('./task/PrepareFit');
 const mapFit = require('./task/MapFit');
 const { validateBlobSize } = require('./task/BlobValidation');
 const { testOTPFile } = require('./task/OTPTest');
+const { testNetexFile } = require('./task/NetexTest');
 const { runOSMPreprocessing } = require('./task/OSMPreprocessing');
 const seed = require('./task/Seed');
 const {
@@ -22,6 +23,7 @@ const {
   buildOTPStreetOnlyGraphTask,
 } = require('./task/BuildOTPGraph');
 const { renameGTFSFile } = require('./task/GTFSRename');
+const { renameNetexFile } = require('./task/NetexRename');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const { createDir } = require('./util');
@@ -32,10 +34,12 @@ const seedSourceDir = `${config.dataDir}/router-${config.router.id}`; // e.g. da
 const osmDlDir = `${config.dataDir}/downloads/osm`;
 const demDlDir = `${config.dataDir}/downloads/dem`;
 const gtfsDlDir = `${config.dataDir}/downloads/gtfs`;
+const netexDlDir = `${config.dataDir}/downloads/netex`;
 
 const osmDir = `${config.dataDir}/ready/osm`;
 const demDir = `${config.dataDir}/ready/dem`;
 const gtfsDir = `${config.dataDir}/ready/gtfs`;
+const netexDir = `${config.dataDir}/ready/netex`;
 
 const gtfsSeedDir = `${config.dataDir}/seed`;
 const fitDir = `${config.dataDir}/fit`;
@@ -48,6 +52,34 @@ const tmpRenameDir = `${config.dataDir}/tmp-rename`;
 const renamedDir = `${config.dataDir}/renamed`;
 
 const noBuf = { buffer: false }; // options for gulp src
+
+/**
+ * Download netex data
+ */
+gulp.task('netex:download', async cb => {
+  if (!config.router.netex) {
+    return Promise.resolve();
+  }
+  createDir(netexDlDir);
+  createDir(netexDir);
+  await dl(config.router.netex, netexDlDir);
+  cb();
+});
+
+gulp.task('netex:rename', () =>
+  gulp
+    .src(`${netexDlDir}/*`, noBuf)
+    .pipe(renameNetexFile())
+    .pipe(gulp.dest(netexDir)),
+);
+
+gulp.task(
+  'netex:update',
+  gulp.series(
+    'netex:download',
+    'netex:rename',
+  ),
+);
 
 /**
  * Download osm data
@@ -231,6 +263,17 @@ gulp.task(
   ),
 );
 
+gulp.task('netex:del', () => del(netexDir));
+
+gulp.task(
+  'netex:seed',
+  gulp.series('netex:del', () =>
+    gulp
+      .src(`${seedSourceDir}/*-netex.zip`, noBuf)
+      .pipe(gulp.dest(netexDir)),
+  ),
+);
+
 gulp.task('osm:del', () => del(osmDir));
 
 gulp.task(
@@ -271,6 +314,7 @@ gulp.task(
     'dem:seed',
     'osm:seed',
     'gtfs:seed',
+    'netex:seed',
     'seed:cleanup',
   ),
 );
