@@ -37,5 +37,13 @@ module.exports = {
       false,
     ),
   ],
+  netex: [
+    {
+      id: 'VR_bussit',
+      url: 'https://mobility.mobility-database.fintraffic.fi/static/vr_bussit.zip',
+      groupFilePattern: '(line)_.*\\.xml',
+      sharedFilePattern: '_.*\\.xml',
+    },
+  ],
   osm: ['finland', 'estonia'],
 };
