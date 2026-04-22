@@ -8,7 +8,6 @@ const prepareFit = require('./task/PrepareFit');
 const mapFit = require('./task/MapFit');
 const { validateBlobSize } = require('./task/BlobValidation');
 const { testOTPFile } = require('./task/OTPTest');
-const { testNetexFile } = require('./task/NetexTest');
 const { runOSMPreprocessing } = require('./task/OSMPreprocessing');
 const seed = require('./task/Seed');
 const {
