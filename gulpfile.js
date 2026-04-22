@@ -73,13 +73,7 @@ gulp.task('netex:rename', () =>
     .pipe(gulp.dest(netexDir)),
 );
 
-gulp.task(
-  'netex:update',
-  gulp.series(
-    'netex:download',
-    'netex:rename',
-  ),
-);
+gulp.task('netex:update', gulp.series('netex:download', 'netex:rename'));
 
 /**
  * Download osm data
@@ -268,9 +262,7 @@ gulp.task('netex:del', () => del(netexDir));
 gulp.task(
   'netex:seed',
   gulp.series('netex:del', () =>
-    gulp
-      .src(`${seedSourceDir}/*-netex.zip`, noBuf)
-      .pipe(gulp.dest(netexDir)),
+    gulp.src(`${seedSourceDir}/*-netex.zip`, noBuf).pipe(gulp.dest(netexDir)),
   ),
 );
 

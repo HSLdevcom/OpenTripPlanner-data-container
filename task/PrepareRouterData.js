@@ -30,11 +30,11 @@ function createAndProcessBuildConfig(router) {
   if (router.netex) {
     router.netex.forEach(src => {
       const feed = {
-	type: 'netex',
-	feedId: src.id,
-	source: 'file:///var/opentripplanner/' + src.id + '-netex.zip',
-	groupFilePattern: src.groupFilePattern,
-	sharedFilePattern: src.sharedFilePattern,
+        type: 'netex',
+        feedId: src.id,
+        source: 'file:///var/opentripplanner/' + src.id + '-netex.zip',
+        groupFilePattern: src.groupFilePattern,
+        sharedFilePattern: src.sharedFilePattern,
       };
       transitFeeds.push(feed);
     });
