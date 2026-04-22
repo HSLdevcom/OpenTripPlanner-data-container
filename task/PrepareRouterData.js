@@ -23,7 +23,7 @@ const extraUpdaters =
     : {};
 
 function createAndProcessBuildConfig(router) {
-  process.stdout.write('copying build-config.json...\n');
+  process.stdout.write('creating build-config.json...\n');
   const configName = `${router.id}/build-config.json`;
   const buildConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const transitFeeds = buildConfig.transitFeeds || [];
@@ -49,7 +49,7 @@ function createAndProcessBuildConfig(router) {
 
 // Prepares router-config.json data for opentripplanner and applies edits/additions made in EXTRA_UPDATERS env var
 function createAndProcessRouterConfig(router) {
-  process.stdout.write('copying router-config.json...\n');
+  process.stdout.write('creating router-config.json...\n');
   const configName = `${router.id}/router-config.json`;
   const routerConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const updaters = routerConfig.updaters;
@@ -169,8 +169,8 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
     'Collecting data and configuration files for graph build based on prebuilt street graph data\n',
   );
 
-  stream.push(createFile(router, 'build-config.json', router.id));
   stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
   router.src.forEach(src => {
     const name = src.id + '-gtfs.zip';
