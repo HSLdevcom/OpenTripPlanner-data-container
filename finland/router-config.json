@@ -601,7 +601,8 @@
       "frequency": "30s",
       "url": "https://gbfs.theta.fifteen.eu/gbfs/2.2/helsinki/en/gbfs.json",
       "overloadingAllowed": true,
-      "rentalPickupTypes": ["station"]
+      "rentalPickupTypes": ["station"],
+      "startupRetryPeriod": "30s"
     },
     {
       "id": "liipi",
