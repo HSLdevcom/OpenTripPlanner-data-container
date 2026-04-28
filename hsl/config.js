@@ -10,6 +10,11 @@ module.exports = {
       undefined,
       { 'trips.txt': 'trips2.txt' },
     ),
+    mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
     /*
     mapSrc(
       'HSLlautta',
