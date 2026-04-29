@@ -490,7 +490,7 @@
       "type": "vehicle-rental",
       "sourceType": "gbfs",
       "frequency": "60s",
-      "url": "http://digitransit-proxy:8080/out/tkhslahtistorage.blob.core.windows.net/gbfs/gbfs.json",
+      "url": "https://lahti.admin.freebike.com/api/gbfs/v30/gbfs",
       "overloadingAllowed": true,
       "rentalPickupTypes": ["station"]
     },
