@@ -35,6 +35,12 @@
       "maxStopCountForMode": {
         "BIKE": 0,
         "CAR": 0
+      },
+      "penalty": {
+        "FLEXIBLE": {
+          "timePenalty": "5m + 5t",
+          "costFactor": 1
+        }
       }
     },
     "maxDirectStreetDuration": "100h",
@@ -68,8 +74,8 @@
     "tracingTags": ["digitransit-subscription-id"]
   },
   "flex": {
-    "maxTransferDuration": "1m",
-    "maxFlexTripDuration": "3h",
+    "maxTransferDuration": "5m",
+    "maxFlexTripDuration": "40m",
     "maxAccessWalkDuration": "5m",
     "maxEgressWalkDuration": "5m"
   },
