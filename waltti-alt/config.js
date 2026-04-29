@@ -28,6 +28,11 @@ module.exports = {
       },
     ),
     mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
+    mapSrc(
       'WalttiTest',
       'https://tvv.fra1.digitaloceanspaces.com/229.zip',
       'true',

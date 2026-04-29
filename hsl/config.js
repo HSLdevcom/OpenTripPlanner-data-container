@@ -10,6 +10,11 @@ module.exports = {
       undefined,
       { 'trips.txt': 'trips2.txt' },
     ),
+    mapSrc(
+      'Uber',
+      'https://gtfsdata.blob.core.windows.net/hsl/ubertaksi-gtfs.zip',
+      false,
+    ),
     /*
     mapSrc(
       'HSLlautta',
