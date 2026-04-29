@@ -73,12 +73,19 @@ const packData = function (commit, router) {
     process.stdout.write('Creating zip file for router data\n');
     const osmFiles = router.osm.map(osm => `${path}/${osm}.pbf`);
 
-    // create a zip file which includes all data required
-    // for graph build and routing: gtfs, osm, dem + otp configs
+    // Create a zip file which includes all data required
+    // for graph build and routing: gtfs, osm, dem + otp configs.
+    // This zip file is the source of seeding in the next run.
     if (
       zipWithGlobIntoDir(
         `${path}/router-${router.id}.zip`,
-        [`${path}/*gtfs.zip`, `${path}/*.json`, ...osmFiles, `${path}/*.tif`],
+        [
+	  `${path}/*-gtfs.zip`,
+	  `${path}/*-netex.zip`,
+	  `${path}/*.json`,
+	  ...osmFiles,
+	  `${path}/*.tif`,
+	],
         `router-${router.id}`,
       )
     ) {
