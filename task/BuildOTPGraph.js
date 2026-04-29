@@ -81,12 +81,12 @@ const packData = function (commit, router) {
       zipWithGlobIntoDir(
         `${path}/router-${router.id}.zip`,
         [
-	  `${path}/*-gtfs.zip`,
-	  `${path}/*-netex.zip`,
-	  `${path}/*.json`,
-	  ...osmFiles,
-	  `${path}/*.tif`,
-	],
+          `${path}/*-gtfs.zip`,
+          `${path}/*-netex.zip`,
+          `${path}/*.json`,
+          ...osmFiles,
+          `${path}/*.tif`,
+        ],
         `router-${router.id}`,
       )
     ) {
