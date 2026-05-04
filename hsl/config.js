@@ -15,12 +15,10 @@ module.exports = {
       'https://gtfsdata.blob.core.windows.net/hsl/ubertaksi-gtfs.zip',
       false,
     ),
-    /*
     mapSrc(
       'HSLlautta',
       'https://mobility.mobility-database.fintraffic.fi/static/lautat_new.zip',
       ),
-    */
     // src('Sipoo', 'https://koontikartta.navici.com/tiedostot/rae/sipoon_kunta_sibbo_kommun.zip')
   ],
   osm: ['hsl'],
