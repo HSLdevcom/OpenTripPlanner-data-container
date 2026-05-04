@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/HSLdevcom/OpenTripPlanner-data-container#readme",
   "dependencies": {
-    "axios": "^1.6.7",
+    "axios": "^1.15.2",
     "cloneable-readable": "^3.0.0",
     "csv-parser": "^3.0.0",
     "csv-stringify": "^6.4.4",
