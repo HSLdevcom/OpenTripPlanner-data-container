@@ -11,8 +11,8 @@ module.exports = {
       { 'trips.txt': 'trips2.txt' },
     ),
     mapSrc(
-      '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      'Uber',
+      'https://gtfsdata.blob.core.windows.net/hsl/ubertaksi-gtfs.zip',
       false,
     ),
     /*
