@@ -1,4 +1,4 @@
-FROM opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli:8.0.0
+FROM opentransitsoftwarefoundation/onebusaway-gtfs-transformer-cli:11.2.2
 LABEL maintainer="Digitransit (digitransit.fi)" \
       version="1.1" \
       repo="https://github.com/HSLdevcom/OpenTripPlanner-data-container"
