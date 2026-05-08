@@ -14,7 +14,6 @@ module.exports = {
       'Uber',
       'https://gtfsdata.blob.core.windows.net/hsl/ubertaksi-gtfs.zip',
       false,
-      ['hsl/gtfs-rules/remove-route-color.rule'],
     ),
     mapSrc(
       'HSLlautta',
