@@ -38,8 +38,8 @@
       },
       "penalty": {
         "FLEXIBLE": {
-          "timePenalty": "5m + 5t",
-          "costFactor": 1
+          "timePenalty": "0m + 1t",
+          "costFactor": 10
         }
       }
     },
@@ -75,9 +75,10 @@
   },
   "flex": {
     "maxTransferDuration": "5m",
-    "maxFlexTripDuration": "40m",
+    "maxFlexTripDuration": "30m",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m"
+    "maxEgressWalkDuration": "5m",
+    "boardCost": 600
   },
   "transit": {
     "pagingSearchWindowAdjustments": ["8h", "4h", "4h", "4h", "4h"],
