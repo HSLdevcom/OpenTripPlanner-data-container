@@ -34,7 +34,7 @@ module.exports = {
     ),
     mapSrc(
       'WalttiTest',
-      'https://github.com/tvv-lippu-ja-maksujarjestelma-oy/waltti-digitransit-config-data/blob/main/GTFStestireittiopas.zip',
+      'https://github.com/tvv-lippu-ja-maksujarjestelma-oy/waltti-digitransit-config-data/raw/refs/heads/main/GTFStestireittiopas.zip',
       'true',
     ),
   ],
