@@ -28,6 +28,13 @@ const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const { createDir } = require('./util');
 const storageCleanup = require('./task/StorageCleanup');
 
+// Warning! Lots of string interpolation all over the code. None of these
+// inputs are allowed to have whitespace characters in them.
+
+if (/\s/.test(config.dataDir) || /\s/.test(config.router.id)) {
+  throw new Error("no whitespace allowed in config.dataDir or config.router.id");
+}
+
 const seedSourceDir = `${config.dataDir}/router-${config.router.id}`; // e.g. data/router-hsl
 
 const osmDlDir = `${config.dataDir}/downloads/osm`;
@@ -138,21 +145,34 @@ gulp.task('del:id', () => del(idDir));
  * 4. copy to fit dir if test is succesful
  */
 gulp.task(
+  'gtfs:download',
+  () => dl(config.router.src, gtfsDlDir)
+);
+
+gulp.task(
+  'gtfs:dlRename',
+  () =>
+    gulp
+    .src(`${gtfsDlDir}/*`, noBuf)
+    .pipe(renameGTFSFile())
+    .pipe(gulp.dest(renamedDir))
+);
+
+gulp.task(
+  'gtfs:dlReplace',
+  () =>
+    gulp
+      .src(`${renamedDir}/*-gtfs.zip`)
+      .pipe(replaceGTFSFilesTask(config.gtfsMap))
+      .pipe(gulp.dest(fitDir))
+);
+
+gulp.task(
   'gtfs:dl',
   gulp.series(
     'del:fit',
-    cb => {
-      dl(config.router.src, gtfsDlDir).then(() => {
-        cb();
-      });
-    },
-    () =>
-      gulp
-        .src(`${gtfsDlDir}/*`, noBuf)
-        .pipe(renameGTFSFile())
-        .pipe(gulp.dest(renamedDir))
-        .pipe(replaceGTFSFilesTask(config.gtfsMap))
-        .pipe(gulp.dest(fitDir)),
+    'gtfs:download',
+    'gtfs:dlRename',
     () => del([tmpRenameDir]),
   ),
 );
