@@ -119,7 +119,7 @@ function testZip(zipName) {
   try {
     execSync(`unzip -l ${zipName}`);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -129,7 +129,7 @@ function zipHasFile(zipName, file) {
     execSync(`unzip -l ${zipName} | grep -qE '(^|\\s)${file}(\\s|$)'`);
     return true;
     // eslint-disable-next-line no-unused-vars
-  } catch (err) {
+  } catch {
     return false;
   }
 }
