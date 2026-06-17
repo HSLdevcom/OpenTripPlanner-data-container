@@ -115,6 +115,15 @@ function renameFileInZip(zipName, oldName, newName) {
   process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
 }
 
+function testZip(zipName) {
+  try {
+    execSync(`unzip -l ${zipName}`);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 function zipHasFile(zipName, file) {
   try {
     execSync(`unzip -l ${zipName} | grep -qE '(^|\\s)${file}(\\s|$)'`);
@@ -211,6 +220,7 @@ module.exports = {
   addToZip,
   removeFilesFromZip,
   renameFilesInZip,
+  testZip,
   zipHasFile,
   zipWithGlobIntoDir,
   zipDirContents,

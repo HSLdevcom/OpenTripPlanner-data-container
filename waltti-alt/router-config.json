@@ -263,7 +263,7 @@
       "id": "tampere-trip-updates",
       "type": "stop-time-updater",
       "frequency": "60s",
-      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
+      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v2.0/feed/tripupdate",
       "feedId": "tampere",
       "fuzzyTripMatching": false,
       "backwardsDelayPropagationType": "ALWAYS"
@@ -272,9 +272,18 @@
       "id": "tampere-alerts",
       "type": "real-time-alerts",
       "frequency": "30s",
-      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
+      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v2.0/feed/servicealert",
       "feedId": "tampere",
       "fuzzyTripMatching": false
+    },
+    {
+      "id": "tampere-vehicle-positions",
+      "type": "vehicle-positions",
+      "url": "http://digitransit-proxy:8080/out/nysse.mattersoft.fi/api/gtfsrealtime/v2.0/feed/vehicleposition",
+      "feedId": "tampere",
+      "frequency": "30s",
+      "fuzzyTripMatching": false,
+      "features": ["stop-position", "occupancy"]
     }
   ]
 }
