@@ -119,7 +119,9 @@ module.exports = function mapFit(config) {
       return;
     }
     if (!fs.existsSync(`${folder}/stops.txt`)) {
-      process.stdout.write(`${folder}/stops.txt does not exist, bad GTFS data?`);
+      process.stdout.write(
+        `${folder}/stops.txt does not exist, bad GTFS data?`,
+      );
       callback(null, file);
       return;
     }
