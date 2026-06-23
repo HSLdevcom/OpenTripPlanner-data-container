@@ -13,11 +13,6 @@ module.exports = {
       'https://mobility.mobility-database.fintraffic.fi/static/flixbus_only.zip',
     ),
     mapSrc(
-      'CAR_FERRIES',
-      'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
-      true,
-    ),
-    mapSrc(
       'Viro',
       'https://mobility.mobility-database.fintraffic.fi/static/viro.zip',
     ),
@@ -44,6 +39,11 @@ module.exports = {
       groupFilePattern: '(line)_.*\\.xml',
       sharedFilePattern: '_.*\\.xml',
     },
+    {
+      id: 'CAR_FERRIES',
+      url: 'https://schedules.finferries.fi/export/netex.zip',
+      groupFilePattern: '().*\\.xml'
+    }
   ],
   osm: ['finland', 'estonia'],
 };
