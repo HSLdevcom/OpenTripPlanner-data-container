@@ -42,8 +42,8 @@ module.exports = {
     {
       id: 'CAR_FERRIES',
       url: 'https://schedules.finferries.fi/export/netex.zip',
-      groupFilePattern: '().*\\.xml'
-    }
+      groupFilePattern: '().*\\.xml',
+    },
   ],
   osm: ['finland', 'estonia'],
 };
