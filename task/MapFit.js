@@ -118,6 +118,13 @@ module.exports = function mapFit(config) {
       callback(null, file);
       return;
     }
+    if (!fs.existsSync(`${folder}/stops.txt`)) {
+      process.stdout.write(
+        `${folder}/stops.txt does not exist, bad GTFS data?`,
+      );
+      callback(null, file);
+      return;
+    }
 
     process.stdout.write(`Fitting ${gtfsFile} to OSM stop locations ...\n`);
     transformStops(folder, config.fitMap, () => {
