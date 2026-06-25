@@ -21,11 +21,6 @@ module.exports = {
       true,
     ),
     mapSrc(
-      'CAR_FERRIES',
-      'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
-      true,
-    ),
-    mapSrc(
       'tampere',
       'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_deprecated.zip',
     ),
@@ -133,6 +128,11 @@ module.exports = {
       url: 'https://mobility.mobility-database.fintraffic.fi/static/vr_bussit.zip',
       groupFilePattern: '(line)_.*\\.xml',
       sharedFilePattern: '_.*\\.xml',
+    },
+    {
+      id: 'CAR_FERRIES',
+      url: 'https://schedules.finferries.fi/export/netex.zip',
+      groupFilePattern: '().*\\.xml',
     },
   ],
   osm: ['finland', 'estonia'],
