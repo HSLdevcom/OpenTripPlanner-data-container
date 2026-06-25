@@ -5,6 +5,7 @@ const { parseId, postSlackMessage } = require('../util');
 const {
   renameFilesInZip,
   removeFilesFromZip,
+  testZip,
   zipHasFile,
 } = require('./ZipTask');
 
@@ -31,17 +32,21 @@ const replaceGTFSFiles = (replacements, fileName) => {
 module.exports = {
   replaceGTFSFilesTask: configMap => {
     return through.obj(function (file, encoding, callback) {
-      const gtfsFile = file.history[file.history.length - 1];
-      const id = parseId(gtfsFile);
-      const config = configMap[id];
-      const replacements = config ? config.replacements : null;
-      if (!replacements) {
-        callback(null, file);
+      if (!testZip(file.path)) {
+        callback();
       } else {
-        process.stdout.write(`Replacing files in source ${id} \n`);
-        replaceGTFSFiles(replacements, file.path);
-        file.contents = cloneable(fs.createReadStream(file.path));
-        callback(null, file);
+        const gtfsFile = file.history[file.history.length - 1];
+        const id = parseId(gtfsFile);
+        const config = configMap[id];
+        const replacements = config ? config.replacements : null;
+        if (!replacements) {
+          callback(null, file);
+        } else {
+          process.stdout.write(`Replacing files in source ${id} \n`);
+          replaceGTFSFiles(replacements, file.path);
+          file.contents = cloneable(fs.createReadStream(file.path));
+          callback(null, file);
+        }
       }
     });
   },

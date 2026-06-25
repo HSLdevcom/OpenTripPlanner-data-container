@@ -49,7 +49,7 @@ function deleteOldVersions(sourceDir, routerId, tag) {
   const savedCount = process.env.KEEP_VERSIONS ?? '10';
   const basePath = `${sourceDir}/${tag}`;
   if (!fs.existsSync(basePath)) {
-    return Promise(res => res());
+    return new Promise(res => res());
   }
   return Promise.all(deleteInvalidVersions(basePath)).then(() => {
     const filesToDelete = fs
