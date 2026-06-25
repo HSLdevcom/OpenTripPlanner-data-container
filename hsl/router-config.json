@@ -111,7 +111,7 @@
     "maxFlexTripDuration": "20m",
     "maxAccessWalkDuration": "5m",
     "maxEgressWalkDuration": "5m",
-    "boardCost": 0,
+    "boardCost": 600,
     "reluctance": 1.0
   },
   "transit": {
