@@ -28,6 +28,11 @@ module.exports = {
       },
     ),
     mapSrc(
+      '02Taksi',
+      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      false,
+    ),
+    mapSrc(
       'WalttiTest',
       'https://github.com/tvv-lippu-ja-maksujarjestelma-oy/waltti-digitransit-config-data/raw/refs/heads/main/GTFStestireittiopas.zip',
       'true',
