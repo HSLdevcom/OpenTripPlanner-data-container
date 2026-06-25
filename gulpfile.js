@@ -164,7 +164,12 @@ gulp.task('gtfs:dlReplace', () =>
 
 gulp.task(
   'gtfs:dl',
-  gulp.series('del:fit', 'gtfs:download', 'gtfs:dlRename', 'gtfs:dlReplace', () => del([tmpRenameDir]),
+  gulp.series(
+    'del:fit',
+    'gtfs:download',
+    'gtfs:dlRename',
+    'gtfs:dlReplace',
+    () => del([tmpRenameDir]),
   ),
 );
 
