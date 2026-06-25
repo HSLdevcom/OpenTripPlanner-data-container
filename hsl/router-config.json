@@ -108,11 +108,9 @@
   },
   "flex": {
     "maxTransferDuration": "5m",
-    "maxFlexTripDuration": "20m",
+    "maxFlexTripDuration": "30m",
     "maxAccessWalkDuration": "5m",
-    "maxEgressWalkDuration": "5m",
-    "boardCost": 0,
-    "reluctance": 1.0
+    "maxEgressWalkDuration": "5m"
   },
   "transit": {
     "maxSearchWindow": "8h",
