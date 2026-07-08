@@ -128,8 +128,8 @@ module.exports = {
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
     mapSrc(
-      '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      '02Taksi_carpickupzone',
+      'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
       false,
     ),
   ],

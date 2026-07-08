@@ -108,10 +108,10 @@
   },
   "flex": {
     "maxTransferDuration": "5m",
-    "maxFlexTripDuration": "20m",
+    "maxFlexTripDuration": "30m",
     "maxAccessWalkDuration": "5m",
     "maxEgressWalkDuration": "5m",
-    "boardCost": 0,
+    "boardCost": 600,
     "reluctance": 1.0
   },
   "transit": {
