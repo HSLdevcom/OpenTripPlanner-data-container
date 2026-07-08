@@ -117,7 +117,7 @@ module.exports = {
       true,
     ),
     mapSrc(
-      '02Taksi',
+      '02Taksi-carpickupzone',
       'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
       false,
     ),
