@@ -11,6 +11,6 @@
     "AsyncGraphQLFetchers": false,
     "Emission": true,
     "DebugRasterTiles": true,
-    "FlexRouting": true
+    "CarPickupZone": true
   }
 }

@@ -29,7 +29,7 @@ module.exports = {
     ),
     mapSrc(
       '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
+      'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
       false,
     ),
     mapSrc(
