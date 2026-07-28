@@ -289,7 +289,7 @@
       "id": "lahti-alerts",
       "type": "real-time-alerts",
       "frequency": "30s",
-      "url": "http://digitransit-proxy:8080/out/lsl.mattersoft.fi/api/gtfsrealtime/v1.0/feed/servicealert",
+      "url": "http://digitransit-proxy:8080/out/waltti-cloudtest-agent.frendsapp.com/api/GTFS/v1/protobuf/servicealerts/223",
       "feedId": "Lahti",
       "fuzzyTripMatching": false
     },
@@ -297,10 +297,19 @@
       "id": "lahti-trip-updates",
       "type": "stop-time-updater",
       "frequency": "60s",
-      "url": "http://digitransit-proxy:8080/out/lsl.mattersoft.fi/api/gtfsrealtime/v1.0/feed/tripupdate",
+      "url": "http://digitransit-proxy:8080/out/waltti-cloudtest-agent.frendsapp.com/api/GTFS/v1/protobuf/tripupdates/223",
       "feedId": "Lahti",
       "fuzzyTripMatching": false,
       "backwardsDelayPropagationType": "ALWAYS"
+    },
+    {
+      "id": "lahti-vehicle-positions",
+      "type": "vehicle-positions",
+      "url": "http://digitransit-proxy:8080/out/waltti-cloudtest-agent.frendsapp.com/api/GTFS/v1/protobuf/vehicleposition/223",
+      "feedId": "Lahti",
+      "frequency": "30s",
+      "fuzzyTripMatching": false,
+      "features": ["stop-position", "occupancy"]
     },
     {
       "id": "kuopio-alerts",

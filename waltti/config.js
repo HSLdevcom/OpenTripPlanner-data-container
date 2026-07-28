@@ -39,7 +39,7 @@ module.exports = {
     mapSrc('FOLI', 'http://data.foli.fi/gtfs/gtfs.zip'),
     mapSrc(
       'Lahti',
-      'https://tvv.fra1.digitaloceanspaces.com/223.zip',
+      'http://digitransit-proxy:8080/out/waltti-cloudtest-agent.frendsapp.com/api/GTFS/v1/protobuf/dailyzip/223',
       true,
       undefined,
       {
