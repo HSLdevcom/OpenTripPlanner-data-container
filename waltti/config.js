@@ -36,7 +36,7 @@ module.exports = {
         'fare_rules.txt': 'digitransit_fare_rules.txt',
       },
     ),
-    mapSrc('FOLI', 'http://data.foli.fi/gtfs/gtfs.zip'),
+    mapSrc('FOLI', 'http://data.foli.fi/gtfs/gtfs.zip', true),
     mapSrc(
       'Lahti',
       'https://tvv.fra1.digitaloceanspaces.com/223.zip',
@@ -80,24 +80,12 @@ module.exports = {
     mapSrc(
       'tampere',
       'https://ekstrat.tampere.fi/ekstrat/ptdata/tamperefeed_deprecated.zip',
+      true,
     ),
     mapSrc(
       'Rovaniemi',
       'https://tvv.fra1.digitaloceanspaces.com/237.zip',
       true,
-    ),
-    mapSrc(
-      'digitraffic',
-      'https://rata.digitraffic.fi/api/v1/trains/gtfs-passenger-stops.zip',
-      false,
-      undefined,
-      undefined,
-      {
-        headers: {
-          'Accept-Encoding': 'gzip',
-          'Digitraffic-User': 'Digitransit/OTP-dataloading',
-        },
-      },
     ),
     mapSrc(
       'Pori',
@@ -119,18 +107,17 @@ module.exports = {
       'https://tvv.fra1.digitaloceanspaces.com/232.zip',
       true,
     ),
-    mapSrc(
-      'KotkaLautat',
-      'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
-      true,
-      ['waltti/gtfs-rules/only-kotka-ferries.rule'],
-    ),
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
     mapSrc(
-      '02Taksi_carpickupzone',
-      'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
-      false,
+      'VARELY',
+      'http://digitransit-proxy:8080/out/varelyadmin.mattersoft.fi/feeds/102.zip',
+      true,
+    ),
+    mapSrc(
+      'Rauma',
+      'http://digitransit-proxy:8080/out/raumaadmin.mattersoft.fi/feeds/233.zip',
+      true,
     ),
   ],
   osm: ['kajaani', 'oulu', 'rovaniemi', 'southFinland', 'vaasa'],

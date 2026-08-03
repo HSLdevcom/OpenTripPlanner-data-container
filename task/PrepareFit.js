@@ -107,14 +107,19 @@ function createMap(config, cb) {
                   }
                 }
                 if (pos) {
+                  pos[2] = item.id;
+                  pos[3] = tags.name;
                   if (tags.ref && !map[tags.ref]) {
                     map[tags.ref] = pos;
+                    pos[4] = 'ref';
                   }
                   if (tags['ref:findr'] && !map[tags['ref:findr']]) {
                     map[tags['ref:findr']] = pos;
+                    pos[4] = 'ref:findr';
                   }
                   if (tags['ref:findt'] && !map[tags['ref:findt']]) {
                     map[tags['ref:findt']] = pos;
+                    pos[4] = 'ref:findt';
                   }
                   count++;
                 }

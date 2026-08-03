@@ -37,11 +37,12 @@ function readHeader(fileName) {
   });
 }
 
-function fitStopCoordinates(map, stats) {
+function fitStopCoordinates(map, stats, logName) {
   return through.obj(function (stop, enc, next) {
     const id = stop.stop_id;
     // koontikanta uses x_<digiroad-ref> like gtfs ids, strip the prefix
     const noprefix = id.slice(id.indexOf('_') + 1);
+    let desc = `${id},,,,,,,\n`;
     for (const k of [id, stop.stop_code, noprefix]) {
       if (k === undefined) {
         continue;
@@ -55,18 +56,33 @@ function fitStopCoordinates(map, stats) {
           stats.dsum += dist;
           stop.stop_lat = osmPos[0];
           stop.stop_lon = osmPos[1];
-          break;
         } else {
           stats.bad++;
         }
+        let ref1 = '',
+          ref2 = '',
+          ref3 = '';
+        if (osmPos[4] === 'ref') {
+          ref1 = k;
+        } else if (osmPos[4] === 'ref:findr') {
+          ref2 = k;
+        } else {
+          ref3 = k;
+        }
+        desc = `${id}, ${osmPos[2]}, ${osmPos[3]}, ${ref1}, ${ref2}, ${ref3}, ${osmPos[0]}, ${osmPos[1]}\n`;
+        if (dist < limit) {
+          break;
+        }
       }
     }
+    fs.appendFileSync(logName, desc);
     next(null, stop);
   });
 }
 
-function transformStops(folder, map, cb) {
+function transformStops(folder, map, id, cb) {
   const fileName = `${folder}/stops.txt`;
+  const logName = `${dataDir}/${id}_log.txt`;
   const result = `${folder}/transformed_stops.txt`;
   const stats = {
     bad: 0,
@@ -75,13 +91,17 @@ function transformStops(folder, map, cb) {
     maxDist: 0,
   };
 
+  fs.writeFileSync(
+    logName,
+    'waltti_stop_id, osm_id, osm_name, osm_ref, osm_ref_findr, osm_ref_findt, osm_lat, osm_lon\n',
+  );
   readHeader(fileName).then(headers => {
     const stringifier = stringify({ header: true, columns: headers });
 
     fs.createReadStream(fileName)
       .pipe(removeBOM('utf-8'))
       .pipe(csvParser())
-      .pipe(fitStopCoordinates(map, stats))
+      .pipe(fitStopCoordinates(map, stats, logName))
       .pipe(stringifier)
       .pipe(fs.createWriteStream(result))
       .on('finish', () => {
@@ -127,7 +147,7 @@ module.exports = function mapFit(config) {
     }
 
     process.stdout.write(`Fitting ${gtfsFile} to OSM stop locations ...\n`);
-    transformStops(folder, config.fitMap, () => {
+    transformStops(folder, config.fitMap, id, () => {
       process.stdout.write(gtfsFile + ' fit SUCCESS\n');
       file.contents = cloneable(fs.createReadStream(gtfsFile));
       callback(null, file);
