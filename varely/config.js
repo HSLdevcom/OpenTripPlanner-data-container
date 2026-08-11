@@ -2,7 +2,7 @@ const { mapSrc } = require('../util');
 
 module.exports = {
   id: 'varely',
-  src: [
+  gtfs: [
     mapSrc(
       'VARELY',
       'http://digitransit-proxy:8080/out/varelyadmin.mattersoft.fi/feeds/102.zip',

@@ -2,7 +2,7 @@ const { mapSrc } = require('../util');
 
 module.exports = {
   id: 'waltti',
-  src: [
+  gtfs: [
     mapSrc(
       'Hameenlinna',
       'https://tvv.fra1.digitaloceanspaces.com/203.zip',

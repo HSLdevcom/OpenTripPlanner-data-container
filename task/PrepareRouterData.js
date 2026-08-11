@@ -104,7 +104,7 @@ function prepareRouterData(router) {
     const name = router.dem + '.tif';
     stream.push(createFile(router, name, `${dataDir}/ready/dem`));
   }
-  router.src.forEach(src => {
+  router.gtfs.forEach(src => {
     const name = src.id + '-gtfs.zip';
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
@@ -178,7 +178,7 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
   stream.push(createFile(router, 'otp-config.json', router.id));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
-  router.src.forEach(src => {
+  router.gtfs.forEach(src => {
     const name = src.id + '-gtfs.zip';
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });

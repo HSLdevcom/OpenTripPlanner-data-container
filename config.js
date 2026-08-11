@@ -11,7 +11,7 @@ const router = require(`./${process.env.ROUTER_NAME}/config`);
 
 // EXTRA_SRC format should be {"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}
 // but you can only define, for example, new url and the other key value pairs will remain the same as they are defined in this file.
-// It is also possible to add completely new src by defining object with unused id or to remove a src by defining "remove": true
+// It is also possible to add completely new gtfs entry by defining object with unused id or to remove one by defining "remove": true
 const extraSrc =
   process.env.EXTRA_SRC !== undefined ? JSON.parse(process.env.EXTRA_SRC) : {};
 
@@ -21,7 +21,7 @@ const usedSrc = [];
 
 // override source values if they are defined in extraSrc
 const rt = router;
-const sources = rt.src;
+const sources = rt.gtfs;
 for (let j = sources.length - 1; j >= 0; j--) {
   const src = sources[j];
   const id = src.id;
@@ -36,16 +36,16 @@ for (let j = sources.length - 1; j >= 0; j--) {
   sources[j].config = rt;
 }
 
-// Go through extraSrc keys to find keys that don't already exist in src and add those as new src
+// Go through extraSrc keys to find keys that don't already exist in gtfs and add those as new entries
 Object.keys(extraSrc).forEach(id => {
   if (!usedSrc.includes(id)) {
-    router.src.push({ ...extraSrc[id], id });
+    router.gtfs.push({ ...extraSrc[id], id });
   }
 });
 
 // create id->src-entry map
 const gtfsMap = {};
-router.src.forEach(src => {
+router.gtfs.forEach(src => {
   gtfsMap[src.id] = src;
 });
 

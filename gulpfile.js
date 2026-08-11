@@ -175,7 +175,7 @@ gulp.task('del:id', () => del(idDir));
  * 3. test zip with OpenTripPlanner
  * 4. copy to fit dir if test is succesful
  */
-gulp.task('gtfs:download', () => dl(config.router.src, gtfsDlDir));
+gulp.task('gtfs:download', () => dl(config.router.gtfs, gtfsDlDir));
 
 gulp.task('gtfs:dlRename', () =>
   pipeline(
@@ -223,7 +223,7 @@ gulp.task(
 // Runs mapFit on gtfs files if fit is enabled, or just moves files to directory 'filter'
 gulp.task(
   'gtfs:fit',
-  config.router.src.some(src => src.fit)
+  config.router.gtfs.some(src => src.fit)
     ? gulp.series(
         'del:filter',
         () => prepareFit(config),
@@ -250,7 +250,7 @@ gulp.task('copyRules', () =>
 // Filter gtfs files and move result to directory 'id'
 gulp.task(
   'gtfs:filter',
-  config.router.src.some(src => src.rules)
+  config.router.gtfs.some(src => src.rules)
     ? gulp.series(
         'copyRules',
         'del:id',

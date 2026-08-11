@@ -2,7 +2,7 @@ const { mapSrc } = require('../util');
 
 module.exports = {
   id: 'finland',
-  src: [
+  gtfs: [
     mapSrc(
       'HSL',
       'https://infopalvelut.storage.hsldev.com/gtfs/hsl_google_transit.zip',

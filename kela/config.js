@@ -15,7 +15,7 @@ if (process.env.MH_BASIC_AUTH) {
 
 module.exports = {
   id: 'kela',
-  src: [
+  gtfs: [
     mapSrc(
       'kela',
       'https://mobility.mobility-database.fintraffic.fi/static/Kela_suuret.zip',
