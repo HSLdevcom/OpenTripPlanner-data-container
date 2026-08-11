@@ -108,6 +108,12 @@ function prepareRouterData(router) {
     const name = src.id + '-gtfs.zip';
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
+  if (router.carPickupZone) {
+    router.carPickupZone.forEach(src => {
+      const name = src.id + '-carpickupzone.zip';
+      stream.push(createFile(router, name, `${dataDir}/ready/carpickupzone`));
+    });
+  }
   if (router.netex) {
     router.netex.forEach(src => {
       const name = src.id + '-netex.zip';
@@ -176,6 +182,12 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
     const name = src.id + '-gtfs.zip';
     stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
   });
+  if (router.carPickupZone) {
+    router.carPickupZone.forEach(src => {
+      const name = src.id + '-carpickupzone.zip';
+      stream.push(createFile(router, name, `${dataDir}/ready/carpickupzone`));
+    });
+  }
   if (router.netex) {
     router.netex.forEach(src => {
       const name = src.id + '-netex.zip';

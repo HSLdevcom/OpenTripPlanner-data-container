@@ -70,6 +70,12 @@ async function handleOsmAndDemUpdate() {
   }
 }
 
+async function handleTransitDataUpdate() {
+  await start('gtfs:update');
+  await start('netex:update');
+  await start('carPickupZone:update');
+}
+
 function handleTests() {
   if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
     process.stdout.write('Skipping all tests\n');
@@ -182,8 +188,7 @@ async function buildGraph(name) {
 
   await handleOsmAndDemUpdate();
 
-  await start('gtfs:update');
-  await start('netex:update');
+  await handleTransitDataUpdate();
 
   process.stdout.write('Build routing graph\n');
   await start('router:buildGraph');
@@ -223,8 +228,7 @@ async function buildWithPrebuiltStreetGraph(name) {
 
   await handleSeeding();
 
-  await start('gtfs:update');
-  await start('netex:update');
+  await handleTransitDataUpdate();
 
   process.stdout.write('Build routing graph from prebuilt street only graph\n');
   await start('router:buildWithPrebuiltStreetGraph');

@@ -22,8 +22,7 @@ const {
   buildOTPGraphTask,
   buildOTPStreetOnlyGraphTask,
 } = require('./task/BuildOTPGraph');
-const { renameGTFSFile } = require('./task/GTFSRename');
-const { renameNetexFile } = require('./task/NetexRename');
+const { renameFile } = require('./task/RenameFile');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const { createDir } = require('./util');
@@ -44,11 +43,13 @@ const osmDlDir = `${config.dataDir}/downloads/osm`;
 const demDlDir = `${config.dataDir}/downloads/dem`;
 const gtfsDlDir = `${config.dataDir}/downloads/gtfs`;
 const netexDlDir = `${config.dataDir}/downloads/netex`;
+const carPickupZoneDlDir = `${config.dataDir}/downloads/carpickupzone`;
 
 const osmDir = `${config.dataDir}/ready/osm`;
 const demDir = `${config.dataDir}/ready/dem`;
 const gtfsDir = `${config.dataDir}/ready/gtfs`;
 const netexDir = `${config.dataDir}/ready/netex`;
+const carPickupZoneDir = `${config.dataDir}/ready/carpickupzone`;
 
 const gtfsSeedDir = `${config.dataDir}/seed`;
 const fitDir = `${config.dataDir}/fit`;
@@ -78,12 +79,38 @@ gulp.task('netex:download', async cb => {
 gulp.task('netex:rename', () =>
   pipeline(
     gulp.src(`${netexDlDir}/*`, noBuf),
-    renameNetexFile(),
+    renameFile('-netex'),
     gulp.dest(netexDir),
   ),
 );
 
 gulp.task('netex:update', gulp.series('netex:download', 'netex:rename'));
+
+/**
+ * Download car pickup zone data
+ */
+gulp.task('carPickupZone:download', async cb => {
+  if (!config.router.carPickupZone) {
+    return Promise.resolve();
+  }
+  createDir(carPickupZoneDlDir);
+  createDir(carPickupZoneDir);
+  await dl(config.router.carPickupZone, carPickupZoneDlDir);
+  cb();
+});
+
+gulp.task('carPickupZone:rename', () =>
+  pipeline(
+    gulp.src(`${carPickupZoneDlDir}/*`, noBuf),
+    renameFile('-carpickupzone'),
+    gulp.dest(carPickupZoneDir),
+  ),
+);
+
+gulp.task(
+  'carPickupZone:update',
+  gulp.series('carPickupZone:download', 'carPickupZone:rename'),
+);
 
 /**
  * Download osm data
@@ -153,7 +180,7 @@ gulp.task('gtfs:download', () => dl(config.router.src, gtfsDlDir));
 gulp.task('gtfs:dlRename', () =>
   pipeline(
     gulp.src(`${gtfsDlDir}/*`, noBuf),
-    renameGTFSFile(),
+    renameFile('-gtfs'),
     gulp.dest(renamedDir),
   ),
 );
@@ -294,6 +321,18 @@ gulp.task(
   ),
 );
 
+gulp.task('carPickupZone:del', () => del(carPickupZoneDir));
+
+gulp.task(
+  'carPickupZone:seed',
+  gulp.series('carPickupZone:del', () =>
+    pipeline(
+      gulp.src(`${seedSourceDir}/*-carpickupzone.zip`, noBuf),
+      gulp.dest(carPickupZoneDir),
+    ),
+  ),
+);
+
 gulp.task('osm:del', () => del(osmDir));
 
 gulp.task(
@@ -335,6 +374,7 @@ gulp.task(
     'osm:seed',
     'gtfs:seed',
     'netex:seed',
+    'carPickupZone:seed',
     'seed:cleanup',
   ),
 );

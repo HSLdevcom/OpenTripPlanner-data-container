@@ -116,10 +116,11 @@ module.exports = {
       'https://minfoapi.matkahuolto.fi/gtfs/177/gtfs.zip',
       true,
     ),
+  ],
+  carPickupZone: [
     mapSrc(
       '02Taksi_carpickupzone',
       'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
-      false,
     ),
   ],
   netex: [
