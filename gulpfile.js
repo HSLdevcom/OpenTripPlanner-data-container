@@ -25,7 +25,6 @@ const {
 const { renameFile } = require('./task/RenameFile');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
-const { createDir } = require('./util');
 const storageCleanup = require('./task/StorageCleanup');
 
 // Warning! Lots of string interpolation all over the code. None of these
@@ -66,14 +65,11 @@ const noBuf = { buffer: false }; // options for gulp src
 /**
  * Download netex data
  */
-gulp.task('netex:download', async cb => {
+gulp.task('netex:download', () => {
   if (!config.router.netex) {
     return Promise.resolve();
   }
-  createDir(netexDlDir);
-  createDir(netexDir);
-  await dl(config.router.netex, netexDlDir);
-  cb();
+  return dl(config.router.netex, netexDlDir);
 });
 
 gulp.task('netex:rename', () =>
@@ -89,14 +85,11 @@ gulp.task('netex:update', gulp.series('netex:download', 'netex:rename'));
 /**
  * Download car pickup zone data
  */
-gulp.task('carPickupZone:download', async cb => {
+gulp.task('carPickupZone:download', () => {
   if (!config.router.carPickupZone) {
     return Promise.resolve();
   }
-  createDir(carPickupZoneDlDir);
-  createDir(carPickupZoneDir);
-  await dl(config.router.carPickupZone, carPickupZoneDlDir);
-  cb();
+  return dl(config.router.carPickupZone, carPickupZoneDlDir);
 });
 
 gulp.task('carPickupZone:rename', () =>
@@ -115,14 +108,11 @@ gulp.task(
 /**
  * Download osm data
  */
-gulp.task('osm:download', async cb => {
+gulp.task('osm:download', () => {
   if (!config.osm) {
     return Promise.resolve();
   }
-  createDir(osmDlDir);
-  createDir(osmDir);
-  await dl(config.osm, osmDlDir);
-  cb();
+  return dl(config.osm, osmDlDir);
 });
 
 gulp.task('osm:copyPreprocessingFiles', () =>
@@ -158,9 +148,7 @@ gulp.task('dem:update', () => {
   if (!config.dem) {
     return Promise.resolve();
   }
-  createDir(demDlDir);
-  createDir(demDir);
-  return Promise.all(dlBlob(config.dem)).catch(() => {
+  return Promise.all(dlBlob(config.dem, demDlDir, demDir)).catch(() => {
     global.hasFailures = true;
   });
 });
