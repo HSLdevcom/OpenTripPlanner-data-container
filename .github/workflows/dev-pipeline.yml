@@ -24,11 +24,11 @@ jobs:
         uses: actions/cache@v5
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
-        run: npm install
+        run: yarn install --immutable
       - name: Run linters
-        run: npm run test
+        run: yarn run test
   docker-push:
     if: github.event_name != 'pull_request'
     needs:
@@ -52,9 +52,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
-        run: npm install
+        run: yarn install --immutable
       - name: Build docker image from ${{ github.ref_name }} and push it
         run: ./.github/workflows/scripts/build_and_push_dev.sh
         env:

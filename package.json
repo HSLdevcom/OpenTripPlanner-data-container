@@ -5,7 +5,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint .",
-    "test": "prettier --check . && npm run lint",
+    "test": "prettier --check . && yarn run lint",
     "start": "node index.js"
   },
   "repository": {
@@ -39,5 +39,6 @@
     "globals": "^15.14.0",
     "gulp-cli": "^3.1.0",
     "prettier": "^3.4.2"
-  }
+  },
+  "packageManager": "yarn@4.13.0"
 }
