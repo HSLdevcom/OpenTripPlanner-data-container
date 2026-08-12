@@ -82,6 +82,30 @@ function createAndProcessRouterConfig(router) {
   return file;
 }
 
+function getTransitDataFiles(router) {
+  const files = [];
+  ['gtfs', 'netex', 'carPickupZone'].forEach(type => {
+    if (router[type]) {
+      const dirName = type.toLowerCase();
+      router[type].forEach(src => {
+        const name = `${src.id}-${dirName}.zip`;
+        files.push(createFile(router, name, `${dataDir}/ready/${dirName}`));
+      });
+    }
+  });
+  return files;
+}
+
+function getOsmAndDemFiles(router, osmDir, demDir) {
+  const files = router.osm.map(osmId =>
+    createFile(router, `${osmId}.pbf`, osmDir),
+  );
+  if (router.dem) {
+    files.push(createFile(router, `${router.dem}.tif`, demDir));
+  }
+  return files;
+}
+
 /**
  * Make router data ready for inclusion in opentripplanner.
  * In the whole build case, all osm, dem, and gtfs data is fetched from the data directory.
@@ -96,30 +120,12 @@ function prepareRouterData(router) {
   stream.push(createFile(router, 'otp-config.json', router.id));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
-  router.osm.forEach(osmId => {
-    const name = osmId + '.pbf';
-    stream.push(createFile(router, name, `${dataDir}/ready/osm`));
-  });
-  if (router.dem) {
-    const name = router.dem + '.tif';
-    stream.push(createFile(router, name, `${dataDir}/ready/dem`));
-  }
-  router.gtfs.forEach(src => {
-    const name = src.id + '-gtfs.zip';
-    stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
-  });
-  if (router.carPickupZone) {
-    router.carPickupZone.forEach(src => {
-      const name = src.id + '-carpickupzone.zip';
-      stream.push(createFile(router, name, `${dataDir}/ready/carpickupzone`));
-    });
-  }
-  if (router.netex) {
-    router.netex.forEach(src => {
-      const name = src.id + '-netex.zip';
-      stream.push(createFile(router, name, `${dataDir}/ready/netex`));
-    });
-  }
+  getOsmAndDemFiles(
+    router,
+    `${dataDir}/ready/osm`,
+    `${dataDir}/ready/dem`,
+  ).forEach(f => stream.push(f));
+  getTransitDataFiles(router).forEach(f => stream.push(f));
   stream.end();
 
   return stream;
@@ -139,14 +145,11 @@ function prepareRouterDataForStreetOnlyGraphBuild(router) {
   stream.push(createFile(router, 'otp-config.json', router.id));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
-  router.osm.forEach(osmId => {
-    const name = osmId + '.pbf';
-    stream.push(createFile(router, name, `${dataDir}/ready/osm`));
-  });
-  if (router.dem) {
-    const name = router.dem + '.tif';
-    stream.push(createFile(router, name, `${dataDir}/ready/dem`));
-  }
+  getOsmAndDemFiles(
+    router,
+    `${dataDir}/ready/osm`,
+    `${dataDir}/ready/dem`,
+  ).forEach(f => stream.push(f));
   stream.end();
 
   return stream;
@@ -178,22 +181,7 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
   stream.push(createFile(router, 'otp-config.json', router.id));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
-  router.gtfs.forEach(src => {
-    const name = src.id + '-gtfs.zip';
-    stream.push(createFile(router, name, `${dataDir}/ready/gtfs`));
-  });
-  if (router.carPickupZone) {
-    router.carPickupZone.forEach(src => {
-      const name = src.id + '-carpickupzone.zip';
-      stream.push(createFile(router, name, `${dataDir}/ready/carpickupzone`));
-    });
-  }
-  if (router.netex) {
-    router.netex.forEach(src => {
-      const name = src.id + '-netex.zip';
-      stream.push(createFile(router, name, `${dataDir}/ready/netex`));
-    });
-  }
+  getTransitDataFiles(router).forEach(f => stream.push(f));
 
   const osmDirectories = getDirectories(
     `${storageDir}/osm-builds/${process.env.DOCKER_TAG}`,
@@ -205,15 +193,11 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
     global.osmPrebuildDir = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
     process.stdout.write(`Using OSM data from ${global.osmPrebuildDir} \n`);
     // This is needed for gtfs data fitting and seeding.
-    router.osm.forEach(osmId => {
-      const name = osmId + '.pbf';
-      stream.push(createFile(router, name, global.osmPrebuildDir));
-    });
-    // This is needed for seeding.
-    if (router.dem) {
-      const name = router.dem + '.tif';
-      stream.push(createFile(router, name, global.osmPrebuildDir));
-    }
+    getOsmAndDemFiles(
+      router,
+      global.osmPrebuildDir,
+      global.osmPrebuildDir,
+    ).forEach(f => stream.push(f));
     // This is the prebuilt street graph.
     stream.push(createFile(router, 'streetGraph.obj', global.osmPrebuildDir));
   } else {
