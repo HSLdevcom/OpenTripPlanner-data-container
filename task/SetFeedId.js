@@ -47,11 +47,12 @@ function setFeedId(file, id) {
             now - new Date(json[0].feed_version) > EIGHT_HOURS
           ) {
             const msg = `GTFS data for ${id} is older than 8 hours`;
-            logger.warn(msg);
             // send warning also to slack between monday and friday
             const day = now.getDay();
             if (day !== 1) {
-              postSlackMessage(`${msg} :boom:`);
+              postSlackMessage(`${msg} :boom:`, 'warn');
+            } else {
+              logger.warn(msg);
             }
           }
         }

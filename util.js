@@ -12,8 +12,8 @@ const headers = {
   Accept: '*/*',
 };
 
-async function postSlackMessage(text) {
-  logger.info(text); // write important messages also to log
+async function postSlackMessage(text, level = 'info') {
+  logger[level](text); // write important messages also to log
   try {
     const { data } = await axios.post(
       'https://slack.com/api/chat.postMessage',
@@ -36,8 +36,8 @@ async function postSlackMessage(text) {
   }
 }
 
-async function updateSlackMessage(text) {
-  logger.info(text);
+async function updateSlackMessage(text, level = 'info') {
+  logger[level](text);
   try {
     const { data } = await axios.post(
       'https://slack.com/api/chat.update',

@@ -46,9 +46,7 @@ module.exports = function (entries, dlDir, readyDir) {
             }
             response.data.on('error', err => {
               if (!dataAlreadyExists) {
-                logger.error(
-                  `${entry.url} download failed: ${JSON.stringify(err)}`,
-                );
+                logger.error(`${entry.url} download failed: ${err.message}`);
                 reject(err);
               } else {
                 resolve();
@@ -63,8 +61,9 @@ module.exports = function (entries, dlDir, readyDir) {
                 logger.info(`Downloaded updated DEM data to ${filePath}`);
                 fs.rename(filePath, readyPath, err => {
                   if (err) {
-                    logger.error(JSON.stringify(err));
-                    logger.error(`Failed to move DEM data from ${readyPath}`);
+                    logger.error(
+                      `Failed to move DEM data from ${readyPath}: ${err.message}`,
+                    );
                     reject(err);
                   } else {
                     logger.info(`DEM data updated for ${entry.id}`);
@@ -77,9 +76,7 @@ module.exports = function (entries, dlDir, readyDir) {
             });
           })
           .catch(err => {
-            logger.error(
-              `${entry.url} download failed: ${JSON.stringify(err)}`,
-            );
+            logger.error(`${entry.url} download failed: ${err.message}`);
             reject(err);
           });
       }),

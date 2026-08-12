@@ -26,6 +26,7 @@ const { renameFile } = require('./task/RenameFile');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const storageCleanup = require('./task/StorageCleanup');
+const logger = require('./logger');
 
 // Track the currently running gulp task so logger.js can tag log lines with it (e.g.
 // "[gtfs:id]"). A single value is enough as long as every gulp.series step -- including
@@ -140,12 +141,13 @@ gulp.task('osm:download', () => {
   return dl(config.osm, osmDlDir);
 });
 
-gulp.task('osm:copyPreprocessingFiles', () =>
-  pipeline(
+gulp.task('osm:copyPreprocessingFiles', () => {
+  logger.info('Copying OSM preprocessing files...');
+  return pipeline(
     gulp.src(`${config.router.id}/osm-preprocessing/*.sh`, noBuf),
     gulp.dest(`${config.dataDir}/${config.router.id}/osm-preprocessing`),
-  ),
-);
+  );
+});
 
 gulp.task(
   'osm:update',
@@ -179,9 +181,18 @@ gulp.task('dem:update', () => {
   });
 });
 
-gulp.task('del:filter', () => del(filterDir));
-gulp.task('del:fit', () => del(fitDir));
-gulp.task('del:id', () => del(idDir));
+gulp.task('del:filter', () => {
+  logger.info('Deleting old fit-filter GTFS data...');
+  return del(filterDir);
+});
+gulp.task('del:fit', () => {
+  logger.info('Deleting old fit GTFS data...');
+  return del(fitDir);
+});
+gulp.task('del:id', () => {
+  logger.info('Deleting old id GTFS data...');
+  return del(idDir);
+});
 
 /**
  * 1. download
@@ -256,12 +267,13 @@ gulp.task(
     : () => pipeline(gulp.src(`${fitDir}/*`, noBuf), gulp.dest(filterDir)),
 );
 
-gulp.task('copyRules', () =>
-  pipeline(
+gulp.task('copyRules', () => {
+  logger.info('Copying GTFS rules...');
+  return pipeline(
     gulp.src(`${config.router.id}/gtfs-rules/*`, noBuf),
     gulp.dest(`${config.dataDir}/${config.router.id}/gtfs-rules`),
-  ),
-);
+  );
+});
 
 // Filter gtfs files and move result to directory 'id'
 gulp.task(
@@ -307,13 +319,17 @@ gulp.task(
 
 // move listed packages from seed to ready
 gulp.task('gtfs:fallback', () => {
+  logger.info(`Falling back to seeded data for: ${global.failedFeeds}`);
   const sources = global.failedFeeds
     .split(',')
     .map(feed => `${gtfsSeedDir}/${feed}-gtfs.zip`);
   return pipeline(gulp.src(sources, noBuf), gulp.dest(gtfsDir));
 });
 
-gulp.task('gtfs:del', () => del([gtfsSeedDir, gtfsDir]));
+gulp.task('gtfs:del', () => {
+  logger.info('Deleting old GTFS data...');
+  return del([gtfsSeedDir, gtfsDir]);
+});
 
 gulp.task(
   'gtfs:seed',
@@ -329,7 +345,10 @@ gulp.task(
   ),
 );
 
-gulp.task('netex:del', () => del(netexDir));
+gulp.task('netex:del', () => {
+  logger.info('Deleting old NeTEx data...');
+  return del(netexDir);
+});
 
 gulp.task(
   'netex:seed',
@@ -344,7 +363,10 @@ gulp.task(
   ),
 );
 
-gulp.task('carPickupZone:del', () => del(carPickupZoneDir));
+gulp.task('carPickupZone:del', () => {
+  logger.info('Deleting old car pickup zone data...');
+  return del(carPickupZoneDir);
+});
 
 gulp.task(
   'carPickupZone:seed',
@@ -359,7 +381,10 @@ gulp.task(
   ),
 );
 
-gulp.task('osm:del', () => del(osmDir));
+gulp.task('osm:del', () => {
+  logger.info('Deleting old OSM data...');
+  return del(osmDir);
+});
 
 gulp.task(
   'osm:seed',
@@ -371,7 +396,10 @@ gulp.task(
   ),
 );
 
-gulp.task('dem:del', () => del(demDir));
+gulp.task('dem:del', () => {
+  logger.info('Deleting old DEM data...');
+  return del(demDir);
+});
 
 gulp.task(
   'dem:seed',
@@ -412,7 +440,10 @@ gulp.task(
   ),
 );
 
-gulp.task('router:del', () => del(`${config.dataDir}/build`));
+gulp.task('router:del', () => {
+  logger.info('Deleting old router build data...');
+  return del(`${config.dataDir}/build`);
+});
 
 gulp.task(
   'router:copy',

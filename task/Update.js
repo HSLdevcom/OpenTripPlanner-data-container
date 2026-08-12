@@ -42,7 +42,10 @@ async function handleOsmAndDemUpdate() {
     global.hasFailures = false;
     await start('dem:update');
     if (global.hasFailures) {
-      postSlackMessage('DEM update failed, using previous version :boom:');
+      postSlackMessage(
+        'DEM update failed, using previous version :boom:',
+        'warn',
+      );
     }
   }
 
@@ -62,7 +65,10 @@ async function handleOsmAndDemUpdate() {
     }
     if (!global.blobSizeOk) {
       global.hasFailures = true;
-      postSlackMessage('OSM data update failed, using previous version :boom:');
+      postSlackMessage(
+        'OSM data update failed, using previous version :boom:',
+        'warn',
+      );
     }
   } else {
     logger.info('Skipping OSM update and using existing seeded data');
@@ -94,19 +100,21 @@ async function handleGtfsFallback(logFile) {
   if (global.failedFeeds.split(',').length > MAX_GTFS_FALLBACK) {
     updateSlackMessage(
       'Aborting the data update because too many quality tests failed :boom:',
+      'error',
     );
     process.exit(1);
   }
 
   postSlackMessage(
     `GTFS packages ${global.failedFeeds} rejected, using fallback to current data`,
+    'warn',
   );
   // use seed packages for failed feeds
   await start('gtfs:fallback');
 }
 
 function buildAndDeployDockerImages(date) {
-  logger.info('Build and deploy Docker images');
+  logger.info('Deploying otp-data-server image...');
   execFileSync('./otp-data-server/deploy.sh', [date], {
     stdio: [0, 1, 2],
     env: {
@@ -119,6 +127,7 @@ function buildAndDeployDockerImages(date) {
       DOCKER_AUTH: process.env.DOCKER_AUTH,
     },
   });
+  logger.info('Deploying opentripplanner image...');
   execFileSync('./opentripplanner/deploy-otp.sh', [date], {
     stdio: [0, 1, 2],
     env: {
@@ -167,6 +176,7 @@ async function buildStreetOnlyGraph(name) {
   if (global.hasFailures) {
     updateSlackMessage(
       `${name} street only graph data updated, but partially falling back to older data :boom:`,
+      'warn',
     );
   } else {
     updateSlackMessage(
@@ -211,6 +221,7 @@ async function buildGraph(name) {
   if (global.hasFailures) {
     updateSlackMessage(
       `${name} data updated, but partially falling back to older data :boom:`,
+      'warn',
     );
   } else {
     updateSlackMessage(`${name} data updated :white_check_mark:`);
@@ -251,6 +262,7 @@ async function buildWithPrebuiltStreetGraph(name) {
   if (global.hasFailures) {
     updateSlackMessage(
       `${name} data updated from prebuilt street only graph, but partially falling back to older data :boom:`,
+      'warn',
     );
   } else {
     updateSlackMessage(
@@ -277,8 +289,11 @@ async function update() {
         break;
     }
   } catch (err) {
-    postSlackMessage(`${name} data update failed: ` + err.message);
-    updateSlackMessage('Something went wrong with the data update :boom:');
+    postSlackMessage(`${name} data update failed: ` + err.message, 'error');
+    updateSlackMessage(
+      'Something went wrong with the data update :boom:',
+      'error',
+    );
   }
 }
 

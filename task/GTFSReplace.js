@@ -18,8 +18,7 @@ const replaceGTFSFiles = (replacements, fileName) => {
       // If replacement file doesn't exist (anymore), don't do anything else than message
       if (!zipHasFile(fileName, replacementFile)) {
         const msg = `${replacementFile} not found in ${fileName}. ${fileToReplace} is not replaced.`;
-        postSlackMessage(msg);
-        logger.warn(msg);
+        postSlackMessage(msg, 'warn');
         continue;
       }
       replacementsForFiles[fileToReplace] = replacementFile;

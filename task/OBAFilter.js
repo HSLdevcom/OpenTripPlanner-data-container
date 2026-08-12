@@ -11,7 +11,7 @@ const { postSlackMessage, parseId } = require('../util');
 const logger = require('../logger');
 
 function OBAFilter(src, dst, rule) {
-  logger.info(`filtering ${src} with ${rule}...`);
+  logger.info(`Filtering ${src} with ${rule}...`);
 
   const cmd = `docker run -e TZ=${timezone} -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`;
 
@@ -53,13 +53,16 @@ module.exports = {
                 processRule(); // handle next rule
               } else {
                 del(dstDir);
-                postSlackMessage(`OBA zip task failed :boom:`);
+                postSlackMessage(`OBA zip task failed :boom:`, 'error');
                 callback(null, null);
               }
             } else {
               // failure
               del(dstDir);
-              postSlackMessage(`Rule ${rule} on ${gtfsFile} failed :boom:`);
+              postSlackMessage(
+                `Rule ${rule} on ${gtfsFile} failed :boom:`,
+                'error',
+              );
               callback(null, null);
             }
           } else {

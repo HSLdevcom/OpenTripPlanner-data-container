@@ -66,7 +66,10 @@ const buildGraph = function (router) {
         resolve({ commit, router });
       } else {
         const log = lastLog.join('');
-        postSlackMessage(`${router.id} build failed: ${status}:${log} :boom:`);
+        postSlackMessage(
+          `${router.id} build failed: ${status}:${log} :boom:`,
+          'error',
+        );
         reject('could not build');
       }
     });

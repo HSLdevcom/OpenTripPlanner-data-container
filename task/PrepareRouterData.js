@@ -8,7 +8,7 @@ const assert = require('assert');
 const logger = require('../logger');
 
 function createFile(config, fileName, sourcePath) {
-  logger.info(`copying ${fileName}...`);
+  logger.info(`Copying ${fileName}...`);
   return new Vinyl({
     path: fileName,
     contents: cloneable(fs.createReadStream(`${sourcePath}/${fileName}`)),
@@ -24,7 +24,7 @@ const extraUpdaters =
     : {};
 
 function createAndProcessBuildConfig(router) {
-  logger.info('creating build-config.json...');
+  logger.info('Creating build-config.json...');
   const configName = `${router.id}/build-config.json`;
   const buildConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const transitFeeds = buildConfig.transitFeeds || [];
@@ -50,7 +50,7 @@ function createAndProcessBuildConfig(router) {
 
 // Prepares router-config.json data for opentripplanner and applies edits/additions made in EXTRA_UPDATERS env var
 function createAndProcessRouterConfig(router) {
-  logger.info('creating router-config.json...');
+  logger.info('Creating router-config.json...');
   const configName = `${router.id}/router-config.json`;
   const routerConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const updaters = routerConfig.updaters;
