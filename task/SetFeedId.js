@@ -3,7 +3,7 @@ const cloneable = require('cloneable-readable');
 const converter = require('json-2-csv');
 const through = require('through2');
 // const cloneable = require('cloneable-readable');
-const { postSlackMessage, parseId } = require('../util');
+const { postSlackMessage, parseId } = require('../utils/builderUtils.js');
 const { dataDir } = require('../config.js');
 const logger = require('../logger');
 

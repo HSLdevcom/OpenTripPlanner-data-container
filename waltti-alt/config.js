@@ -1,4 +1,4 @@
-const { mapSrc } = require('../util');
+const mapSrc = require('../utils/configUtils.js');
 
 module.exports = {
   id: 'waltti-alt',

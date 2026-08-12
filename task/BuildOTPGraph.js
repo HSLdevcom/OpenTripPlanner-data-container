@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { exec, execSync } = require('child_process');
 const del = require('del');
-const { otpMatching, postSlackMessage } = require('../util');
+const { otpMatching, postSlackMessage } = require('../utils/builderUtils.js');
 const { zipWithGlobIntoDir } = require('./ZipTask');
 const {
   dataDir,

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
-const { postSlackMessage, createDir } = require('../util');
+const { postSlackMessage, createDir } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 
 function handleFail(url, err) {

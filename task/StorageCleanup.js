@@ -1,6 +1,6 @@
 const fs = require('fs');
 const del = require('del');
-const { dirNameToDate } = require('../util');
+const { dirNameToDate } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 
 /*

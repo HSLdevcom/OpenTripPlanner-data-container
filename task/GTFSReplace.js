@@ -1,7 +1,7 @@
 const fs = require('fs');
 const cloneable = require('cloneable-readable');
 const through = require('through2');
-const { parseId, postSlackMessage } = require('../util');
+const { parseId, postSlackMessage } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 const {
   renameFilesInZip,

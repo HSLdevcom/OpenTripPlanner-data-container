@@ -3,7 +3,7 @@ const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage, timezone } = require('../config');
-const { postSlackMessage, createDir } = require('../util');
+const { postSlackMessage, createDir } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 
 /**

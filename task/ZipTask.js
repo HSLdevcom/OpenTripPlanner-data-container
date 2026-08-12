@@ -2,7 +2,7 @@ const fs = require('fs');
 const cloneable = require('cloneable-readable');
 const { execSync } = require('child_process');
 const through = require('through2');
-const { parseId, createDir } = require('../util');
+const { parseId, createDir } = require('../utils/builderUtils.js');
 const { dataDir } = require('../config.js');
 const logger = require('../logger');
 

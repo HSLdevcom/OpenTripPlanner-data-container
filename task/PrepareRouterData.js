@@ -3,7 +3,7 @@ const Vinyl = require('vinyl');
 const fs = require('fs');
 const cloneable = require('cloneable-readable');
 const { dataDir, storageDir } = require('../config');
-const { dirNameToDate } = require('../util');
+const { dirNameToDate } = require('../utils/builderUtils.js');
 const assert = require('assert');
 const logger = require('../logger');
 

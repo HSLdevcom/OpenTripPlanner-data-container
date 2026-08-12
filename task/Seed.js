@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { extractAllFiles } = require('./ZipTask');
-const { postSlackMessage, dirNameToDate } = require('../util');
+const { postSlackMessage, dirNameToDate } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 
 function findLatestZip(sourceDir, routerId, tag) {

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
-const { createDir } = require('../util');
+const { createDir } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 
 /**

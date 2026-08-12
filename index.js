@@ -1,4 +1,7 @@
-const { postSlackMessage, getStartBuildMessage } = require('./util');
+const {
+  postSlackMessage,
+  getStartBuildMessage,
+} = require('./utils/builderUtils.js');
 const { update } = require('./task/Update');
 const { SPLIT_BUILD_TYPE, timezone } = require('./config.js');
 const logger = require('./logger');

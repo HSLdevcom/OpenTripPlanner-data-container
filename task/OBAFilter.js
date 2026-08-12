@@ -7,7 +7,7 @@ const cloneable = require('cloneable-readable');
 const { zipDirContents } = require('./ZipTask');
 const { dataToolImage } = require('../config.js');
 const { dataDir, timezone } = require('../config.js');
-const { postSlackMessage, parseId } = require('../util');
+const { postSlackMessage, parseId } = require('../utils/builderUtils.js');
 const logger = require('../logger');
 
 function OBAFilter(src, dst, rule) {

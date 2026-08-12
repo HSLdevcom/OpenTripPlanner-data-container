@@ -8,7 +8,10 @@ const gulp = require('gulp');
 const { promisify } = require('util');
 const { execFileSync } = require('child_process');
 const fs = require('fs');
-const { postSlackMessage, updateSlackMessage } = require('../util');
+const {
+  postSlackMessage,
+  updateSlackMessage,
+} = require('../utils/builderUtils.js');
 require('../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
