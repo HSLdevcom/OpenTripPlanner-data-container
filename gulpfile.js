@@ -27,9 +27,13 @@ const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const storageCleanup = require('./task/StorageCleanup');
 
-// Track the currently running gulp task in a global so that logger.js can tag log lines with
-// it (e.g. "[osm:update]"). Tasks in this pipeline run in series, so the most recently started
-// task is a reliable proxy for "currently executing task".
+// Track the currently running gulp task so logger.js can tag log lines with it (e.g.
+// "[gtfs:id]"). A single value is enough as long as every gulp.series step -- including
+// inline ones -- has a real name (see `named()` below): a finished step's 'stop'/'error' event
+// only clears the tag if it still matches, and the brief gap between one step's 'stop' and the
+// next step's 'start' is synchronous, so no application code logs during it. Failed tasks emit
+// 'error' instead of 'stop' (see undertaker's createExtensions.js), so both events must clear
+// the tag.
 const clearCurrentGulpTask = ({ name }) => {
   if (global.currentGulpTask === name) {
     global.currentGulpTask = null;
@@ -40,6 +44,13 @@ gulp.on('start', ({ name }) => {
 });
 gulp.on('stop', clearCurrentGulpTask);
 gulp.on('error', clearCurrentGulpTask);
+
+// Inline functions passed directly to gulp.series() are otherwise reported by undertaker as
+// '<anonymous>' in start/stop events (and thus in logs). undertaker checks `fn.displayName`
+// before `fn.name`, and unlike a real function name, displayName isn't restricted to valid JS
+// identifiers, so it can use the same colon-namespaced style as the surrounding task names
+// (e.g. 'gtfs:id:setFeedId').
+const named = (name, fn) => Object.assign(fn, { displayName: name });
 
 // Warning! Lots of string interpolation all over the code. None of these
 // inputs are allowed to have whitespace characters in them.
@@ -141,7 +152,7 @@ gulp.task(
   gulp.series(
     'osm:copyPreprocessingFiles',
     'osm:download',
-    () =>
+    named('osm:update:preprocessAndTest', () =>
       pipeline(
         gulp.src(`${osmDlDir}/*`, noBuf),
         validateBlobSize(),
@@ -151,7 +162,8 @@ gulp.task(
         testOTPFile(),
         gulp.dest(osmDir),
       ),
-    () => del(tmpDir),
+    ),
+    named('osm:update:cleanupTmpDir', () => del(tmpDir)),
   ),
 );
 
@@ -202,7 +214,7 @@ gulp.task(
     'gtfs:download',
     'gtfs:dlRename',
     'gtfs:dlReplace',
-    () => del([tmpRenameDir]),
+    named('gtfs:dl:cleanupTmpRenameDir', () => del([tmpRenameDir])),
   ),
 );
 
@@ -210,7 +222,7 @@ gulp.task(
 gulp.task(
   'gtfs:id',
   gulp.series(
-    () =>
+    named('gtfs:id:setFeedId', () =>
       pipeline(
         gulp.src(`${idDir}/*`, noBuf),
         extractFilesTask(['feed_info.txt']),
@@ -218,7 +230,8 @@ gulp.task(
         addFilesTask(['feed_info.txt']),
         gulp.dest(testGtfsDir),
       ),
-    () => del(tmpDir),
+    ),
+    named('gtfs:id:cleanupTmpDir', () => del(tmpDir)),
   ),
 );
 
@@ -228,8 +241,8 @@ gulp.task(
   config.router.gtfs.some(src => src.fit)
     ? gulp.series(
         'del:filter',
-        () => prepareFit(config),
-        () =>
+        named('gtfs:fit:prepareFit', () => prepareFit(config)),
+        named('gtfs:fit:mapFit', () =>
           pipeline(
             gulp.src(`${fitDir}/*`, noBuf),
             extractFilesTask(['stops.txt']),
@@ -237,7 +250,8 @@ gulp.task(
             addFilesTask(['stops.txt']),
             gulp.dest(filterDir),
           ),
-        () => del(tmpDir),
+        ),
+        named('gtfs:fit:cleanupTmpDir', () => del(tmpDir)),
       )
     : () => pipeline(gulp.src(`${fitDir}/*`, noBuf), gulp.dest(filterDir)),
 );
@@ -256,7 +270,7 @@ gulp.task(
     ? gulp.series(
         'copyRules',
         'del:id',
-        () =>
+        named('gtfs:filter:obaFilter', () =>
           pipeline(
             gulp.src(`${filterDir}/*.zip`, noBuf),
             extractFilesTask(config.passOBAfilter),
@@ -264,7 +278,8 @@ gulp.task(
             addFilesTask(config.passOBAfilter),
             gulp.dest(idDir),
           ),
-        () => del(tmpDir),
+        ),
+        named('gtfs:filter:cleanupTmpDir', () => del(tmpDir)),
       )
     : () => pipeline(gulp.src(`${filterDir}/*`, noBuf), gulp.dest(idDir)),
 );
@@ -286,7 +301,7 @@ gulp.task(
     'gtfs:filter',
     'gtfs:id',
     'gtfs:test',
-    () => del(tmpIdDir),
+    named('gtfs:update:cleanupTmpIdDir', () => del(tmpIdDir)),
   ),
 );
 
@@ -302,11 +317,14 @@ gulp.task('gtfs:del', () => del([gtfsSeedDir, gtfsDir]));
 
 gulp.task(
   'gtfs:seed',
-  gulp.series('gtfs:del', () =>
-    pipeline(
-      gulp.src(`${seedSourceDir}/*-gtfs.zip`, noBuf),
-      gulp.dest(gtfsSeedDir),
-      gulp.dest(gtfsDir),
+  gulp.series(
+    'gtfs:del',
+    named('gtfs:seed:copyFiles', () =>
+      pipeline(
+        gulp.src(`${seedSourceDir}/*-gtfs.zip`, noBuf),
+        gulp.dest(gtfsSeedDir),
+        gulp.dest(gtfsDir),
+      ),
     ),
   ),
 );
@@ -315,10 +333,13 @@ gulp.task('netex:del', () => del(netexDir));
 
 gulp.task(
   'netex:seed',
-  gulp.series('netex:del', () =>
-    pipeline(
-      gulp.src(`${seedSourceDir}/*-netex.zip`, noBuf),
-      gulp.dest(netexDir),
+  gulp.series(
+    'netex:del',
+    named('netex:seed:copyFiles', () =>
+      pipeline(
+        gulp.src(`${seedSourceDir}/*-netex.zip`, noBuf),
+        gulp.dest(netexDir),
+      ),
     ),
   ),
 );
@@ -327,10 +348,13 @@ gulp.task('carPickupZone:del', () => del(carPickupZoneDir));
 
 gulp.task(
   'carPickupZone:seed',
-  gulp.series('carPickupZone:del', () =>
-    pipeline(
-      gulp.src(`${seedSourceDir}/*-carpickupzone.zip`, noBuf),
-      gulp.dest(carPickupZoneDir),
+  gulp.series(
+    'carPickupZone:del',
+    named('carPickupZone:seed:copyFiles', () =>
+      pipeline(
+        gulp.src(`${seedSourceDir}/*-carpickupzone.zip`, noBuf),
+        gulp.dest(carPickupZoneDir),
+      ),
     ),
   ),
 );
@@ -339,8 +363,11 @@ gulp.task('osm:del', () => del(osmDir));
 
 gulp.task(
   'osm:seed',
-  gulp.series('osm:del', () =>
-    pipeline(gulp.src(`${seedSourceDir}/*.pbf`, noBuf), gulp.dest(osmDir)),
+  gulp.series(
+    'osm:del',
+    named('osm:seed:copyFiles', () =>
+      pipeline(gulp.src(`${seedSourceDir}/*.pbf`, noBuf), gulp.dest(osmDir)),
+    ),
   ),
 );
 
@@ -348,8 +375,11 @@ gulp.task('dem:del', () => del(demDir));
 
 gulp.task(
   'dem:seed',
-  gulp.series('dem:del', () =>
-    pipeline(gulp.src(`${seedSourceDir}/*.tif`, noBuf), gulp.dest(demDir)),
+  gulp.series(
+    'dem:del',
+    named('dem:seed:copyFiles', () =>
+      pipeline(gulp.src(`${seedSourceDir}/*.tif`, noBuf), gulp.dest(demDir)),
+    ),
   ),
 );
 
@@ -365,13 +395,14 @@ gulp.task('seed:cleanup', () =>
 gulp.task(
   'seed',
   gulp.series(
-    () =>
+    named('seed:loadPreviousBuild', () =>
       seed(
         config.storageDir,
         config.dataDir,
         config.router.id,
         process.env.SEED_TAG,
       ),
+    ),
     'dem:seed',
     'osm:seed',
     'gtfs:seed',
@@ -385,50 +416,68 @@ gulp.task('router:del', () => del(`${config.dataDir}/build`));
 
 gulp.task(
   'router:copy',
-  gulp.series('router:del', () =>
-    pipeline(
-      prepareRouterData(config.router),
-      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+  gulp.series(
+    'router:del',
+    named('router:copy:copyFiles', () =>
+      pipeline(
+        prepareRouterData(config.router),
+        gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+      ),
     ),
   ),
 );
 
 gulp.task(
   'router:buildGraph',
-  gulp.series('router:copy', () => buildOTPGraphTask(config.router)),
+  gulp.series(
+    'router:copy',
+    named('router:buildGraph:build', () => buildOTPGraphTask(config.router)),
+  ),
 );
 
 gulp.task(
   'router:copyForPrebuiltStreetGraphDataBuild',
-  gulp.series('router:del', () =>
-    pipeline(
-      prepareRouterDataForPrebuiltStreetGraphBuild(config.router),
-      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+  gulp.series(
+    'router:del',
+    named('router:copyForPrebuiltStreetGraphDataBuild:copyFiles', () =>
+      pipeline(
+        prepareRouterDataForPrebuiltStreetGraphBuild(config.router),
+        gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+      ),
     ),
   ),
 );
 
 gulp.task(
   'router:buildWithPrebuiltStreetGraph',
-  gulp.series('router:copyForPrebuiltStreetGraphDataBuild', () =>
-    buildOTPGraphTask(config.router),
+  gulp.series(
+    'router:copyForPrebuiltStreetGraphDataBuild',
+    named('router:buildWithPrebuiltStreetGraph:build', () =>
+      buildOTPGraphTask(config.router),
+    ),
   ),
 );
 
 gulp.task(
   'router:copyStreetOnlyGraphData',
-  gulp.series('router:del', () =>
-    pipeline(
-      prepareRouterDataForStreetOnlyGraphBuild(config.router),
-      gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+  gulp.series(
+    'router:del',
+    named('router:copyStreetOnlyGraphData:copyFiles', () =>
+      pipeline(
+        prepareRouterDataForStreetOnlyGraphBuild(config.router),
+        gulp.dest(`${config.dataDir}/build/${config.router.id}`),
+      ),
     ),
   ),
 );
 
 gulp.task(
   'router:buildStreetOnlyGraph',
-  gulp.series('router:copyStreetOnlyGraphData', () =>
-    buildOTPStreetOnlyGraphTask(config.router),
+  gulp.series(
+    'router:copyStreetOnlyGraphData',
+    named('router:buildStreetOnlyGraph:build', () =>
+      buildOTPStreetOnlyGraphTask(config.router),
+    ),
   ),
 );
 
@@ -443,19 +492,21 @@ gulp.task(
   'router:storeForPrebuiltStreetGraphDataBuild',
   gulp.series(
     'router:store',
-    () =>
+    named('router:storeForPrebuiltStreetGraphDataBuild:storeReport', () =>
       pipeline(
         gulp.src(`${global.osmPrebuildDir}/report/*`, noBuf),
         gulp.dest(
           `${config.storageDir}/${global.storageDirName}/street-report/`,
         ),
       ),
-    () =>
+    ),
+    named('router:storeForPrebuiltStreetGraphDataBuild:storeBuildLog', () =>
       pipeline(
         gulp.src(`${global.osmPrebuildDir}/build.log`, noBuf),
         rename('street-build.log'),
         gulp.dest(`${config.storageDir}/${global.storageDirName}`),
       ),
+    ),
   ),
 );
 
