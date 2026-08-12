@@ -1,16 +1,18 @@
 const fs = require('fs');
 const axios = require('axios');
-const { dataDir } = require('../config');
+const { createDir } = require('../util');
 
 /**
  * Download DEM files from Azure blob storage.
  */
-module.exports = function (entries) {
+module.exports = function (entries, dlDir, readyDir) {
+  createDir(dlDir);
+  createDir(readyDir);
   return entries.map(
     entry =>
       new Promise((resolve, reject) => {
-        const filePath = `${dataDir}/downloads/dem/${entry.id}.tif`;
-        const readyPath = `${dataDir}/ready/dem/${entry.id}.tif`;
+        const filePath = `${dlDir}/${entry.id}.tif`;
+        const readyPath = `${readyDir}/${entry.id}.tif`;
         let dataAlreadyExists = false;
         let downloadSize;
         let readySize;

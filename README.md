@@ -41,9 +41,9 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional, default dev) `BUILDER_TYPE` used as a postfix to slack bot name
 - (Optional) `SLACK_CHANNEL_ID` defines to which slack channel the messages are sent to
 - (Optional) `SLACK_ACCESS_TOKEN` bearer token for slack messaging
-- (Optional, default {}) `EXTRA_SRC` defines gtfs src values that should be overridden or completely new src that should be added with unique id. Example format:
+- (Optional, default {}) `EXTRA_SRC` defines gtfs entries (the router config's `gtfs` list) that should be overridden or completely new entries that should be added with unique id. Example format:
   - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["router-waltti/gtfs-rules/waltti.rule"]}}`
-  - You can remove a src by including `"remove": true`, `{"FOLI": {"remove": true}}`
+  - You can remove an entry by including `"remove": true`, `{"FOLI": {"remove": true}}`
 - (Optional, default {}) `EXTRA_UPDATERS` defines router-config.json updater values that should be overridden or completely new updater that should be added with unique id. Example format:
   - `{"turku-alerts": {"type": "real-time-alerts", "frequencySec": 30, "url": "https://foli-beta.nanona.fi/gtfs-rt/reittiopas", "feedId": "FOLI", "fuzzyTripMatching": true}}`
   - You can remove a src by including `"remove": true`, `{"turku-alerts": {"remove": true}}`
@@ -86,6 +86,10 @@ It is possible to change the behaviour of the data builder by defining environme
   - `gtfs:id` sets the gtfs feed id to `<id>` and copies data to the `data/test/gtfs` directory.
 
   - `gtfs:test` tests the file with OTP and if the test passes, data is copied to the `data/ready/gtfs` directory.
+
+- `netex:update` downloads NeTEx packages configured in a router's `netex` list and copies them, renamed to `<id>-netex.zip`, to the `data/ready/netex` directory. Unlike `gtfs:update`, this data is not fitted, filtered, or otherwise processed — it is only downloaded and renamed.
+
+- `carPickupZone:update` downloads GTFS packages configured in a router's `carPickupZone` list (separate from the regular `gtfs` list, used for OpenTripPlanner's car pickup zone feature) and copies them, renamed to `<id>-carpickupzone.zip`, to the `data/ready/carpickupzone` directory. Works the same way as `netex:update` above.
 
 - `router:buildGraph`
 
@@ -133,14 +137,16 @@ It is possible to change the behaviour of the data builder by defining environme
    - `gtfs:fit`
    - `gtfs:filter`
    - `gtfs:id`
-5. `router:buildGraph`
+5. `netex:update`
+6. `carPickupZone:update`
+7. `router:buildGraph`
    - `router:copy`
    - `buildOTPGraphTask(config.router)`
-6. `test.sh`
-7. `router:store`
-8. `deploy.sh`
-9. `deploy-otp.sh`
-10. `storage:cleanup`
+8. `test.sh`
+9. `router:store`
+10. `deploy.sh`
+11. `deploy-otp.sh`
+12. `storage:cleanup`
 
 #### Street only build
 
@@ -161,14 +167,16 @@ It is possible to change the behaviour of the data builder by defining environme
    - `gtfs:fit`
    - `gtfs:filter`
    - `gtfs:id`
-3. `router:buildWithPrebuiltStreetGraph`
+3. `netex:update`
+4. `carPickupZone:update`
+5. `router:buildWithPrebuiltStreetGraph`
    - `router:copyForPrebuiltStreetGraphDataBuild`
    - `buildOTPGraphTask(config.router)`
-4. `test.sh`
-5. `router:storeForPrebuiltStreetGraphDataBuild`
-6. `deploy.sh`
-7. `deploy-otp.sh`
-8. `storage:cleanup`
+6. `test.sh`
+7. `router:storeForPrebuiltStreetGraphDataBuild`
+8. `deploy.sh`
+9. `deploy-otp.sh`
+10. `storage:cleanup`
 
 ### otp-data-tools
 

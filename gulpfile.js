@@ -22,11 +22,9 @@ const {
   buildOTPGraphTask,
   buildOTPStreetOnlyGraphTask,
 } = require('./task/BuildOTPGraph');
-const { renameGTFSFile } = require('./task/GTFSRename');
-const { renameNetexFile } = require('./task/NetexRename');
+const { renameFile } = require('./task/RenameFile');
 const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
-const { createDir } = require('./util');
 const storageCleanup = require('./task/StorageCleanup');
 
 // Warning! Lots of string interpolation all over the code. None of these
@@ -44,11 +42,13 @@ const osmDlDir = `${config.dataDir}/downloads/osm`;
 const demDlDir = `${config.dataDir}/downloads/dem`;
 const gtfsDlDir = `${config.dataDir}/downloads/gtfs`;
 const netexDlDir = `${config.dataDir}/downloads/netex`;
+const carPickupZoneDlDir = `${config.dataDir}/downloads/carpickupzone`;
 
 const osmDir = `${config.dataDir}/ready/osm`;
 const demDir = `${config.dataDir}/ready/dem`;
 const gtfsDir = `${config.dataDir}/ready/gtfs`;
 const netexDir = `${config.dataDir}/ready/netex`;
+const carPickupZoneDir = `${config.dataDir}/ready/carpickupzone`;
 
 const gtfsSeedDir = `${config.dataDir}/seed`;
 const fitDir = `${config.dataDir}/fit`;
@@ -65,20 +65,17 @@ const noBuf = { buffer: false }; // options for gulp src
 /**
  * Download netex data
  */
-gulp.task('netex:download', async cb => {
+gulp.task('netex:download', () => {
   if (!config.router.netex) {
     return Promise.resolve();
   }
-  createDir(netexDlDir);
-  createDir(netexDir);
-  await dl(config.router.netex, netexDlDir);
-  cb();
+  return dl(config.router.netex, netexDlDir);
 });
 
 gulp.task('netex:rename', () =>
   pipeline(
     gulp.src(`${netexDlDir}/*`, noBuf),
-    renameNetexFile(),
+    renameFile('-netex'),
     gulp.dest(netexDir),
   ),
 );
@@ -86,16 +83,36 @@ gulp.task('netex:rename', () =>
 gulp.task('netex:update', gulp.series('netex:download', 'netex:rename'));
 
 /**
+ * Download car pickup zone data
+ */
+gulp.task('carPickupZone:download', () => {
+  if (!config.router.carPickupZone) {
+    return Promise.resolve();
+  }
+  return dl(config.router.carPickupZone, carPickupZoneDlDir);
+});
+
+gulp.task('carPickupZone:rename', () =>
+  pipeline(
+    gulp.src(`${carPickupZoneDlDir}/*`, noBuf),
+    renameFile('-carpickupzone'),
+    gulp.dest(carPickupZoneDir),
+  ),
+);
+
+gulp.task(
+  'carPickupZone:update',
+  gulp.series('carPickupZone:download', 'carPickupZone:rename'),
+);
+
+/**
  * Download osm data
  */
-gulp.task('osm:download', async cb => {
+gulp.task('osm:download', () => {
   if (!config.osm) {
     return Promise.resolve();
   }
-  createDir(osmDlDir);
-  createDir(osmDir);
-  await dl(config.osm, osmDlDir);
-  cb();
+  return dl(config.osm, osmDlDir);
 });
 
 gulp.task('osm:copyPreprocessingFiles', () =>
@@ -131,9 +148,7 @@ gulp.task('dem:update', () => {
   if (!config.dem) {
     return Promise.resolve();
   }
-  createDir(demDlDir);
-  createDir(demDir);
-  return Promise.all(dlBlob(config.dem)).catch(() => {
+  return Promise.all(dlBlob(config.dem, demDlDir, demDir)).catch(() => {
     global.hasFailures = true;
   });
 });
@@ -148,12 +163,12 @@ gulp.task('del:id', () => del(idDir));
  * 3. test zip with OpenTripPlanner
  * 4. copy to fit dir if test is succesful
  */
-gulp.task('gtfs:download', () => dl(config.router.src, gtfsDlDir));
+gulp.task('gtfs:download', () => dl(config.router.gtfs, gtfsDlDir));
 
 gulp.task('gtfs:dlRename', () =>
   pipeline(
     gulp.src(`${gtfsDlDir}/*`, noBuf),
-    renameGTFSFile(),
+    renameFile('-gtfs'),
     gulp.dest(renamedDir),
   ),
 );
@@ -196,7 +211,7 @@ gulp.task(
 // Runs mapFit on gtfs files if fit is enabled, or just moves files to directory 'filter'
 gulp.task(
   'gtfs:fit',
-  config.router.src.some(src => src.fit)
+  config.router.gtfs.some(src => src.fit)
     ? gulp.series(
         'del:filter',
         () => prepareFit(config),
@@ -223,7 +238,7 @@ gulp.task('copyRules', () =>
 // Filter gtfs files and move result to directory 'id'
 gulp.task(
   'gtfs:filter',
-  config.router.src.some(src => src.rules)
+  config.router.gtfs.some(src => src.rules)
     ? gulp.series(
         'copyRules',
         'del:id',
@@ -294,6 +309,18 @@ gulp.task(
   ),
 );
 
+gulp.task('carPickupZone:del', () => del(carPickupZoneDir));
+
+gulp.task(
+  'carPickupZone:seed',
+  gulp.series('carPickupZone:del', () =>
+    pipeline(
+      gulp.src(`${seedSourceDir}/*-carpickupzone.zip`, noBuf),
+      gulp.dest(carPickupZoneDir),
+    ),
+  ),
+);
+
 gulp.task('osm:del', () => del(osmDir));
 
 gulp.task(
@@ -335,6 +362,7 @@ gulp.task(
     'osm:seed',
     'gtfs:seed',
     'netex:seed',
+    'carPickupZone:seed',
     'seed:cleanup',
   ),
 );

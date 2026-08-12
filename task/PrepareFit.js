@@ -146,7 +146,7 @@ function createMap(config, cb) {
 
 module.exports = function (config) {
   return new Promise((resolve, reject) => {
-    if (!config.router.src.some(src => src.fit)) {
+    if (!config.router.gtfs.some(src => src.fit)) {
       resolve();
     }
     try {

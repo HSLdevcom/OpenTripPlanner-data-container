@@ -2,7 +2,7 @@ const { mapSrc } = require('../util');
 
 module.exports = {
   id: 'finland',
-  src: [
+  gtfs: [
     mapSrc(
       'HSL',
       'https://infopalvelut.storage.hsldev.com/gtfs/hsl_google_transit.zip',
@@ -116,10 +116,11 @@ module.exports = {
       'https://minfoapi.matkahuolto.fi/gtfs/177/gtfs.zip',
       true,
     ),
+  ],
+  carPickupZone: [
     mapSrc(
       '02Taksi_carpickupzone',
       'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
-      false,
     ),
   ],
   netex: [

@@ -2,7 +2,7 @@ const { mapSrc } = require('../util');
 
 module.exports = {
   id: 'waltti-alt',
-  src: [
+  gtfs: [
     mapSrc('TurkuTrunkroutes', 'http://data-test.foli.fi/gtfs/gtfs.zip', true),
     mapSrc(
       'tampere',
@@ -28,14 +28,15 @@ module.exports = {
       },
     ),
     mapSrc(
-      '02Taksi_carpickupzone',
-      'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
-      false,
-    ),
-    mapSrc(
       'WalttiTest',
       'https://github.com/tvv-lippu-ja-maksujarjestelma-oy/waltti-digitransit-config-data/raw/refs/heads/main/GTFStestireittiopas.zip',
       'true',
+    ),
+  ],
+  carPickupZone: [
+    mapSrc(
+      '02Taksi_carpickupzone',
+      'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
     ),
   ],
   osm: ['oulu', 'southFinland'],

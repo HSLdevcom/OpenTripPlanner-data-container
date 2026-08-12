@@ -81,6 +81,7 @@ const packData = function (commit, router) {
         `${path}/router-${router.id}.zip`,
         [
           `${path}/*-gtfs.zip`,
+          `${path}/*-carpickupzone.zip`,
           `${path}/*-netex.zip`,
           `${path}/*.json`,
           ...osmFiles,
