@@ -5,9 +5,10 @@ const through = require('through2');
 // const cloneable = require('cloneable-readable');
 const { postSlackMessage, parseId } = require('../util');
 const { dataDir } = require('../config.js');
+const logger = require('../logger');
 
 function createFeedInfo(file, id) {
-  process.stdout.write(`Generating new feed_info for ${id}\n`);
+  logger.info(`Generating new feed_info for ${id}`);
   const csv = `feed_publisher_name,feed_publisher_url,feed_lang,feed_id
 ${id}-fake-name,${id}-fake-url,${id}-fake-lang,${id}\n`;
   fs.writeFileSync(file, csv);
@@ -46,7 +47,7 @@ function setFeedId(file, id) {
             now - new Date(json[0].feed_version) > EIGHT_HOURS
           ) {
             const msg = `GTFS data for ${id} is older than 8 hours`;
-            process.stdout.write(`${msg}\n`);
+            logger.warn(msg);
             // send warning also to slack between monday and friday
             const day = now.getDay();
             if (day !== 1) {
@@ -60,7 +61,7 @@ function setFeedId(file, id) {
           const csv = converter.json2csv(json);
           fs.writeFileSync(file, csv);
         } else {
-          process.stdout.write('Correct feed id was already set\n');
+          logger.info('Correct feed id was already set');
           return 'ok';
         }
       } else {
@@ -83,13 +84,13 @@ module.exports = {
       const id = parseId(gtfsFile);
       const infoFile = `${dataDir}/tmp/${id}/feed_info.txt`;
 
-      process.stdout.write(`${gtfsFile} setting GTFS feed id to ${id} \n`);
+      logger.info(`${gtfsFile} setting GTFS feed id to ${id}`);
       const action = setFeedId(infoFile, id);
       if (action !== 'ok') {
-        process.stdout.write(`Feed id editing failed: ${action}\n`);
+        logger.error(`Feed id editing failed: ${action}`);
         throw new Error(`Failed to edit feed id for ${id}`);
       }
-      process.stdout.write(`${gtfsFile} feed id SUCCESS\n`);
+      logger.info(`${gtfsFile} feed id SUCCESS`);
       file.contents = cloneable(fs.createReadStream(gtfsFile));
       callback(null, file);
     });

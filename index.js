@@ -1,6 +1,7 @@
 const { postSlackMessage } = require('./util');
 const { update } = require('./task/Update');
 const { SPLIT_BUILD_TYPE } = require('./config.js');
+const logger = require('./logger');
 
 let message = '';
 
@@ -23,7 +24,7 @@ postSlackMessage(message)
     }
   })
   .catch(err => {
-    console.log(err);
+    logger.error(err);
   })
   .finally(() => {
     update();

@@ -2,6 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const path = require('path');
 const axios = require('axios');
+const logger = require('./logger');
 
 const username = `OTP data builder ${process.env.BUILDER_TYPE || 'dev'}`;
 const channel = process.env.SLACK_CHANNEL_ID;
@@ -12,7 +13,7 @@ const headers = {
 };
 
 async function postSlackMessage(text) {
-  process.stdout.write(`${text}\n`); // write important messages also to log
+  logger.info(text); // write important messages also to log
   try {
     const { data } = await axios.post(
       'https://slack.com/api/chat.postMessage',
@@ -28,15 +29,15 @@ async function postSlackMessage(text) {
     return data;
   } catch (e) {
     // Something went wrong in the Slack-cycle... log it and continue build
-    process.stdout.write(
-      `Something went wrong when trying to send message to Slack: ${e}\n`,
+    logger.error(
+      `Something went wrong when trying to send message to Slack: ${e}`,
     );
     return e;
   }
 }
 
 async function updateSlackMessage(text) {
-  process.stdout.write(`${text}\n`);
+  logger.info(text);
   try {
     const { data } = await axios.post(
       'https://slack.com/api/chat.update',
@@ -52,8 +53,8 @@ async function updateSlackMessage(text) {
     return data;
   } catch (e) {
     // Something went wrong in the Slack-cycle... log it and continue build
-    process.stdout.write(
-      `Something went wrong when trying to update Slack message: ${e}\n`,
+    logger.error(
+      `Something went wrong when trying to update Slack message: ${e}`,
     );
     return e;
   }

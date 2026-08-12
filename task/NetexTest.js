@@ -1,11 +1,12 @@
 const through = require('through2');
+const logger = require('../logger');
 
 module.exports = {
   testNetexFile: () => {
     return through.obj(function (file, encoding, callback) {
       if (process.env.SKIP_OTP_TESTS) {
-        process.stdout.write(
-          'OTP test skipped because the SKIP_OTP_TESTS environment variable is set\n',
+        logger.info(
+          'OTP test skipped because the SKIP_OTP_TESTS environment variable is set',
         );
         return callback(null, file);
       }

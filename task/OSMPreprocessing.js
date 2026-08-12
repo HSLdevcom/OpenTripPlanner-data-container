@@ -4,6 +4,7 @@ const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
+const logger = require('../logger');
 
 /**
  * Runs the instructions listed in the OSM preprocessing bash script.
@@ -32,22 +33,20 @@ function preprocessWithFile(
       createDir(`${dataDir}/tmp`);
       fs.mkdtemp(`${dataDir}/tmp/osm-preprocessing`, (err, folder) => {
         if (err) throw err;
-        process.stdout.write(
+        logger.info(
           'Running OSM preprocessing instructions from ' +
             preprocessingInstructionsFile +
             ' for ' +
             osmFile +
             ' in directory ' +
             folder +
-            '...\n',
+            '...',
         );
         const r = fs.createReadStream(osmFile);
         r.on('end', async () => {
           try {
-            process.stdout.write(
-              'Running commands from file: ' +
-                preprocessingInstructionsFile +
-                '\n',
+            logger.info(
+              'Running commands from file: ' + preprocessingInstructionsFile,
             );
             const preprocessingCommand = exec(
               `docker run -v ${folder}:/tmp/osm-preprocessing:rw -v ${preprocessingInstructionsFile}:/tmp/preprocessing.sh:ro -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} /tmp/preprocessing.sh`,
@@ -56,11 +55,11 @@ function preprocessWithFile(
             preprocessingCommand.on('exit', function (c) {
               if (c === 0) {
                 resolve(fs.readFileSync(`${folder}/${osmFileName}`));
-                process.stdout.write(
+                logger.info(
                   osmFile +
                     ' + ' +
                     preprocessingInstructionsFile +
-                    ' OSM preprocessing SUCCESS\n',
+                    ' OSM preprocessing SUCCESS',
                 );
               } else {
                 const log = lastLog.join('');
@@ -78,7 +77,7 @@ function preprocessWithFile(
                 delete lastLog[0];
               }
               if (!quiet) {
-                process.stdout.write(data.toString());
+                process.stdout.write(data);
               }
             });
             preprocessingCommand.stderr.on('data', function (data) {
@@ -87,7 +86,7 @@ function preprocessWithFile(
                 lastLog.splice(0, 1);
               }
               if (!quiet) {
-                process.stderr.write(data.toString());
+                process.stderr.write(data);
               }
             });
           } catch (e) {
@@ -110,8 +109,8 @@ module.exports = {
     return through.obj(function (file, encoding, callback) {
       const osmFile = file.history[file.history.length - 1];
       if (process.env.SKIP_OSM_PREPROCESSING) {
-        process.stdout.write(
-          'OSM preprocessing skipped because the SKIP_OSM_PREPROCESSING environment variable is set\n',
+        logger.info(
+          'OSM preprocessing skipped because the SKIP_OSM_PREPROCESSING environment variable is set',
         );
         return callback(null, file);
       }
@@ -128,7 +127,7 @@ module.exports = {
           }
         })
         .catch(err => {
-          process.stdout.write(err.message);
+          logger.error(err.message);
           callback(null, file);
         });
     });

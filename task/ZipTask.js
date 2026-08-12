@@ -4,6 +4,7 @@ const { execSync } = require('child_process');
 const through = require('through2');
 const { parseId, createDir } = require('../util');
 const { dataDir } = require('../config.js');
+const logger = require('../logger');
 
 /**
  * Moves files to a zip.
@@ -36,9 +37,7 @@ function addToZip(zipFile, path, filesToAdd) {
         throw err;
       }
     }
-    process.stdout.write(
-      `Added ${existingFilePaths.join(', ')} to ${zipFile}\n`,
-    );
+    logger.info(`Added ${existingFilePaths.join(', ')} to ${zipFile}`);
   }
 }
 
@@ -53,7 +52,7 @@ function extractFromZip(zipName, filesToExtract, path) {
     .filter(name => zipHasFile(zipName, name))
     .join(' ');
   execSync(`unzip -o -j ${zipName} ${filesString} -d ${path}`);
-  process.stdout.write(`Extracted ${filesString} from ${zipName} to ${path}\n`);
+  logger.info(`Extracted ${filesString} from ${zipName} to ${path}`);
 }
 
 /**
@@ -67,7 +66,7 @@ function removeFilesFromZip(zipName, filesToRemove) {
     .join(' ');
   if (filesString.length > 0) {
     execSync(`zip -d ${zipName} ${filesString}`);
-    process.stdout.write(`Removed ${filesString} from ${zipName}\n`);
+    logger.info(`Removed ${filesString} from ${zipName}`);
   }
 }
 
@@ -79,10 +78,10 @@ function removeFilesFromZip(zipName, filesToRemove) {
 function renameFilesInZip(zipName, oldNamesForFiles) {
   for (const [newName, oldName] of Object.entries(oldNamesForFiles)) {
     if (zipHasFile(zipName, oldName)) {
-      process.stdout.write(`renaming ${oldName} to ${newName}\n`);
+      logger.info(`renaming ${oldName} to ${newName}`);
       renameFileInZip(zipName, oldName, newName);
     } else {
-      process.stdout.write(`${oldName} not in ${zipName}\n`);
+      logger.info(`${oldName} not in ${zipName}`);
     }
   }
 }
@@ -112,7 +111,7 @@ function renameFileInZip(zipName, oldName, newName) {
     );
     addToZip(zipName, tmpPathForFile, [newName]);
   }
-  process.stdout.write(`Renamed ${oldName} to ${newName} in ${zipName}\n`);
+  logger.info(`Renamed ${oldName} to ${newName} in ${zipName}`);
 }
 
 function testZip(zipName) {
@@ -141,7 +140,7 @@ function zipHasFile(zipName, file) {
  */
 function extractAllFiles(zipPath, destinationPath) {
   execSync(`unzip -o ${zipPath} -d ${destinationPath}`);
-  process.stdout.write(`Unzipped ${zipPath} to ${destinationPath}\n`);
+  logger.info(`Unzipped ${zipPath} to ${destinationPath}`);
 }
 
 /**
@@ -155,11 +154,11 @@ function zipWithGlobIntoDir(zipFile, glob, zipDir) {
     // We don't want to command to fail if nothing matching a glob is found
     execSync(`cp ${glob.join(' ')} ${zipDir} 2>/dev/null || :`);
     execSync(`zip -rm ${zipFile} ${zipDir}`);
-    process.stdout.write(`Created ${zipFile}\n`);
+    logger.info(`Created ${zipFile}`);
     return true;
     // eslint-disable-next-line no-unused-vars
   } catch (err) {
-    process.stderr.write(`Error creating ${zipFile}\n`);
+    logger.error(`Error creating ${zipFile}`);
     return false;
   }
 }
@@ -171,11 +170,11 @@ function zipWithGlobIntoDir(zipFile, glob, zipDir) {
 function zipDirContents(zipFile, dir) {
   try {
     execSync(`zip -j ${zipFile} ${dir}/*`);
-    process.stdout.write(`Created ${zipFile}\n`);
+    logger.info(`Created ${zipFile}`);
     return true;
     // eslint-disable-next-line no-unused-vars
   } catch (err) {
-    process.stderr.write(`Error creating ${zipFile}\n`);
+    logger.error(`Error creating ${zipFile}`);
     return false;
   }
 }

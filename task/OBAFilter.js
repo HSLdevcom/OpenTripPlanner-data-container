@@ -8,9 +8,10 @@ const { zipDirContents } = require('./ZipTask');
 const { dataToolImage } = require('../config.js');
 const { dataDir } = require('../config.js');
 const { postSlackMessage, parseId } = require('../util');
+const logger = require('../logger');
 
 function OBAFilter(src, dst, rule) {
-  process.stdout.write(`filtering ${src} with ${rule}...\n`);
+  logger.info(`filtering ${src} with ${rule}...`);
 
   const cmd = `docker run -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`;
 
@@ -48,9 +49,7 @@ module.exports = {
               /* create zip named src from files in dst */
               if (zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`)) {
                 del(dstDir);
-                process.stdout.write(
-                  `Filter ${gtfsFile} with rule ${rule} SUCCESS\n`,
-                );
+                logger.info(`Filter ${gtfsFile} with rule ${rule} SUCCESS`);
                 processRule(); // handle next rule
               } else {
                 del(dstDir);
@@ -71,7 +70,7 @@ module.exports = {
         }
         processRule(); // start recursive rule processing
       } else {
-        process.stdout.write(gtfsFile + ' filter skipped\n');
+        logger.info(gtfsFile + ' filter skipped');
         callback(null, file);
       }
     });

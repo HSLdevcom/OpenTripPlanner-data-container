@@ -27,6 +27,20 @@ const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
 const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
 const storageCleanup = require('./task/StorageCleanup');
 
+// Track the currently running gulp task in a global so that logger.js can tag log lines with
+// it (e.g. "[osm:update]"). Tasks in this pipeline run in series, so the most recently started
+// task is a reliable proxy for "currently executing task".
+const clearCurrentGulpTask = ({ name }) => {
+  if (global.currentGulpTask === name) {
+    global.currentGulpTask = null;
+  }
+};
+gulp.on('start', ({ name }) => {
+  global.currentGulpTask = name;
+});
+gulp.on('stop', clearCurrentGulpTask);
+gulp.on('error', clearCurrentGulpTask);
+
 // Warning! Lots of string interpolation all over the code. None of these
 // inputs are allowed to have whitespace characters in them.
 

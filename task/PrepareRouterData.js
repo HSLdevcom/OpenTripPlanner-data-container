@@ -5,9 +5,10 @@ const cloneable = require('cloneable-readable');
 const { dataDir, storageDir } = require('../config');
 const { dirNameToDate } = require('../util');
 const assert = require('assert');
+const logger = require('../logger');
 
 function createFile(config, fileName, sourcePath) {
-  process.stdout.write(`copying ${fileName}...\n`);
+  logger.info(`copying ${fileName}...`);
   return new Vinyl({
     path: fileName,
     contents: cloneable(fs.createReadStream(`${sourcePath}/${fileName}`)),
@@ -23,7 +24,7 @@ const extraUpdaters =
     : {};
 
 function createAndProcessBuildConfig(router) {
-  process.stdout.write('creating build-config.json...\n');
+  logger.info('creating build-config.json...');
   const configName = `${router.id}/build-config.json`;
   const buildConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const transitFeeds = buildConfig.transitFeeds || [];
@@ -49,7 +50,7 @@ function createAndProcessBuildConfig(router) {
 
 // Prepares router-config.json data for opentripplanner and applies edits/additions made in EXTRA_UPDATERS env var
 function createAndProcessRouterConfig(router) {
-  process.stdout.write('creating router-config.json...\n');
+  logger.info('creating router-config.json...');
   const configName = `${router.id}/router-config.json`;
   const routerConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const updaters = routerConfig.updaters;
@@ -113,9 +114,7 @@ function getOsmAndDemFiles(router, osmDir, demDir) {
 function prepareRouterData(router) {
   const stream = through.obj();
 
-  process.stdout.write(
-    'Collecting data and configuration files for graph build\n',
-  );
+  logger.info('Collecting data and configuration files for graph build');
 
   stream.push(createFile(router, 'otp-config.json', router.id));
   stream.push(createAndProcessBuildConfig(router));
@@ -138,8 +137,8 @@ function prepareRouterData(router) {
 function prepareRouterDataForStreetOnlyGraphBuild(router) {
   const stream = through.obj();
 
-  process.stdout.write(
-    'Collecting data and configuration files for street only graph build\n',
+  logger.info(
+    'Collecting data and configuration files for street only graph build',
   );
 
   stream.push(createFile(router, 'otp-config.json', router.id));
@@ -174,8 +173,8 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
 
   const stream = through.obj();
 
-  process.stdout.write(
-    'Collecting data and configuration files for graph build based on prebuilt street graph data\n',
+  logger.info(
+    'Collecting data and configuration files for graph build based on prebuilt street graph data',
   );
 
   stream.push(createFile(router, 'otp-config.json', router.id));
@@ -191,7 +190,7 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
       (date1, date2) => dirNameToDate(date2) - dirNameToDate(date1),
     );
     global.osmPrebuildDir = `${storageDir}/osm-builds/${process.env.DOCKER_TAG}/${osmDirectories[0]}/${router.id}`;
-    process.stdout.write(`Using OSM data from ${global.osmPrebuildDir} \n`);
+    logger.info(`Using OSM data from ${global.osmPrebuildDir}`);
     // This is needed for gtfs data fitting and seeding.
     getOsmAndDemFiles(
       router,

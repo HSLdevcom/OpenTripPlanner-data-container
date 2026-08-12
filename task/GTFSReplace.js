@@ -2,6 +2,7 @@ const fs = require('fs');
 const cloneable = require('cloneable-readable');
 const through = require('through2');
 const { parseId, postSlackMessage } = require('../util');
+const logger = require('../logger');
 const {
   renameFilesInZip,
   removeFilesFromZip,
@@ -18,7 +19,7 @@ const replaceGTFSFiles = (replacements, fileName) => {
       if (!zipHasFile(fileName, replacementFile)) {
         const msg = `${replacementFile} not found in ${fileName}. ${fileToReplace} is not replaced.`;
         postSlackMessage(msg);
-        process.stdout.write(`${msg}\n`);
+        logger.warn(msg);
         continue;
       }
       replacementsForFiles[fileToReplace] = replacementFile;
@@ -42,7 +43,7 @@ module.exports = {
         if (!replacements) {
           callback(null, file);
         } else {
-          process.stdout.write(`Replacing files in source ${id} \n`);
+          logger.info(`Replacing files in source ${id}`);
           replaceGTFSFiles(replacements, file.path);
           file.contents = cloneable(fs.createReadStream(file.path));
           callback(null, file);
