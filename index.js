@@ -1,25 +1,11 @@
-const { postSlackMessage } = require('./util');
+const { postSlackMessage, getStartBuildMessage } = require('./util');
 const { update } = require('./task/Update');
 const { SPLIT_BUILD_TYPE, timezone } = require('./config.js');
 const logger = require('./logger');
 
 logger.info(`Using timezone: ${timezone}`);
 
-let message = '';
-
-switch (SPLIT_BUILD_TYPE) {
-  case 'ONLY_BUILD_STREET_GRAPH':
-    message = 'Starting street only graph data build';
-    break;
-  case 'USE_PREBUILT_STREET_GRAPH':
-    message = 'Starting graph data build from prebuilt street graph';
-    break;
-  default:
-    message = 'Starting data build';
-    break;
-}
-
-postSlackMessage(message)
+postSlackMessage(getStartBuildMessage(SPLIT_BUILD_TYPE))
   .then(response => {
     if (response.ok) {
       global.messageTimeStamp = response.ts;

@@ -50,7 +50,7 @@ function setFeedId(file, id) {
             // send warning also to slack between monday and friday
             const day = now.getDay();
             if (day !== 1) {
-              postSlackMessage(`${msg} :boom:`, 'warn');
+              postSlackMessage(msg, 'warn');
             } else {
               logger.warn(msg);
             }

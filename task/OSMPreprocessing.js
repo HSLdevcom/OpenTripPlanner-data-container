@@ -64,7 +64,7 @@ function preprocessWithFile(
               } else {
                 const log = lastLog.join('');
                 postSlackMessage(
-                  `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom:`,
+                  `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log}`,
                   'warn',
                 );
                 global.hasFailures = true;
@@ -93,7 +93,7 @@ function preprocessWithFile(
           } catch (e) {
             const log = lastLog.join('');
             postSlackMessage(
-              `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} :boom: ${e}`,
+              `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} ${e}`,
               'error',
             );
             fse.removeSync(folder);

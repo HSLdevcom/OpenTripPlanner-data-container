@@ -53,16 +53,13 @@ module.exports = {
                 processRule(); // handle next rule
               } else {
                 del(dstDir);
-                postSlackMessage(`OBA zip task failed :boom:`, 'error');
+                postSlackMessage(`OBA zip task failed`, 'error');
                 callback(null, null);
               }
             } else {
               // failure
               del(dstDir);
-              postSlackMessage(
-                `Rule ${rule} on ${gtfsFile} failed :boom:`,
-                'error',
-              );
+              postSlackMessage(`Rule ${rule} on ${gtfsFile} failed`, 'error');
               callback(null, null);
             }
           } else {

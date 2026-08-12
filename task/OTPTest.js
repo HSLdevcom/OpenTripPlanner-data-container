@@ -37,10 +37,7 @@ function testWithOTP(otpFile, quiet = false) {
                 logger.info(otpFile + ' Test SUCCESS');
               } else {
                 const log = lastLog.join('');
-                postSlackMessage(
-                  `${otpFile} test failed: ${log} :boom:`,
-                  'warn',
-                );
+                postSlackMessage(`${otpFile} test failed: ${log}`, 'warn');
                 global.hasFailures = true;
                 resolve(false);
               }
@@ -66,7 +63,7 @@ function testWithOTP(otpFile, quiet = false) {
             });
           } catch (e) {
             const log = lastLog.join('');
-            postSlackMessage(`${otpFile} test failed: ${log} :boom:`, 'error');
+            postSlackMessage(`${otpFile} test failed: ${log}`, 'error');
             fse.removeSync(folder);
             reject(e);
           }

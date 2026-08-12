@@ -3,14 +3,48 @@ const readline = require('readline');
 const path = require('path');
 const axios = require('axios');
 const logger = require('./logger');
+const { SPLIT_BUILD_TYPE } = require('./config');
 
-const username = `OTP data builder ${process.env.BUILDER_TYPE || 'dev'}`;
+function getStartBuildMessage(splitBuildType) {
+  switch (splitBuildType) {
+    case 'ONLY_BUILD_STREET_GRAPH':
+      return 'Starting street only graph data build :rocket:';
+    case 'USE_PREBUILT_STREET_GRAPH':
+      return 'Starting graph data build from prebuilt street graph :rocket:';
+    default:
+      return 'Starting data build :rocket:';
+  }
+}
+
+function getBuilderLabel(splitBuildType) {
+  switch (splitBuildType) {
+    case 'ONLY_BUILD_STREET_GRAPH':
+      return 'OTP street builder';
+    case 'USE_PREBUILT_STREET_GRAPH':
+      return 'OTP transit builder';
+    default:
+      return 'OTP combined builder';
+  }
+}
+
+const username = `${getBuilderLabel(SPLIT_BUILD_TYPE)} ${process.env.BUILDER_TYPE || 'dev'}`;
 const channel = process.env.SLACK_CHANNEL_ID;
 const headers = {
   Authorization: `Bearer ${process.env.SLACK_ACCESS_TOKEN}`,
   'Content-Type': 'application/json',
   Accept: '*/*',
 };
+
+function withLevelEmoji(text, level) {
+  switch (level) {
+    case 'error':
+      return `${text} :boom:`;
+    case 'warn':
+      return `${text} :warning:`;
+    default:
+      return text;
+  }
+}
 
 async function postSlackMessage(text, level = 'info') {
   logger[level](text); // write important messages also to log
@@ -19,7 +53,7 @@ async function postSlackMessage(text, level = 'info') {
       'https://slack.com/api/chat.postMessage',
       {
         channel,
-        text,
+        text: withLevelEmoji(text, level),
         username,
         thread_ts: global.messageTimeStamp, // either null (will be a new message) or pointing to parent message (will be a reply)
       },
@@ -43,7 +77,7 @@ async function updateSlackMessage(text, level = 'info') {
       'https://slack.com/api/chat.update',
       {
         channel: process.env.SLACK_CHANNEL_ID,
-        text,
+        text: withLevelEmoji(text, level),
         username,
         ts: global.messageTimeStamp,
       },
@@ -173,6 +207,7 @@ const mapSrc = (id, url, fit, rules, replacements, request) => ({
 module.exports = {
   postSlackMessage,
   updateSlackMessage,
+  getStartBuildMessage,
   otpMatching,
   parseId,
   dirNameToDate,

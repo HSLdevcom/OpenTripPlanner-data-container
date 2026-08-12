@@ -4,7 +4,7 @@ const { postSlackMessage, createDir } = require('../util');
 const logger = require('../logger');
 
 function handleFail(url, err) {
-  postSlackMessage(`${url} Download failed: ${err} :boom:`, 'warn');
+  postSlackMessage(`${url} Download failed: ${err}`, 'warn');
   global.hasFailures = true;
 }
 

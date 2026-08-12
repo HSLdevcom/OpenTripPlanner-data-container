@@ -42,10 +42,7 @@ async function handleOsmAndDemUpdate() {
     global.hasFailures = false;
     await start('dem:update');
     if (global.hasFailures) {
-      postSlackMessage(
-        'DEM update failed, using previous version :boom:',
-        'warn',
-      );
+      postSlackMessage('DEM update failed, using previous version', 'warn');
     }
   }
 
@@ -66,7 +63,7 @@ async function handleOsmAndDemUpdate() {
     if (!global.blobSizeOk) {
       global.hasFailures = true;
       postSlackMessage(
-        'OSM data update failed, using previous version :boom:',
+        'OSM data update failed, using previous version',
         'warn',
       );
     }
@@ -99,7 +96,7 @@ async function handleGtfsFallback(logFile) {
 
   if (global.failedFeeds.split(',').length > MAX_GTFS_FALLBACK) {
     updateSlackMessage(
-      'Aborting the data update because too many quality tests failed :boom:',
+      'Aborting the data update because too many quality tests failed',
       'error',
     );
     process.exit(1);
@@ -175,7 +172,7 @@ async function buildStreetOnlyGraph(name) {
 
   if (global.hasFailures) {
     updateSlackMessage(
-      `${name} street only graph data updated, but partially falling back to older data :boom:`,
+      `${name} street only graph data updated, but partially falling back to older data`,
       'warn',
     );
   } else {
@@ -220,7 +217,7 @@ async function buildGraph(name) {
 
   if (global.hasFailures) {
     updateSlackMessage(
-      `${name} data updated, but partially falling back to older data :boom:`,
+      `${name} data updated, but partially falling back to older data`,
       'warn',
     );
   } else {
@@ -261,7 +258,7 @@ async function buildWithPrebuiltStreetGraph(name) {
 
   if (global.hasFailures) {
     updateSlackMessage(
-      `${name} data updated from prebuilt street only graph, but partially falling back to older data :boom:`,
+      `${name} data updated from prebuilt street only graph, but partially falling back to older data`,
       'warn',
     );
   } else {
@@ -290,10 +287,7 @@ async function update() {
     }
   } catch (err) {
     postSlackMessage(`${name} data update failed: ` + err.message, 'error');
-    updateSlackMessage(
-      'Something went wrong with the data update :boom:',
-      'error',
-    );
+    updateSlackMessage('Something went wrong with the data update', 'error');
   }
 }
 
