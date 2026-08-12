@@ -3,7 +3,12 @@ const { exec, execSync } = require('child_process');
 const del = require('del');
 const { otpMatching, postSlackMessage } = require('../util');
 const { zipWithGlobIntoDir } = require('./ZipTask');
-const { dataDir, constants, SPLIT_BUILD_TYPE } = require('../config.js');
+const {
+  dataDir,
+  constants,
+  SPLIT_BUILD_TYPE,
+  timezone,
+} = require('../config.js');
 const logger = require('../logger');
 const graphBuildTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx12g';
@@ -26,13 +31,13 @@ const buildGraph = function (router) {
     let command;
     switch (SPLIT_BUILD_TYPE) {
       case 'ONLY_BUILD_STREET_GRAPH':
-        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --buildStreet --save`;
+        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -e TZ=${timezone} -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --buildStreet --save`;
         break;
       case 'USE_PREBUILT_STREET_GRAPH':
-        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --loadStreet --save`;
+        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -e TZ=${timezone} -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --loadStreet --save`;
         break;
       default:
-        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --build --save`;
+        command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -e TZ=${timezone} -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${dataDir}/../logback-include-extensions.xml,target=/logback-include-extensions.xml ${dockerImage} --build --save`;
         break;
     }
 

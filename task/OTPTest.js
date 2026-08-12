@@ -2,7 +2,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
-const { dataDir, constants } = require('../config');
+const { dataDir, constants, timezone } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
 const logger = require('../logger');
 const testTag = process.env.OTP_TAG || 'v2';
@@ -28,7 +28,7 @@ function testWithOTP(otpFile, quiet = false) {
         r.on('end', () => {
           try {
             const build = exec(
-              `docker run --rm -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/tmp/${dir}:/var/opentripplanner hsldevcom/opentripplanner:${testTag} --build --save`,
+              `docker run --rm -e JAVA_OPTS="${JAVA_OPTS}" -e TZ=${timezone} -v ${dataDir}/tmp/${dir}:/var/opentripplanner hsldevcom/opentripplanner:${testTag} --build --save`,
               { maxBuffer: constants.BUFFER_SIZE },
             );
             build.on('exit', function (c) {

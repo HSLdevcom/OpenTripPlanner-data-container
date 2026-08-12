@@ -17,6 +17,8 @@ const extraSrc =
 
 const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
 
+const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 // override gtfs entries that are defined in extraSrc
 const overriddenGtfsIds = [];
 for (let j = router.gtfs.length - 1; j >= 0; j--) {
@@ -88,4 +90,5 @@ module.exports = {
   constants,
   passOBAfilter,
   SPLIT_BUILD_TYPE,
+  timezone,
 };

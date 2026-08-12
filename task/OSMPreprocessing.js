@@ -2,7 +2,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
-const { dataDir, constants, dataToolImage } = require('../config');
+const { dataDir, constants, dataToolImage, timezone } = require('../config');
 const { postSlackMessage, createDir } = require('../util');
 const logger = require('../logger');
 
@@ -49,7 +49,7 @@ function preprocessWithFile(
               'Running commands from file: ' + preprocessingInstructionsFile,
             );
             const preprocessingCommand = exec(
-              `docker run -v ${folder}:/tmp/osm-preprocessing:rw -v ${preprocessingInstructionsFile}:/tmp/preprocessing.sh:ro -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} /tmp/preprocessing.sh`,
+              `docker run -e TZ=${timezone} -v ${folder}:/tmp/osm-preprocessing:rw -v ${preprocessingInstructionsFile}:/tmp/preprocessing.sh:ro -w /tmp/osm-preprocessing --rm --entrypoint /bin/bash ${dataToolImage} /tmp/preprocessing.sh`,
               { maxBuffer: constants.BUFFER_SIZE },
             );
             preprocessingCommand.on('exit', function (c) {

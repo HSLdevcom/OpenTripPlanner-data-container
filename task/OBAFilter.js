@@ -6,14 +6,14 @@ const path = require('path');
 const cloneable = require('cloneable-readable');
 const { zipDirContents } = require('./ZipTask');
 const { dataToolImage } = require('../config.js');
-const { dataDir } = require('../config.js');
+const { dataDir, timezone } = require('../config.js');
 const { postSlackMessage, parseId } = require('../util');
 const logger = require('../logger');
 
 function OBAFilter(src, dst, rule) {
   logger.info(`filtering ${src} with ${rule}...`);
 
-  const cmd = `docker run -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`;
+  const cmd = `docker run -e TZ=${timezone} -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`;
 
   try {
     execSync(cmd, { stdio: [0, 1, 2] });
