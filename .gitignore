@@ -2,13 +2,18 @@ data
 storage
 node_modules/
 .DS_Store
-.pnp.cjs
-.pnp.loader.mjs
-.yarn/
-yarn.lock
 router-finland.zip
 router-hsl.zip
 router-waltti.zip
 router-waltti-alt.zip
 *~
 .tmp
+
+# yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
