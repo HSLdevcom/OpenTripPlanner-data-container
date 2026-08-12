@@ -113,6 +113,17 @@ async function handleGtfsFallback(logFile) {
   await start('gtfs:fallback');
 }
 
+function reportBuildResult(name, description) {
+  if (global.hasFailures) {
+    updateSlackMessage(
+      `${name} ${description}, but partially falling back to older data`,
+      'warn',
+    );
+  } else {
+    updateSlackMessage(`${name} ${description} :white_check_mark:`);
+  }
+}
+
 function buildAndDeployDockerImages(date) {
   logger.info('Deploying otp-data-server image...');
   execFileSync('./otp-data-server/deploy.sh', [date], {
@@ -173,16 +184,7 @@ async function buildStreetOnlyGraph(name) {
     await start('storage:cleanupStreetOnlyGraphData');
   }
 
-  if (global.hasFailures) {
-    updateSlackMessage(
-      `${name} street only graph data updated, but partially falling back to older data`,
-      'warn',
-    );
-  } else {
-    updateSlackMessage(
-      `${name} street only graph data updated :white_check_mark:`,
-    );
-  }
+  reportBuildResult(name, 'street only graph data updated');
 }
 
 /**
@@ -218,14 +220,7 @@ async function buildGraph(name) {
 
   buildAndDeployDockerImages(date);
 
-  if (global.hasFailures) {
-    updateSlackMessage(
-      `${name} data updated, but partially falling back to older data`,
-      'warn',
-    );
-  } else {
-    updateSlackMessage(`${name} data updated :white_check_mark:`);
-  }
+  reportBuildResult(name, 'data updated');
 }
 
 /**
@@ -259,16 +254,7 @@ async function buildWithPrebuiltStreetGraph(name) {
 
   buildAndDeployDockerImages(date);
 
-  if (global.hasFailures) {
-    updateSlackMessage(
-      `${name} data updated from prebuilt street only graph, but partially falling back to older data`,
-      'warn',
-    );
-  } else {
-    updateSlackMessage(
-      `${name} data updated from prebuilt street only graph :white_check_mark:`,
-    );
-  }
+  reportBuildResult(name, 'data updated from prebuilt street only graph');
 }
 
 async function update() {
@@ -289,7 +275,7 @@ async function update() {
         break;
     }
   } catch (err) {
-    postSlackMessage(`${name} data update failed: ` + err.message, 'error');
+    postSlackMessage(`${name} data update failed: ${err.message}`, 'error');
     updateSlackMessage('Something went wrong with the data update', 'error');
   }
 }
