@@ -25,7 +25,7 @@ const extraUpdaters =
 
 function createAndProcessBuildConfig(router) {
   logger.info('Creating build-config.json...');
-  const configName = `${router.id}/build-config.json`;
+  const configName = `configs/${router.id}/build-config.json`;
   const buildConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const transitFeeds = buildConfig.transitFeeds || [];
   if (router.netex) {
@@ -51,7 +51,7 @@ function createAndProcessBuildConfig(router) {
 // Prepares router-config.json data for opentripplanner and applies edits/additions made in EXTRA_UPDATERS env var
 function createAndProcessRouterConfig(router) {
   logger.info('Creating router-config.json...');
-  const configName = `${router.id}/router-config.json`;
+  const configName = `configs/${router.id}/router-config.json`;
   const routerConfig = JSON.parse(fs.readFileSync(configName, 'utf8'));
   const updaters = routerConfig.updaters;
   const usedPatches = [];
@@ -116,7 +116,7 @@ function prepareRouterData(router) {
 
   logger.info('Collecting data and configuration files for graph build');
 
-  stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createFile(router, 'otp-config.json', `configs/${router.id}`));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
   getOsmAndDemFiles(
@@ -141,7 +141,7 @@ function prepareRouterDataForStreetOnlyGraphBuild(router) {
     'Collecting data and configuration files for street only graph build',
   );
 
-  stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createFile(router, 'otp-config.json', `configs/${router.id}`));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
   getOsmAndDemFiles(
@@ -177,7 +177,7 @@ function prepareRouterDataForPrebuiltStreetGraphBuild(router) {
     'Collecting data and configuration files for graph build based on prebuilt street graph data',
   );
 
-  stream.push(createFile(router, 'otp-config.json', router.id));
+  stream.push(createFile(router, 'otp-config.json', `configs/${router.id}`));
   stream.push(createAndProcessBuildConfig(router));
   stream.push(createAndProcessRouterConfig(router));
   getTransitDataFiles(router).forEach(f => stream.push(f));

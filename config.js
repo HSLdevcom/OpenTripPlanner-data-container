@@ -7,7 +7,7 @@ const passOBAfilter = ['emissions.txt', 'translations.txt'];
 assert(process.env.ROUTER_NAME !== undefined, 'ROUTER_NAME must be defined');
 
 // Require router config from router directory
-const router = require(`./${process.env.ROUTER_NAME}/config`);
+const router = require(`./configs/${process.env.ROUTER_NAME}/config`);
 
 // EXTRA_SRC format should be {"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}
 // but you can only define, for example, new url and the other key value pairs will remain the same as they are defined in this file.

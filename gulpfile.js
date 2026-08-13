@@ -144,7 +144,7 @@ gulp.task('osm:download', () => {
 gulp.task('osm:copyPreprocessingFiles', () => {
   logger.info('Copying OSM preprocessing files...');
   return pipeline(
-    gulp.src(`${config.router.id}/osm-preprocessing/*.sh`, noBuf),
+    gulp.src(`configs/${config.router.id}/osm-preprocessing/*.sh`, noBuf),
     gulp.dest(`${config.dataDir}/${config.router.id}/osm-preprocessing`),
   );
 });
@@ -270,7 +270,7 @@ gulp.task(
 gulp.task('copyRules', () => {
   logger.info('Copying GTFS rules...');
   return pipeline(
-    gulp.src(`${config.router.id}/gtfs-rules/*`, noBuf),
+    gulp.src(`configs/${config.router.id}/gtfs-rules/*`, noBuf),
     gulp.dest(`${config.dataDir}/${config.router.id}/gtfs-rules`),
   );
 });
