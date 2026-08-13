@@ -1,4 +1,5 @@
 const assert = require('assert');
+const path = require('path');
 
 // OBA filter erases files which it does not recognize from GTFS packages
 // this array specifies the file names which should be preserved
@@ -6,8 +7,18 @@ const passOBAfilter = ['emissions.txt', 'translations.txt'];
 
 assert(process.env.ROUTER_NAME !== undefined, 'ROUTER_NAME must be defined');
 
+// Absolute, __dirname-based paths so these resolve correctly regardless of the
+// process's current working directory.
+const configsDir = path.resolve(__dirname, '../configs');
+const logbackConfigPath = path.resolve(
+  __dirname,
+  '../logback-include-extensions.xml',
+);
+
 // Require router config from router directory
-const router = require(`./configs/${process.env.ROUTER_NAME}/config`);
+const router = require(
+  path.join(configsDir, process.env.ROUTER_NAME, 'config'),
+);
 
 // EXTRA_SRC format should be {"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}
 // but you can only define, for example, new url and the other key value pairs will remain the same as they are defined in this file.
@@ -87,6 +98,8 @@ module.exports = {
   dataToolImage: `hsldevcom/otp-data-tools:${process.env.TOOLS_TAG || 'v3'}`,
   dataDir: `${process.cwd()}/data`,
   storageDir: `${process.cwd()}/storage`,
+  configsDir,
+  logbackConfigPath,
   constants,
   passOBAfilter,
   SPLIT_BUILD_TYPE,

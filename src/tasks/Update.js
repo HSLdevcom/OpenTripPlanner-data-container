@@ -12,7 +12,7 @@ const {
   postSlackMessage,
   updateSlackMessage,
 } = require('../utils/builderUtils.js');
-require('../gulpfile');
+require('../../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
 const logger = require('../logger');

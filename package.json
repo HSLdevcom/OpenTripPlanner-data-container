@@ -6,7 +6,7 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "prettier --check . && yarn run lint",
-    "start": "node index.js"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",

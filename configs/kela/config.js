@@ -1,4 +1,4 @@
-const mapSrc = require('../../utils/configUtils.js');
+const mapSrc = require('../../src/utils/configUtils.js');
 
 // matkahuolto data source often fails when accessed through digitransit proxy
 // here we exceptionally set up direct calls with basic auth

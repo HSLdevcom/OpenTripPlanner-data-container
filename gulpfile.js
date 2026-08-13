@@ -1,32 +1,32 @@
 const { pipeline } = require('node:stream/promises');
 const gulp = require('gulp');
 const rename = require('gulp-rename');
-const dl = require('./task/Download');
-const dlBlob = require('./task/DownloadDEMBlob');
-const { setFeedIdTask } = require('./task/SetFeedId');
-const { OBAFilterTask } = require('./task/OBAFilter');
-const prepareFit = require('./task/PrepareFit');
-const mapFit = require('./task/MapFit');
-const { validateBlobSize } = require('./task/BlobValidation');
-const { testOTPFile } = require('./task/OTPTest');
-const { runOSMPreprocessing } = require('./task/OSMPreprocessing');
-const seed = require('./task/Seed');
+const dl = require('./src/tasks/Download');
+const dlBlob = require('./src/tasks/DownloadDEMBlob');
+const { setFeedIdTask } = require('./src/tasks/SetFeedId');
+const { OBAFilterTask } = require('./src/tasks/OBAFilter');
+const prepareFit = require('./src/tasks/PrepareFit');
+const mapFit = require('./src/tasks/MapFit');
+const { validateBlobSize } = require('./src/tasks/BlobValidation');
+const { testOTPFile } = require('./src/tasks/OTPTest');
+const { runOSMPreprocessing } = require('./src/tasks/OSMPreprocessing');
+const seed = require('./src/tasks/Seed');
 const {
   prepareRouterData,
   prepareRouterDataForStreetOnlyGraphBuild,
   prepareRouterDataForPrebuiltStreetGraphBuild,
-} = require('./task/PrepareRouterData');
+} = require('./src/tasks/PrepareRouterData');
 const del = require('del');
-const config = require('./config');
+const config = require('./src/config');
 const {
   buildOTPGraphTask,
   buildOTPStreetOnlyGraphTask,
-} = require('./task/BuildOTPGraph');
-const { renameFile } = require('./task/RenameFile');
-const { replaceGTFSFilesTask } = require('./task/GTFSReplace');
-const { extractFilesTask, addFilesTask } = require('./task/ZipTask');
-const storageCleanup = require('./task/StorageCleanup');
-const logger = require('./logger');
+} = require('./src/tasks/BuildOTPGraph');
+const { renameFile } = require('./src/tasks/RenameFile');
+const { replaceGTFSFilesTask } = require('./src/tasks/GTFSReplace');
+const { extractFilesTask, addFilesTask } = require('./src/tasks/ZipTask');
+const storageCleanup = require('./src/tasks/StorageCleanup');
+const logger = require('./src/logger');
 
 // Track the currently running gulp task so logger.js can tag log lines with it (e.g.
 // "[gtfs:id]"). A single value is enough as long as every gulp.series step -- including
@@ -144,7 +144,10 @@ gulp.task('osm:download', () => {
 gulp.task('osm:copyPreprocessingFiles', () => {
   logger.info('Copying OSM preprocessing files...');
   return pipeline(
-    gulp.src(`configs/${config.router.id}/osm-preprocessing/*.sh`, noBuf),
+    gulp.src(
+      `${config.configsDir}/${config.router.id}/osm-preprocessing/*.sh`,
+      noBuf,
+    ),
     gulp.dest(`${config.dataDir}/${config.router.id}/osm-preprocessing`),
   );
 });
@@ -270,7 +273,7 @@ gulp.task(
 gulp.task('copyRules', () => {
   logger.info('Copying GTFS rules...');
   return pipeline(
-    gulp.src(`configs/${config.router.id}/gtfs-rules/*`, noBuf),
+    gulp.src(`${config.configsDir}/${config.router.id}/gtfs-rules/*`, noBuf),
     gulp.dest(`${config.dataDir}/${config.router.id}/gtfs-rules`),
   );
 });
