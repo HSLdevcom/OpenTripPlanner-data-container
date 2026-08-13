@@ -86,7 +86,7 @@ function handleTests() {
     logger.info('Skipping all tests');
   } else {
     logger.info('Test the newly built graph with OTPQA');
-    execFileSync('./test.sh', [], { stdio: [0, 1, 2] });
+    execFileSync('./src/test.sh', [], { stdio: [0, 1, 2] });
   }
 }
 

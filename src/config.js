@@ -12,7 +12,7 @@ assert(process.env.ROUTER_NAME !== undefined, 'ROUTER_NAME must be defined');
 const configsDir = path.resolve(__dirname, '../configs');
 const logbackConfigPath = path.resolve(
   __dirname,
-  '../logback-include-extensions.xml',
+  'logback-include-extensions.xml',
 );
 
 // Require router config from router directory
