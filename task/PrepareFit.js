@@ -1,6 +1,7 @@
 const fs = require('fs');
 const through = require('through2');
 const parseOSM = require('osm-pbf-parser');
+const logger = require('../logger');
 
 const map = {};
 const nodePositions = {};
@@ -128,7 +129,7 @@ function createMap(config, cb) {
         if (i < config.osm.length - 1) {
           mapFromOsm(i + 1); // recurse to next OSM entry
         } else {
-          console.log(
+          logger.info(
             'Number of ref mapped stops is ' +
               count +
               ', of which OSM ways ' +

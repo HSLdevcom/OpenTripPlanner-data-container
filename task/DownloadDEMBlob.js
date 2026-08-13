@@ -1,6 +1,7 @@
 const fs = require('fs');
 const axios = require('axios');
-const { createDir } = require('../util');
+const { createDir } = require('../utils/builderUtils.js');
+const logger = require('../logger');
 
 /**
  * Download DEM files from Azure blob storage.
@@ -31,8 +32,8 @@ module.exports = function (entries, dlDir, readyDir) {
             if (response.status === 200) {
               downloadSize = response.headers['content-length'];
               if (readySize && readySize === parseInt(downloadSize)) {
-                process.stdout.write(
-                  `Local DEM data for ${entry.id} was already up-to-date\n`,
+                logger.info(
+                  `Local DEM data for ${entry.id} was already up-to-date`,
                 );
                 dataAlreadyExists = true;
                 // Abort download as remote has same size as local copy
@@ -40,16 +41,12 @@ module.exports = function (entries, dlDir, readyDir) {
                 resolve();
               } else {
                 response.data.pipe(fs.createWriteStream(filePath));
-                process.stdout.write(
-                  `Downloading new DEM data from ${entry.url}\n`,
-                );
+                logger.info(`Downloading new DEM data from ${entry.url}`);
               }
             }
             response.data.on('error', err => {
               if (!dataAlreadyExists) {
-                process.stdout.write(
-                  `${entry.url} download failed: ${JSON.stringify(err)} \n`,
-                );
+                logger.error(`${entry.url} download failed: ${err.message}`);
                 reject(err);
               } else {
                 resolve();
@@ -61,18 +58,15 @@ module.exports = function (entries, dlDir, readyDir) {
               // However, if the file is really small, this could in theory be called before call to abort request
               // but that situation shouldn't happen with DEM data sizes.
               if (!dataAlreadyExists) {
-                process.stdout.write(
-                  `Downloaded updated DEM data to ${filePath}\n`,
-                );
+                logger.info(`Downloaded updated DEM data to ${filePath}`);
                 fs.rename(filePath, readyPath, err => {
                   if (err) {
-                    process.stdout.write(JSON.stringify(err));
-                    process.stdout.write(
-                      `Failed to move DEM data from ${readyPath}\n`,
+                    logger.error(
+                      `Failed to move DEM data from ${readyPath}: ${err.message}`,
                     );
                     reject(err);
                   } else {
-                    process.stdout.write(`DEM data updated for ${entry.id}\n`);
+                    logger.info(`DEM data updated for ${entry.id}`);
                     resolve();
                   }
                 });
@@ -82,9 +76,7 @@ module.exports = function (entries, dlDir, readyDir) {
             });
           })
           .catch(err => {
-            process.stdout.write(
-              `${entry.url} download failed: ${JSON.stringify(err)}\n`,
-            );
+            logger.error(`${entry.url} download failed: ${err.message}`);
             reject(err);
           });
       }),

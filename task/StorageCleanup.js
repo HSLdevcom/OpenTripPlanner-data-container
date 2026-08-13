@@ -1,6 +1,7 @@
 const fs = require('fs');
 const del = require('del');
-const { dirNameToDate } = require('../util');
+const { dirNameToDate } = require('../utils/builderUtils.js');
+const logger = require('../logger');
 
 /*
  * Removes files which are not directories, directories which are empty or can't be parsed into dates.
@@ -51,13 +52,21 @@ function deleteOldVersions(sourceDir, routerId, tag) {
   if (!fs.existsSync(basePath)) {
     return new Promise(res => res());
   }
-  return Promise.all(deleteInvalidVersions(basePath)).then(() => {
+  const invalidVersions = deleteInvalidVersions(basePath);
+  return Promise.all(invalidVersions).then(() => {
     const filesToDelete = fs
       .readdirSync(basePath)
       .filter(file => isCorrectRouter(basePath, file, routerId))
       .sort(sortByDate)
       .slice(0, -savedCount);
-    return filesToDelete.map(file => del(`${basePath}/${file}/${routerId}`));
+    const deletions = filesToDelete.map(file =>
+      del(`${basePath}/${file}/${routerId}`),
+    );
+    return Promise.all(deletions).then(() => {
+      logger.info(
+        `Removed ${invalidVersions.length} invalid and ${filesToDelete.length} old version(s) from ${basePath}, keeping the latest ${savedCount}`,
+      );
+    });
   });
 }
 

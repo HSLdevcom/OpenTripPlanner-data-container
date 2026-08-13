@@ -24,7 +24,7 @@ echo -e "\n##### Testing new data #####\n"
 
 echo Starting otp...
 
-docker run --rm --name $OTPCONT -e JAVA_OPTS="$JAVA_OPTS" \
+docker run --rm --name $OTPCONT -e JAVA_OPTS="$JAVA_OPTS" -e TZ="${TZ:-Europe/Helsinki}" \
     --mount type=bind,source=$(pwd)/logback-include-extensions.xml,target=/logback-include-extensions.xml \
     --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/graph.obj,target=/var/opentripplanner/graph.obj \
     --mount type=bind,source=$(pwd)/data/build/$ROUTER_NAME/otp-config.json,target=/var/opentripplanner/otp-config.json \
@@ -69,7 +69,7 @@ done
 echo running otpqa
 
 docker pull $TOOL_IMAGE
-docker run --entrypoint /bin/bash --name $TOOLCONT $TOOL_IMAGE -c "cd OTPQA; /python-venv/bin/python3 otpprofiler_json.py $OTP_URL/gtfs/v1 $ROUTER_NAME $SKIPPED_SITES"
+docker run --entrypoint /bin/bash -e TZ="${TZ:-Europe/Helsinki}" --name $TOOLCONT $TOOL_IMAGE -c "cd OTPQA; /python-venv/bin/python3 otpprofiler_json.py $OTP_URL/gtfs/v1 $ROUTER_NAME $SKIPPED_SITES"
 
 if [ $? == 0 ]; then
   echo getting failed feed list from container

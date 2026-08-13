@@ -3,9 +3,10 @@ const fs = require('fs');
 const csvParser = require('csv-parser');
 const cloneable = require('cloneable-readable');
 const removeBOM = require('remove-bom-stream');
-const { parseId } = require('../util');
+const { parseId } = require('../utils/builderUtils.js');
 const { stringify } = require('csv-stringify');
 const { dataDir } = require('../config.js');
+const logger = require('../logger');
 
 const limit = 200; // do not fit if distance is more than this many meters
 
@@ -86,12 +87,12 @@ function transformStops(folder, map, cb) {
       .pipe(fs.createWriteStream(result))
       .on('finish', () => {
         fs.copyFileSync(result, fileName);
-        process.stdout.write(
-          `Fitted ${stats.fitted} stops, skipped ${stats.bad} bad fits\n`,
+        logger.info(
+          `Fitted ${stats.fitted} stops, skipped ${stats.bad} bad fits`,
         );
         if (stats.fitted) {
-          process.stdout.write(
-            `Average fit distance ${stats.dsum / stats.fitted}, max distance ${stats.maxDist}\n`,
+          logger.info(
+            `Average fit distance ${stats.dsum / stats.fitted}, max distance ${stats.maxDist}`,
           );
         }
         cb();
@@ -107,28 +108,26 @@ module.exports = function mapFit(config) {
     const source = config.gtfsMap[id];
 
     if (!source.fit) {
-      process.stdout.write(gtfsFile + ' fit disabled\n');
+      logger.info(gtfsFile + ' fit disabled');
       callback(null, file);
       return;
     }
     if (!config.fitMap) {
-      process.stdout.write(
-        `PrepareFit task not run before fitting, skipping ${gtfsFile} map fit\n`,
+      logger.warn(
+        `PrepareFit task not run before fitting, skipping ${gtfsFile} map fit`,
       );
       callback(null, file);
       return;
     }
     if (!fs.existsSync(`${folder}/stops.txt`)) {
-      process.stdout.write(
-        `${folder}/stops.txt does not exist, bad GTFS data?`,
-      );
+      logger.warn(`${folder}/stops.txt does not exist, bad GTFS data?`);
       callback(null, file);
       return;
     }
 
-    process.stdout.write(`Fitting ${gtfsFile} to OSM stop locations ...\n`);
+    logger.info(`Fitting ${gtfsFile} to OSM stop locations ...`);
     transformStops(folder, config.fitMap, () => {
-      process.stdout.write(gtfsFile + ' fit SUCCESS\n');
+      logger.info(gtfsFile + ' fit SUCCESS');
       file.contents = cloneable(fs.createReadStream(gtfsFile));
       callback(null, file);
     });

@@ -1,9 +1,10 @@
 const fs = require('fs');
 const axios = require('axios');
-const { postSlackMessage, createDir } = require('../util');
+const { postSlackMessage, createDir } = require('../utils/builderUtils.js');
+const logger = require('../logger');
 
 function handleFail(url, err) {
-  postSlackMessage(`${url} Download failed: ${err} :boom:`);
+  postSlackMessage(`${url} Download failed: ${err}`, 'warn');
   global.hasFailures = true;
 }
 
@@ -13,7 +14,7 @@ function handleFail(url, err) {
 function download(entry, dir) {
   return new Promise(resolve => {
     createDir(dir);
-    process.stdout.write('Downloading ' + entry.url + '...\n');
+    logger.info('Downloading ' + entry.url + '...');
     const name = entry.url.split('/').pop();
     const ext = name.indexOf('.') > 0 ? '.' + name.split('.').pop() : '';
     const filePath = `${dir}/${entry.id + ext}`;
@@ -31,7 +32,7 @@ function download(entry, dir) {
           resolve();
         });
         response.data.on('end', () => {
-          process.stdout.write(entry.url + ' Download SUCCESS\n');
+          logger.info(entry.url + ' Download SUCCESS');
           resolve();
         });
       })

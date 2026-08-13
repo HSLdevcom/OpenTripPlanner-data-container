@@ -38,7 +38,7 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional, default v3) `SEED_TAG` defines what version of the data storage should be used for seeding.
 - (Optional, default v2) `OTP_TAG` defines what version of OTP is used for testing, building graphs and deploying a new OTP image (postfixed with router name).
 - (Optional, default v3) `TOOLS_TAG` defines what version of otp-data-tools image is used for testing.
-- (Optional, default dev) `BUILDER_TYPE` used as a postfix to slack bot name
+- (Optional, default dev) `BUILDER_TYPE` used as a postfix to the Slack bot name
 - (Optional) `SLACK_CHANNEL_ID` defines to which slack channel the messages are sent to
 - (Optional) `SLACK_ACCESS_TOKEN` bearer token for slack messaging
 - (Optional, default {}) `EXTRA_SRC` defines gtfs entries (the router config's `gtfs` list) that should be overridden or completely new entries that should be added with unique id. Example format:
@@ -63,6 +63,20 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `SKIP_OSM_PREPROCESSING` skips OSM preprocessing even if an instruction file is defined
 - (Optional) `SKIP_OTP_TESTS` skips OTP tests
 - (Optional) `KEEP_VERSIONS` how many old versions of data to keep, default 10
+
+#### Logging
+
+Logs are written with timestamps to make issues easier to trace, e.g.:
+
+```
+[07:44:58.813] INFO [osm:update] (OSMPreprocessing.js:48) Running OSM preprocessing...
+[07:44:58.813] ERROR (Update.js:33) Something went wrong with the data update
+```
+
+Each line has a timestamp, log level, the currently running gulp task (if any), and the
+source file/line that produced it. All containers run with a fixed timezone
+(`Europe/Helsinki`) so timestamps stay consistent regardless of the host; the resolved
+timezone is logged once at startup.
 
 ### Data processing steps
 

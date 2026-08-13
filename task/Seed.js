@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { extractAllFiles } = require('./ZipTask');
-const { postSlackMessage, dirNameToDate } = require('../util');
+const { postSlackMessage, dirNameToDate } = require('../utils/builderUtils.js');
+const logger = require('../logger');
 
 function findLatestZip(sourceDir, routerId, tag) {
   const basePath = `${sourceDir}/${tag}`;
@@ -33,10 +34,12 @@ function findLatestZip(sourceDir, routerId, tag) {
 module.exports = function (sourceDir, destinationDir, routerId, tag) {
   return new Promise((resolve, reject) => {
     try {
-      extractAllFiles(findLatestZip(sourceDir, routerId, tag), destinationDir);
+      const zip = findLatestZip(sourceDir, routerId, tag);
+      logger.info(`Seeding from ${zip}`);
+      extractAllFiles(zip, destinationDir);
       resolve();
     } catch (err) {
-      postSlackMessage(`Seed failed due to: ${err}`);
+      postSlackMessage(`Seed failed due to: ${err}`, 'error');
       reject(err);
     }
   });

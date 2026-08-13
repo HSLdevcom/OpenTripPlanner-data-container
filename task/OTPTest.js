@@ -2,8 +2,9 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const exec = require('child_process').exec;
 const through = require('through2');
-const { dataDir, constants } = require('../config');
-const { postSlackMessage, createDir } = require('../util');
+const { dataDir, constants, timezone } = require('../config');
+const { postSlackMessage, createDir } = require('../utils/builderUtils.js');
+const logger = require('../logger');
 const testTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx9g';
 
@@ -21,24 +22,22 @@ function testWithOTP(otpFile, quiet = false) {
       createDir(`${dataDir}/tmp`);
       fs.mkdtemp(`${dataDir}/tmp/router-build-test`, (err, folder) => {
         if (err) throw err;
-        process.stdout.write(
-          'Testing ' + otpFile + ' in directory ' + folder + '...\n',
-        );
+        logger.info('Testing ' + otpFile + ' in directory ' + folder + '...');
         const dir = folder.split('/').pop();
         const r = fs.createReadStream(otpFile);
         r.on('end', () => {
           try {
             const build = exec(
-              `docker run --rm -e JAVA_OPTS="${JAVA_OPTS}" -v ${dataDir}/tmp/${dir}:/var/opentripplanner hsldevcom/opentripplanner:${testTag} --build --save`,
+              `docker run --rm -e JAVA_OPTS="${JAVA_OPTS}" -e TZ=${timezone} -v ${dataDir}/tmp/${dir}:/var/opentripplanner hsldevcom/opentripplanner:${testTag} --build --save`,
               { maxBuffer: constants.BUFFER_SIZE },
             );
             build.on('exit', function (c) {
               if (c === 0) {
                 resolve(true);
-                process.stdout.write(otpFile + ' Test SUCCESS\n');
+                logger.info(otpFile + ' Test SUCCESS');
               } else {
                 const log = lastLog.join('');
-                postSlackMessage(`${otpFile} test failed: ${log} :boom:`);
+                postSlackMessage(`${otpFile} test failed: ${log}`, 'warn');
                 global.hasFailures = true;
                 resolve(false);
               }
@@ -50,7 +49,7 @@ function testWithOTP(otpFile, quiet = false) {
                 delete lastLog[0];
               }
               if (!quiet) {
-                process.stdout.write(data.toString());
+                process.stdout.write(data);
               }
             });
             build.stderr.on('data', function (data) {
@@ -59,12 +58,12 @@ function testWithOTP(otpFile, quiet = false) {
                 lastLog.splice(0, 1);
               }
               if (!quiet) {
-                process.stderr.write(data.toString());
+                process.stderr.write(data);
               }
             });
           } catch (e) {
             const log = lastLog.join('');
-            postSlackMessage(`${otpFile} test failed: ${log} :boom:`);
+            postSlackMessage(`${otpFile} test failed: ${log}`, 'error');
             fse.removeSync(folder);
             reject(e);
           }
@@ -80,8 +79,8 @@ module.exports = {
     return through.obj(function (file, encoding, callback) {
       const otpFile = file.history[file.history.length - 1];
       if (process.env.SKIP_OTP_TESTS) {
-        process.stdout.write(
-          'OTP test skipped because the SKIP_OTP_TESTS environment variable is set\n',
+        logger.info(
+          'OTP test skipped because the SKIP_OTP_TESTS environment variable is set',
         );
         return callback(null, file);
       }

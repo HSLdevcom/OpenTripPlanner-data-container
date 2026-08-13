@@ -1,5 +1,6 @@
 const fs = require('fs');
 const through = require('through2');
+const logger = require('../logger');
 
 /**
  * Checks if downloaded file is at most 1% smaller than the seeded file.
@@ -7,23 +8,23 @@ const through = require('through2');
  */
 function validateSize(seededFile, downloadedFile) {
   if (!fs.existsSync(downloadedFile)) {
-    process.stdout.write(downloadedFile + ' does not exist!\n');
+    logger.error(downloadedFile + ' does not exist!');
     return false;
   }
   if (process.env.DISABLE_BLOB_VALIDATION || !fs.existsSync(seededFile)) {
-    process.stdout.write('Skipping blob size validation\n');
+    logger.info('Skipping blob size validation');
     global.blobSizeOk = true;
     return true;
   }
   const downloadedFileSize = fs.statSync(downloadedFile).size;
   const seedFileSize = fs.statSync(seededFile).size;
   if (seedFileSize * 0.99 <= downloadedFileSize) {
-    process.stdout.write('Blob size validated\n');
+    logger.info('Blob size validated');
     global.blobSizeOk = true;
     return true;
   } else {
-    process.stdout.write(
-      downloadedFile + ': file had different size than the seeded file\n',
+    logger.warn(
+      downloadedFile + ': file had different size than the seeded file',
     );
     return false;
   }

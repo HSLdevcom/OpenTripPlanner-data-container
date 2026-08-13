@@ -6,13 +6,14 @@ const path = require('path');
 const cloneable = require('cloneable-readable');
 const { zipDirContents } = require('./ZipTask');
 const { dataToolImage } = require('../config.js');
-const { dataDir } = require('../config.js');
-const { postSlackMessage, parseId } = require('../util');
+const { dataDir, timezone } = require('../config.js');
+const { postSlackMessage, parseId } = require('../utils/builderUtils.js');
+const logger = require('../logger');
 
 function OBAFilter(src, dst, rule) {
-  process.stdout.write(`filtering ${src} with ${rule}...\n`);
+  logger.info(`Filtering ${src} with ${rule}...`);
 
-  const cmd = `docker run -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`;
+  const cmd = `docker run -e TZ=${timezone} -v ${dataDir}:/data --rm ${dataToolImage} --transform=/data/${rule} /data/${src} /data/${dst}`;
 
   try {
     execSync(cmd, { stdio: [0, 1, 2] });
@@ -48,19 +49,17 @@ module.exports = {
               /* create zip named src from files in dst */
               if (zipDirContents(`${dataDir}/${src}`, `${dataDir}/${dst}`)) {
                 del(dstDir);
-                process.stdout.write(
-                  `Filter ${gtfsFile} with rule ${rule} SUCCESS\n`,
-                );
+                logger.info(`Filter ${gtfsFile} with rule ${rule} SUCCESS`);
                 processRule(); // handle next rule
               } else {
                 del(dstDir);
-                postSlackMessage(`OBA zip task failed :boom:`);
+                postSlackMessage(`OBA zip task failed`, 'error');
                 callback(null, null);
               }
             } else {
               // failure
               del(dstDir);
-              postSlackMessage(`Rule ${rule} on ${gtfsFile} failed :boom:`);
+              postSlackMessage(`Rule ${rule} on ${gtfsFile} failed`, 'error');
               callback(null, null);
             }
           } else {
@@ -71,7 +70,7 @@ module.exports = {
         }
         processRule(); // start recursive rule processing
       } else {
-        process.stdout.write(gtfsFile + ' filter skipped\n');
+        logger.info(gtfsFile + ' filter skipped');
         callback(null, file);
       }
     });

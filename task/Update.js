@@ -8,10 +8,14 @@ const gulp = require('gulp');
 const { promisify } = require('util');
 const { execFileSync } = require('child_process');
 const fs = require('fs');
-const { postSlackMessage, updateSlackMessage } = require('../util');
+const {
+  postSlackMessage,
+  updateSlackMessage,
+} = require('../utils/builderUtils.js');
 require('../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
+const logger = require('../logger');
 
 const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
 
@@ -29,9 +33,9 @@ function getDateString() {
 
 async function handleSeeding() {
   if (!process.env.NOSEED) {
-    process.stdout.write('Starting seeding\n');
+    logger.info('Starting seeding');
     await start('seed');
-    process.stdout.write('Seeded\n');
+    logger.info('Seeded');
   }
 }
 
@@ -41,7 +45,7 @@ async function handleOsmAndDemUpdate() {
     global.hasFailures = false;
     await start('dem:update');
     if (global.hasFailures) {
-      postSlackMessage('DEM update failed, using previous version :boom:');
+      postSlackMessage('DEM update failed, using previous version', 'warn');
     }
   }
 
@@ -61,12 +65,13 @@ async function handleOsmAndDemUpdate() {
     }
     if (!global.blobSizeOk) {
       global.hasFailures = true;
-      postSlackMessage('OSM data update failed, using previous version :boom:');
+      postSlackMessage(
+        'OSM data update failed, using previous version',
+        'warn',
+      );
     }
   } else {
-    process.stdout.write(
-      'Skipping OSM update and using existing seeded data\n',
-    );
+    logger.info('Skipping OSM update and using existing seeded data');
   }
 }
 
@@ -78,9 +83,9 @@ async function handleTransitDataUpdate() {
 
 function handleTests() {
   if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
-    process.stdout.write('Skipping all tests\n');
+    logger.info('Skipping all tests');
   } else {
-    process.stdout.write('Test the newly built graph with OTPQA\n');
+    logger.info('Test the newly built graph with OTPQA');
     execFileSync('./test.sh', [], { stdio: [0, 1, 2] });
   }
 }
@@ -94,20 +99,33 @@ async function handleGtfsFallback(logFile) {
 
   if (global.failedFeeds.split(',').length > MAX_GTFS_FALLBACK) {
     updateSlackMessage(
-      'Aborting the data update because too many quality tests failed :boom:',
+      'Aborting the data update because too many quality tests failed',
+      'error',
     );
     process.exit(1);
   }
 
   postSlackMessage(
     `GTFS packages ${global.failedFeeds} rejected, using fallback to current data`,
+    'warn',
   );
   // use seed packages for failed feeds
   await start('gtfs:fallback');
 }
 
+function reportBuildResult(name, description) {
+  if (global.hasFailures) {
+    updateSlackMessage(
+      `${name} ${description}, but partially falling back to older data`,
+      'warn',
+    );
+  } else {
+    updateSlackMessage(`${name} ${description} :white_check_mark:`);
+  }
+}
+
 function buildAndDeployDockerImages(date) {
-  process.stdout.write('Build and deploy Docker images\n');
+  logger.info('Deploying otp-data-server image...');
   execFileSync('./otp-data-server/deploy.sh', [date], {
     stdio: [0, 1, 2],
     env: {
@@ -120,6 +138,7 @@ function buildAndDeployDockerImages(date) {
       DOCKER_AUTH: process.env.DOCKER_AUTH,
     },
   });
+  logger.info('Deploying opentripplanner image...');
   execFileSync('./opentripplanner/deploy-otp.sh', [date], {
     stdio: [0, 1, 2],
     env: {
@@ -136,7 +155,7 @@ function buildAndDeployDockerImages(date) {
 
 async function handleCleanup() {
   if (!process.env.NOCLEANUP) {
-    process.stdout.write('Remove oldest data versions from storage\n');
+    logger.info('Remove oldest data versions from storage');
     await start('storage:cleanup');
   }
 }
@@ -151,31 +170,21 @@ async function buildStreetOnlyGraph(name) {
 
   await handleOsmAndDemUpdate();
 
-  process.stdout.write('Build street only graph\n');
+  logger.info('Build street only graph');
   await start('router:buildStreetOnlyGraph');
 
   const date = getDateString();
   global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${name}`;
 
-  process.stdout.write('Uploading street graph only build data to storage\n');
+  logger.info('Uploading street graph only build data to storage');
   await start('router:store');
 
   if (!process.env.NOCLEANUP) {
-    process.stdout.write(
-      'Remove oldest street only graph data versions from storage\n',
-    );
+    logger.info('Remove oldest street only graph data versions from storage');
     await start('storage:cleanupStreetOnlyGraphData');
   }
 
-  if (global.hasFailures) {
-    updateSlackMessage(
-      `${name} street only graph data updated, but partially falling back to older data :boom:`,
-    );
-  } else {
-    updateSlackMessage(
-      `${name} street only graph data updated :white_check_mark:`,
-    );
-  }
+  reportBuildResult(name, 'street only graph data updated');
 }
 
 /**
@@ -190,7 +199,7 @@ async function buildGraph(name) {
 
   await handleTransitDataUpdate();
 
-  process.stdout.write('Build routing graph\n');
+  logger.info('Build routing graph');
   await start('router:buildGraph');
 
   handleTests();
@@ -199,25 +208,19 @@ async function buildGraph(name) {
   if (fs.existsSync(logFile)) {
     await handleGtfsFallback(logFile);
     // rebuild the graph
-    process.stdout.write('Rebuild graph using fallback data\n');
+    logger.info('Rebuild graph using fallback data');
     await start('router:buildGraph');
   }
 
   const date = getDateString();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
-  process.stdout.write('Uploading data to storage\n');
+  logger.info('Uploading data to storage');
   await start('router:store');
 
   buildAndDeployDockerImages(date);
 
-  if (global.hasFailures) {
-    updateSlackMessage(
-      `${name} data updated, but partially falling back to older data :boom:`,
-    );
-  } else {
-    updateSlackMessage(`${name} data updated :white_check_mark:`);
-  }
+  reportBuildResult(name, 'data updated');
 }
 
 /**
@@ -230,7 +233,7 @@ async function buildWithPrebuiltStreetGraph(name) {
 
   await handleTransitDataUpdate();
 
-  process.stdout.write('Build routing graph from prebuilt street only graph\n');
+  logger.info('Build routing graph from prebuilt street only graph');
   await start('router:buildWithPrebuiltStreetGraph');
 
   handleTests();
@@ -239,27 +242,19 @@ async function buildWithPrebuiltStreetGraph(name) {
   if (fs.existsSync(logFile)) {
     await handleGtfsFallback(logFile);
     // rebuild the graph
-    process.stdout.write('Rebuild graph using fallback data\n');
+    logger.info('Rebuild graph using fallback data');
     await start('router:buildWithPrebuiltStreetGraph');
   }
 
   const date = getDateString();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
-  process.stdout.write('Uploading data to storage\n');
+  logger.info('Uploading data to storage');
   await start('router:storeForPrebuiltStreetGraphDataBuild');
 
   buildAndDeployDockerImages(date);
 
-  if (global.hasFailures) {
-    updateSlackMessage(
-      `${name} data updated from prebuilt street only graph, but partially falling back to older data :boom:`,
-    );
-  } else {
-    updateSlackMessage(
-      `${name} data updated from prebuilt street only graph :white_check_mark:`,
-    );
-  }
+  reportBuildResult(name, 'data updated from prebuilt street only graph');
 }
 
 async function update() {
@@ -280,8 +275,8 @@ async function update() {
         break;
     }
   } catch (err) {
-    postSlackMessage(`${name} data update failed: ` + err.message);
-    updateSlackMessage('Something went wrong with the data update :boom:');
+    postSlackMessage(`${name} data update failed: ${err.message}`, 'error');
+    updateSlackMessage('Something went wrong with the data update', 'error');
   }
 }
 
