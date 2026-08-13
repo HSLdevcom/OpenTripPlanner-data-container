@@ -2,6 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const path = require('path');
 const axios = require('axios');
+const dns = require('dns').promises;
 const logger = require('../logger');
 const { SPLIT_BUILD_TYPE } = require('../config');
 
@@ -187,6 +188,41 @@ function createDir(dirPath) {
   }
 }
 
+const CANARY_HOST = 'slack.com';
+const MAX_ATTEMPTS = 10;
+const RETRY_DELAY_MS = 3000;
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Waits for basic outbound DNS/network connectivity to become available,
+ * polling a canary host a bounded number of times. This works around a
+ * transient `getaddrinfo EAI_AGAIN` DNS failure seen on AKS: the nested
+ * `dockerd` (docker:dind) rewrites iptables rules on startup, which can
+ * race with the pod's CNI-managed DNS routing.
+ *
+ * @returns {Promise<void>} resolves once connectivity is confirmed.
+ */
+async function waitForNetwork() {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+    try {
+      await dns.lookup(CANARY_HOST);
+      return;
+    } catch (err) {
+      logger.warn(
+        `Network not ready yet (attempt ${attempt}/${MAX_ATTEMPTS}): ${err.message}`,
+      );
+      if (attempt < MAX_ATTEMPTS) {
+        await wait(RETRY_DELAY_MS);
+      }
+    }
+  }
+  logger.error(
+    'Network did not become ready in time. Exiting so Kubernetes can restart the pod.',
+  );
+  process.exit(1);
+}
+
 module.exports = {
   postSlackMessage,
   updateSlackMessage,
@@ -195,4 +231,5 @@ module.exports = {
   parseId,
   dirNameToDate,
   createDir,
+  waitForNetwork,
 };
