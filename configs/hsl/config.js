@@ -1,4 +1,4 @@
-const mapSrc = require('../../src/utils/configUtils.js');
+const { mapSrc } = require('../../src/utils/configUtils.js');
 
 module.exports = {
   id: 'hsl',

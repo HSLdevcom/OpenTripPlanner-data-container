@@ -1,5 +1,6 @@
 const assert = require('assert');
 const path = require('path');
+const { applyExtraSrc, buildIdMap } = require('./utils/configUtils.js');
 
 // OBA filter erases files which it does not recognize from GTFS packages
 // this array specifies the file names which should be preserved
@@ -25,38 +26,12 @@ const router = require(
 // It is also possible to add completely new gtfs entry by defining object with unused id or to remove one by defining "remove": true
 const extraSrc =
   process.env.EXTRA_SRC !== undefined ? JSON.parse(process.env.EXTRA_SRC) : {};
+// override, remove, or add gtfs entries defined in extraSrc
+router.gtfs = applyExtraSrc(router.gtfs, extraSrc);
 
 const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
 
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-// override gtfs entries that are defined in extraSrc
-const overriddenGtfsIds = [];
-for (let j = router.gtfs.length - 1; j >= 0; j--) {
-  const src = router.gtfs[j];
-  const id = src.id;
-  if (extraSrc[id]) {
-    overriddenGtfsIds.push(id);
-    if (extraSrc[id].remove) {
-      router.gtfs.splice(j, 1);
-      continue;
-    }
-    router.gtfs[j] = { ...src, ...extraSrc[id] };
-  }
-}
-
-// Go through extraSrc keys to find keys that don't already exist in gtfs and add those as new entries
-Object.keys(extraSrc).forEach(id => {
-  if (!overriddenGtfsIds.includes(id)) {
-    router.gtfs.push({ ...extraSrc[id], id });
-  }
-});
-
-// create id->gtfs-entry map
-const gtfsMap = {};
-router.gtfs.forEach(src => {
-  gtfsMap[src.id] = src;
-});
 
 const extraOSM =
   process.env.EXTRA_OSM !== undefined ? JSON.parse(process.env.EXTRA_OSM) : {};
@@ -90,7 +65,7 @@ const constants = {
 
 module.exports = {
   router,
-  gtfsMap,
+  gtfsMap: buildIdMap(router.gtfs),
   osm: router.osm.map(id => {
     return { id, url: osm[id] };
   }), // array of id, url (OSM data) pairs
