@@ -38,12 +38,12 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional, default v3) `SEED_TAG` defines what version of the data storage should be used for seeding.
 - (Optional, default v2) `OTP_TAG` defines what version of OTP is used for testing, building graphs and deploying a new OTP image (postfixed with router name).
 - (Optional, default v3) `TOOLS_TAG` defines what version of otp-data-tools image is used for testing.
-- (Optional, default dev) `BUILDER_TYPE` used as a postfix to slack bot name
+- (Optional, default dev) `BUILDER_TYPE` used as a postfix to the Slack bot name
 - (Optional) `SLACK_CHANNEL_ID` defines to which slack channel the messages are sent to
 - (Optional) `SLACK_ACCESS_TOKEN` bearer token for slack messaging
-- (Optional, default {}) `EXTRA_SRC` defines gtfs src values that should be overridden or completely new src that should be added with unique id. Example format:
-  - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["router-waltti/gtfs-rules/waltti.rule"]}}`
-  - You can remove a src by including `"remove": true`, `{"FOLI": {"remove": true}}`
+- (Optional, default {}) `EXTRA_SRC` defines gtfs entries (the router config's `gtfs` list) that should be overridden or completely new entries that should be added with unique id. Example format:
+  - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}`
+  - You can remove an entry by including `"remove": true`, `{"FOLI": {"remove": true}}`
 - (Optional, default {}) `EXTRA_UPDATERS` defines router-config.json updater values that should be overridden or completely new updater that should be added with unique id. Example format:
   - `{"turku-alerts": {"type": "real-time-alerts", "frequencySec": 30, "url": "https://foli-beta.nanona.fi/gtfs-rt/reittiopas", "feedId": "FOLI", "fuzzyTripMatching": true}}`
   - You can remove a src by including `"remove": true`, `{"turku-alerts": {"remove": true}}`
@@ -63,6 +63,20 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `SKIP_OSM_PREPROCESSING` skips OSM preprocessing even if an instruction file is defined
 - (Optional) `SKIP_OTP_TESTS` skips OTP tests
 - (Optional) `KEEP_VERSIONS` how many old versions of data to keep, default 10
+
+#### Logging
+
+Logs are written with timestamps to make issues easier to trace, e.g.:
+
+```
+[07:44:58.813] INFO [osm:update] (OSMPreprocessing.js:48) Running OSM preprocessing...
+[07:44:58.813] ERROR (Update.js:33) Something went wrong with the data update
+```
+
+Each line has a timestamp, log level, the currently running gulp task (if any), and the
+source file/line that produced it. All containers run with a fixed timezone
+(`Europe/Helsinki`) so timestamps stay consistent regardless of the host; the resolved
+timezone is logged once at startup.
 
 ### Data processing steps
 
@@ -86,6 +100,10 @@ It is possible to change the behaviour of the data builder by defining environme
   - `gtfs:id` sets the gtfs feed id to `<id>` and copies data to the `data/test/gtfs` directory.
 
   - `gtfs:test` tests the file with OTP and if the test passes, data is copied to the `data/ready/gtfs` directory.
+
+- `netex:update` downloads NeTEx packages configured in a router's `netex` list and copies them, renamed to `<id>-netex.zip`, to the `data/ready/netex` directory. Unlike `gtfs:update`, this data is not fitted, filtered, or otherwise processed — it is only downloaded and renamed.
+
+- `carPickupZone:update` downloads GTFS packages configured in a router's `carPickupZone` list (separate from the regular `gtfs` list, used for OpenTripPlanner's car pickup zone feature) and copies them, renamed to `<id>-carpickupzone.zip`, to the `data/ready/carpickupzone` directory. Works the same way as `netex:update` above.
 
 - `router:buildGraph`
 
@@ -133,14 +151,16 @@ It is possible to change the behaviour of the data builder by defining environme
    - `gtfs:fit`
    - `gtfs:filter`
    - `gtfs:id`
-5. `router:buildGraph`
+5. `netex:update`
+6. `carPickupZone:update`
+7. `router:buildGraph`
    - `router:copy`
    - `buildOTPGraphTask(config.router)`
-6. `test.sh`
-7. `router:store`
-8. `deploy.sh`
-9. `deploy-otp.sh`
-10. `storage:cleanup`
+8. `test.sh`
+9. `router:store`
+10. `deploy.sh`
+11. `deploy-otp.sh`
+12. `storage:cleanup`
 
 #### Street only build
 
@@ -161,14 +181,16 @@ It is possible to change the behaviour of the data builder by defining environme
    - `gtfs:fit`
    - `gtfs:filter`
    - `gtfs:id`
-3. `router:buildWithPrebuiltStreetGraph`
+3. `netex:update`
+4. `carPickupZone:update`
+5. `router:buildWithPrebuiltStreetGraph`
    - `router:copyForPrebuiltStreetGraphDataBuild`
    - `buildOTPGraphTask(config.router)`
-4. `test.sh`
-5. `router:storeForPrebuiltStreetGraphDataBuild`
-6. `deploy.sh`
-7. `deploy-otp.sh`
-8. `storage:cleanup`
+6. `test.sh`
+7. `router:storeForPrebuiltStreetGraphDataBuild`
+8. `deploy.sh`
+9. `deploy-otp.sh`
+10. `storage:cleanup`
 
 ### otp-data-tools
 
@@ -179,7 +201,7 @@ These tools are packaged inside a docker container and are used during the data 
 #### OSM preprocessing
 
 OSM preprocessing is done if a bash script is defined for a specific config and a specific OSM file.
-See [hsl.sh](hsl/osm-preprocessing/hsl.sh) for an example.
+See [hsl.sh](configs/hsl/osm-preprocessing/hsl.sh) for an example.
 
 When creating OSM preprocessing instructions you should:
 1. Name the bash file as follows: `<osm_id>.sh`. Valid file names can be e.g. `hsl.sh` or `southFinland.sh`.

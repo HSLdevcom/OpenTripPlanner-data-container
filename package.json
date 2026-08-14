@@ -5,8 +5,8 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint .",
-    "test": "prettier --check . && npm run lint",
-    "start": "node index.js"
+    "test": "prettier --check . && yarn run lint",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/HSLdevcom/OpenTripPlanner-data-container#readme",
   "dependencies": {
-    "axios": "^1.15.2",
+    "axios": "^1.19.0",
     "cloneable-readable": "^3.0.0",
     "csv-parser": "^3.0.0",
     "csv-stringify": "^6.4.4",
@@ -31,7 +31,8 @@
     "osm-pbf-parser": "^2.3.0",
     "remove-bom-stream": "^2.0.0",
     "through2": "^4.0.2",
-    "vinyl": "^3.0.0"
+    "vinyl": "^3.0.0",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
@@ -39,5 +40,6 @@
     "globals": "^15.14.0",
     "gulp-cli": "^3.1.0",
     "prettier": "^3.4.2"
-  }
+  },
+  "packageManager": "yarn@4.13.0"
 }

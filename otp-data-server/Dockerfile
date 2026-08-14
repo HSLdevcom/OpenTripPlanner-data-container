@@ -5,7 +5,10 @@ RUN apk add --update --no-cache \
   lighttpd \
   lighttpd-mod_auth \
   busybox \
+  tzdata \
   && rm -rf /var/cache/apk/*
+
+ENV TZ=Europe/Helsinki
 
 ARG OTP_GRAPH_DIR
 ENV OTP_GRAPH_DIR=${OTP_GRAPH_DIR}
