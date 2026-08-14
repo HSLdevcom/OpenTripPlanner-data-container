@@ -12,7 +12,7 @@ const {
   postSlackMessage,
   updateSlackMessage,
 } = require('../utils/builderUtils.js');
-require('../gulpfile');
+require('../../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
 const logger = require('../logger');
@@ -86,7 +86,7 @@ function handleTests() {
     logger.info('Skipping all tests');
   } else {
     logger.info('Test the newly built graph with OTPQA');
-    execFileSync('./test.sh', [], { stdio: [0, 1, 2] });
+    execFileSync('./src/test.sh', [], { stdio: [0, 1, 2] });
   }
 }
 

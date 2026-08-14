@@ -42,7 +42,7 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `SLACK_CHANNEL_ID` defines to which slack channel the messages are sent to
 - (Optional) `SLACK_ACCESS_TOKEN` bearer token for slack messaging
 - (Optional, default {}) `EXTRA_SRC` defines gtfs entries (the router config's `gtfs` list) that should be overridden or completely new entries that should be added with unique id. Example format:
-  - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["router-waltti/gtfs-rules/waltti.rule"]}}`
+  - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}`
   - You can remove an entry by including `"remove": true`, `{"FOLI": {"remove": true}}`
 - (Optional, default {}) `EXTRA_UPDATERS` defines router-config.json updater values that should be overridden or completely new updater that should be added with unique id. Example format:
   - `{"turku-alerts": {"type": "real-time-alerts", "frequencySec": 30, "url": "https://foli-beta.nanona.fi/gtfs-rt/reittiopas", "feedId": "FOLI", "fuzzyTripMatching": true}}`
@@ -201,7 +201,7 @@ These tools are packaged inside a docker container and are used during the data 
 #### OSM preprocessing
 
 OSM preprocessing is done if a bash script is defined for a specific config and a specific OSM file.
-See [hsl.sh](hsl/osm-preprocessing/hsl.sh) for an example.
+See [hsl.sh](configs/hsl/osm-preprocessing/hsl.sh) for an example.
 
 When creating OSM preprocessing instructions you should:
 1. Name the bash file as follows: `<osm_id>.sh`. Valid file names can be e.g. `hsl.sh` or `southFinland.sh`.
