@@ -1,4 +1,4 @@
-const mapSrc = require('../../src/utils/configUtils.js');
+const { mapSrc } = require('../../src/utils/configUtils.js');
 
 module.exports = {
   id: 'waltti-alt',
@@ -34,10 +34,10 @@ module.exports = {
     ),
   ],
   carPickupZone: [
-    mapSrc(
-      '02Taksi_carpickupzone',
-      'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
-    ),
+    {
+      id: '02Taksi_carpickupzone',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
+    },
   ],
   osm: ['oulu', 'southFinland'],
 };
