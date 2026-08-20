@@ -10,7 +10,6 @@
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
     "Emission": true,
-    "DebugRasterTiles": true,
-    "CarPickupZone": true
+    "DebugRasterTiles": true
   }
 }
