@@ -189,8 +189,8 @@ function createDir(dirPath) {
 }
 
 const CANARY_HOST = 'slack.com';
-const MAX_ATTEMPTS = 10;
-const RETRY_DELAY_MS = 3000;
+const MAX_ATTEMPTS = 12;
+const RETRY_DELAY_MS = 5000;
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
