@@ -85,7 +85,7 @@ function createAndProcessRouterConfig(router) {
 
 function getTransitDataFiles(router) {
   const files = [];
-  ['gtfs', 'netex', 'carPickupZone'].forEach(type => {
+  ['gtfs', 'netex', 'taxiZone'].forEach(type => {
     if (router[type]) {
       const dirName = type.toLowerCase();
       router[type].forEach(src => {

@@ -103,7 +103,7 @@ timezone is logged once at startup.
 
 - `netex:update` downloads NeTEx packages configured in a router's `netex` list and copies them, renamed to `<id>-netex.zip`, to the `data/ready/netex` directory. Unlike `gtfs:update`, this data is not fitted, filtered, or otherwise processed — it is only downloaded and renamed.
 
-- `carPickupZone:update` downloads GTFS packages configured in a router's `carPickupZone` list (separate from the regular `gtfs` list, used for OpenTripPlanner's car pickup zone feature) and copies them, renamed to `<id>-carpickupzone.zip`, to the `data/ready/carpickupzone` directory. Works the same way as `netex:update` above.
+- `taxiZone:update` downloads GTFS packages configured in a router's `taxiZone` list (separate from the regular `gtfs` list, used for OpenTripPlanner's taxi zone feature) and copies them, renamed to `<id>-taxizone.zip`, to the `data/ready/taxizone` directory. Works the same way as `netex:update` above.
 
 - `router:buildGraph`
 
@@ -152,7 +152,7 @@ timezone is logged once at startup.
    - `gtfs:filter`
    - `gtfs:id`
 5. `netex:update`
-6. `carPickupZone:update`
+6. `taxiZone:update`
 7. `router:buildGraph`
    - `router:copy`
    - `buildOTPGraphTask(config.router)`
@@ -182,7 +182,7 @@ timezone is logged once at startup.
    - `gtfs:filter`
    - `gtfs:id`
 3. `netex:update`
-4. `carPickupZone:update`
+4. `taxiZone:update`
 5. `router:buildWithPrebuiltStreetGraph`
    - `router:copyForPrebuiltStreetGraphDataBuild`
    - `buildOTPGraphTask(config.router)`
