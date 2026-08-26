@@ -33,5 +33,11 @@ module.exports = {
       'true',
     ),
   ],
+  carPickupZone: [
+    {
+      id: '02Taksi_carpickupzone',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
+    },
+  ],
   osm: ['oulu', 'southFinland'],
 };
