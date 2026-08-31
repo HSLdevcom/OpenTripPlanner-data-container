@@ -41,6 +41,16 @@ function createAndProcessBuildConfig(router) {
     });
     buildConfig.transitFeeds = transitFeeds;
   }
+  if (router.taxiZone) {
+    const taxiZoneFeeds = buildConfig.taxiZone?.feeds || [];
+    router.taxiZone.forEach(src => {
+      taxiZoneFeeds.push({
+        feedId: src.id,
+        source: 'file:///var/opentripplanner/' + src.id + '-taxizone.zip',
+      });
+    });
+    buildConfig.taxiZone = { ...buildConfig.taxiZone, feeds: taxiZoneFeeds };
+  }
   const file = new Vinyl({
     path: 'build-config.json',
     contents: Buffer.from(JSON.stringify(buildConfig, null, 2)),
