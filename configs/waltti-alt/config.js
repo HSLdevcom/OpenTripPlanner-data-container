@@ -33,5 +33,11 @@ module.exports = {
       'true',
     ),
   ],
+  taxiZone: [
+    {
+      id: '02Taksi',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
+    },
+  ],
   osm: ['oulu', 'southFinland'],
 };

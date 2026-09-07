@@ -116,11 +116,12 @@ module.exports = {
       'https://minfoapi.matkahuolto.fi/gtfs/177/gtfs.zip',
       true,
     ),
-    mapSrc(
-      '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
-      false,
-    ),
+  ],
+  taxiZone: [
+    {
+      id: '02Taksi',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
+    },
   ],
   netex: [
     {
