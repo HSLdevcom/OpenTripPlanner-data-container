@@ -9,6 +9,6 @@
     "ActuatorAPI": true,
     "AsyncGraphQLFetchers": false,
     "DebugRasterTiles": true,
-    "CarPickupZone": true
+    "TaxiZone": true
   }
 }

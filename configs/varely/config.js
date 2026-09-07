@@ -15,10 +15,10 @@ module.exports = {
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Pori', 'https://tvv.fra1.digitaloceanspaces.com/231.zip', true),
   ],
-  carPickupZone: [
+  taxiZone: [
     {
-      id: '02Taksi_carpickupzone',
-      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
+      id: '02Taksi',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
     },
   ],
   osm: ['varely'],

@@ -117,10 +117,10 @@ module.exports = {
       true,
     ),
   ],
-  carPickupZone: [
+  taxiZone: [
     {
-      id: '02Taksi_carpickupzone',
-      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-carpickupzone-gtfs.zip',
+      id: '02Taksi',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
     },
   ],
   netex: [
