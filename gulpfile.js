@@ -68,13 +68,13 @@ const osmDlDir = `${config.dataDir}/downloads/osm`;
 const demDlDir = `${config.dataDir}/downloads/dem`;
 const gtfsDlDir = `${config.dataDir}/downloads/gtfs`;
 const netexDlDir = `${config.dataDir}/downloads/netex`;
-const carPickupZoneDlDir = `${config.dataDir}/downloads/carpickupzone`;
+const taxiZoneDlDir = `${config.dataDir}/downloads/taxizone`;
 
 const osmDir = `${config.dataDir}/ready/osm`;
 const demDir = `${config.dataDir}/ready/dem`;
 const gtfsDir = `${config.dataDir}/ready/gtfs`;
 const netexDir = `${config.dataDir}/ready/netex`;
-const carPickupZoneDir = `${config.dataDir}/ready/carpickupzone`;
+const taxiZoneDir = `${config.dataDir}/ready/taxizone`;
 
 const gtfsSeedDir = `${config.dataDir}/seed`;
 const fitDir = `${config.dataDir}/fit`;
@@ -109,26 +109,26 @@ gulp.task('netex:rename', () =>
 gulp.task('netex:update', gulp.series('netex:download', 'netex:rename'));
 
 /**
- * Download car pickup zone data
+ * Download taxi zone data
  */
-gulp.task('carPickupZone:download', () => {
-  if (!config.router.carPickupZone) {
+gulp.task('taxiZone:download', () => {
+  if (!config.router.taxiZone) {
     return Promise.resolve();
   }
-  return dl(config.router.carPickupZone, carPickupZoneDlDir);
+  return dl(config.router.taxiZone, taxiZoneDlDir);
 });
 
-gulp.task('carPickupZone:rename', () =>
+gulp.task('taxiZone:rename', () =>
   pipeline(
-    gulp.src(`${carPickupZoneDlDir}/*`, noBuf),
-    renameFile('-carpickupzone'),
-    gulp.dest(carPickupZoneDir),
+    gulp.src(`${taxiZoneDlDir}/*`, noBuf),
+    renameFile('-taxizone'),
+    gulp.dest(taxiZoneDir),
   ),
 );
 
 gulp.task(
-  'carPickupZone:update',
-  gulp.series('carPickupZone:download', 'carPickupZone:rename'),
+  'taxiZone:update',
+  gulp.series('taxiZone:download', 'taxiZone:rename'),
 );
 
 /**
@@ -366,19 +366,19 @@ gulp.task(
   ),
 );
 
-gulp.task('carPickupZone:del', () => {
-  logger.info('Deleting old car pickup zone data...');
-  return del(carPickupZoneDir);
+gulp.task('taxiZone:del', () => {
+  logger.info('Deleting old taxi zone data...');
+  return del(taxiZoneDir);
 });
 
 gulp.task(
-  'carPickupZone:seed',
+  'taxiZone:seed',
   gulp.series(
-    'carPickupZone:del',
-    named('carPickupZone:seed:copyFiles', () =>
+    'taxiZone:del',
+    named('taxiZone:seed:copyFiles', () =>
       pipeline(
-        gulp.src(`${seedSourceDir}/*-carpickupzone.zip`, noBuf),
-        gulp.dest(carPickupZoneDir),
+        gulp.src(`${seedSourceDir}/*-taxizone.zip`, noBuf),
+        gulp.dest(taxiZoneDir),
       ),
     ),
   ),
@@ -438,7 +438,7 @@ gulp.task(
     'osm:seed',
     'gtfs:seed',
     'netex:seed',
-    'carPickupZone:seed',
+    'taxiZone:seed',
     'seed:cleanup',
   ),
 );

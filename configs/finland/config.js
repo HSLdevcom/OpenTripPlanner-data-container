@@ -26,11 +26,12 @@ module.exports = {
       'https://gtfsdata.blob.core.windows.net/hsl/hsl_flex_test2-gtfs.zip',
       false,
     ),
-    mapSrc(
-      '02Taksi',
-      'https://resources.02taksi.fi/digitransit_02_taksi.zip',
-      false,
-    ),
+  ],
+  taxiZone: [
+    {
+      id: '02Taksi',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
+    },
   ],
   netex: [
     {

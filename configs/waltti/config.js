@@ -128,5 +128,11 @@ module.exports = {
     mapSrc('Salo', 'https://tvv.fra1.digitaloceanspaces.com/239.zip', true),
     mapSrc('Kajaani', 'https://tvv.fra1.digitaloceanspaces.com/211.zip', true),
   ],
+  taxiZone: [
+    {
+      id: '02Taksi',
+      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
+    },
+  ],
   osm: ['kajaani', 'oulu', 'rovaniemi', 'southFinland', 'vaasa'],
 };
