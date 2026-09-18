@@ -64,6 +64,35 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `SKIP_OTP_TESTS` skips OTP tests
 - (Optional) `KEEP_VERSIONS` how many old versions of data to keep, default 10
 
+#### Router data source config (`configs/<router>/config.js`)
+
+Each router directory under `configs/` has a `config.js` file that defines that
+router's data sources as a plain JS object (no factory function — just named
+fields). It is validated by `src/utils/validateConfigSources.js`
+(`yarn run validate-configs`, also run as part of `yarn test` in CI, and again
+at runtime when the data builder starts), which rejects unknown/misspelled
+fields and duplicate feed ids. Its exported shape is:
+
+- `id` (required, `string`) — must match the containing directory name.
+- `gtfs` (required, `Object[]`) — GTFS feed sources. Each entry supports:
+  - `id` (required, `string`) — feed id, used as the OTP feedId and in derived filenames.
+  - `url` (required, `string`) — feed download URL.
+  - `fit` (optional, `boolean`) — whether to run mapFit (shape snapping) on this feed.
+  - `rules` (optional, `string[]`) — OBA Filter rule file paths to apply, in order.
+  - `replacements` (optional, `Object.<string,string|null>`) — map of file to replace ->
+    replacement file name (or `null` to just remove the file), applied before packaging.
+  - `request` (optional, `Object`) — extra axios request options (e.g. custom headers).
+  - `taxiProvider` (optional, `boolean`) — marks this feed as exclusively a source of
+    taxi provider data (OTP's `taxiProvider` build-config flag); it is declared explicitly
+    in `transitFeeds` rather than relying on auto-discovery (see below).
+- `netex` (optional, `Object[]`) — NeTEx feed sources. Each entry supports:
+  - `id` (required, `string`), `url` (required, `string`).
+  - `groupFilePattern` (optional, `string`) — regex OTP uses to group per-line NeTEx files.
+  - `sharedFilePattern` (optional, `string`) — regex OTP uses to identify shared NeTEx files.
+- `osm` (required, non-empty `string[]`) — OSM source ids (see the `osm` map in `src/config.js`).
+- `dem` (optional, `string`) — DEM source id (see the `dem` map in `src/config.js`).
+
+
 #### Logging
 
 Logs are written with timestamps to make issues easier to trace, e.g.:
