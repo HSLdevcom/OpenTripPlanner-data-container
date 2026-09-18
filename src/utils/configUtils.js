@@ -10,14 +10,17 @@
  * @param {Object.<string,string|null>} [replacements] - Map of file to replace -> replacement
  *   file name (or `null` to just remove the file), applied before packaging.
  * @param {Object} [request] - Extra axios request options (e.g. custom headers) for the download.
+ * @param {boolean} [taxiProvider] - Whether this feed is exclusively a source of taxi
+ *   provider data (OTP's `taxiProvider` build-config flag).
  */
-const mapSrc = (id, url, fit, rules, replacements, request) => ({
+const mapSrc = (id, url, fit, rules, replacements, request, taxiProvider) => ({
   id,
   url,
   fit,
   rules,
   replacements,
   request,
+  taxiProvider,
 });
 
 /**

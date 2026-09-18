@@ -103,7 +103,7 @@ timezone is logged once at startup.
 
 - `netex:update` downloads NeTEx packages configured in a router's `netex` list and copies them, renamed to `<id>-netex.zip`, to the `data/ready/netex` directory. Unlike `gtfs:update`, this data is not fitted, filtered, or otherwise processed — it is only downloaded and renamed.
 
-- `taxiZone:update` downloads GTFS packages configured in a router's `taxiZone` list (separate from the regular `gtfs` list, used for OpenTripPlanner's taxi zone feature) and copies them, renamed to `<id>-taxizone.zip`, to the `data/ready/taxizone` directory. Works the same way as `netex:update` above.
+- `router:copy`/`router:copyForPrebuiltStreetGraphDataBuild` (via `PrepareRouterData.js`) write the router's `build-config.json`. Every configured `gtfs` and `netex` feed is listed explicitly in its `transitFeeds` array (with `feedId`/`source`, and `taxiProvider: true` for taxi provider feeds). This is required because OTP disables local directory auto-scanning for an entire feed type (`gtfs` or `netex`) as soon as any feed of that type is declared in `transitFeeds` — a partial/mixed list would cause the undeclared feeds of that type to be silently dropped.
 
 - `router:buildGraph`
 
@@ -152,15 +152,14 @@ timezone is logged once at startup.
    - `gtfs:filter`
    - `gtfs:id`
 5. `netex:update`
-6. `taxiZone:update`
-7. `router:buildGraph`
+6. `router:buildGraph`
    - `router:copy`
    - `buildOTPGraphTask(config.router)`
-8. `test.sh`
-9. `router:store`
-10. `deploy.sh`
-11. `deploy-otp.sh`
-12. `storage:cleanup`
+7. `test.sh`
+8. `router:store`
+9. `deploy.sh`
+10. `deploy-otp.sh`
+11. `storage:cleanup`
 
 #### Street only build
 
@@ -182,15 +181,14 @@ timezone is logged once at startup.
    - `gtfs:filter`
    - `gtfs:id`
 3. `netex:update`
-4. `taxiZone:update`
-5. `router:buildWithPrebuiltStreetGraph`
+4. `router:buildWithPrebuiltStreetGraph`
    - `router:copyForPrebuiltStreetGraphDataBuild`
    - `buildOTPGraphTask(config.router)`
-6. `test.sh`
-7. `router:storeForPrebuiltStreetGraphDataBuild`
-8. `deploy.sh`
-9. `deploy-otp.sh`
-10. `storage:cleanup`
+5. `test.sh`
+6. `router:storeForPrebuiltStreetGraphDataBuild`
+7. `deploy.sh`
+8. `deploy-otp.sh`
+9. `storage:cleanup`
 
 ### otp-data-tools
 

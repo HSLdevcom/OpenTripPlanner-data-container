@@ -78,7 +78,6 @@ async function handleOsmAndDemUpdate() {
 async function handleTransitDataUpdate() {
   await start('gtfs:update');
   await start('netex:update');
-  await start('taxiZone:update');
 }
 
 function handleTests() {
