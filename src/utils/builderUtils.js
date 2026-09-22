@@ -4,16 +4,54 @@ const path = require('path');
 const axios = require('axios');
 const dns = require('dns').promises;
 const logger = require('../logger');
-const { SPLIT_BUILD_TYPE } = require('../config');
+const { SPLIT_BUILD_TYPE, timezone } = require('../config');
+
+/**
+ * Formats a Date as a HH:mm:ss clock time in the configured build timezone.
+ * @param {Date} date
+ * @returns {string}
+ */
+function formatClockTime(date) {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: timezone,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(date);
+}
+
+/**
+ * Formats a duration in milliseconds as e.g. "1h02m03s", "12m34s" or "34s".
+ * @param {number} ms
+ * @returns {string}
+ */
+function formatDuration(ms) {
+  const totalSeconds = Math.max(0, Math.round(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h${String(minutes).padStart(2, '0')}m${String(seconds).padStart(2, '0')}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m${String(seconds).padStart(2, '0')}s`;
+  }
+  return `${seconds}s`;
+}
 
 function getStartBuildMessage(splitBuildType) {
   switch (splitBuildType) {
     case 'ONLY_BUILD_STREET_GRAPH':
-      return 'Starting street only graph data build :rocket:';
+      return withStartTimestamp(
+        'Starting street only graph data build :rocket:',
+      );
     case 'USE_PREBUILT_STREET_GRAPH':
-      return 'Starting graph data build from prebuilt street graph :rocket:';
+      return withStartTimestamp(
+        'Starting graph data build from prebuilt street graph :rocket:',
+      );
     default:
-      return 'Starting data build :rocket:';
+      return withStartTimestamp('Starting data build :rocket:');
   }
 }
 
@@ -47,6 +85,34 @@ function withLevelEmoji(text, level) {
   }
 }
 
+/**
+ * Appends the current clock time to the root ("Starting build...") message
+ * and records the build start time, so a total duration can later be
+ * computed for the edited final message.
+ * @param {string} text
+ * @returns {string}
+ */
+function withStartTimestamp(text) {
+  global.buildStartTime = Date.now();
+  return `${text} (started ${formatClockTime(new Date(global.buildStartTime))})`;
+}
+
+/**
+ * Appends the current clock time and, if known, the total elapsed duration
+ * since the build started to a message that edits the root/main message.
+ * @param {string} text
+ * @returns {string}
+ */
+function withUpdateTimestamp(text) {
+  const now = new Date();
+  const clock = formatClockTime(now);
+  if (global.buildStartTime) {
+    const elapsed = formatDuration(now.getTime() - global.buildStartTime);
+    return `${text} (${clock}, total ${elapsed})`;
+  }
+  return `${text} (${clock})`;
+}
+
 async function postSlackMessage(text, level = 'info') {
   logger[level](text); // write important messages also to log
   try {
@@ -78,7 +144,7 @@ async function updateSlackMessage(text, level = 'info') {
       'https://slack.com/api/chat.update',
       {
         channel: process.env.SLACK_CHANNEL_ID,
-        text: withLevelEmoji(text, level),
+        text: withUpdateTimestamp(withLevelEmoji(text, level)),
         username,
         ts: global.messageTimeStamp,
       },
@@ -232,4 +298,6 @@ module.exports = {
   dirNameToDate,
   createDir,
   waitForNetwork,
+  formatClockTime,
+  formatDuration,
 };

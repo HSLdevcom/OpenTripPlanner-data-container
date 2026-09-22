@@ -12,6 +12,7 @@ const {
   postSlackMessage,
   updateSlackMessage,
 } = require('../utils/builderUtils.js');
+const { timeSection, postSectionSummary } = require('../utils/buildTimer.js');
 require('../../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
@@ -32,61 +33,69 @@ function getDateString() {
 }
 
 async function handleSeeding() {
-  if (!process.env.NOSEED) {
-    logger.info('Starting seeding');
-    await start('seed');
-    logger.info('Seeded');
-  }
+  await timeSection('Seeding', async () => {
+    if (!process.env.NOSEED) {
+      logger.info('Starting seeding');
+      await start('seed');
+      logger.info('Seeded');
+    }
+  });
 }
 
 async function handleOsmAndDemUpdate() {
-  if (!process.env.NODEM) {
-    // we track data rejections using this global variable
-    global.hasFailures = false;
-    await start('dem:update');
-    if (global.hasFailures) {
-      postSlackMessage('DEM update failed, using previous version', 'warn');
+  await timeSection('OSM & DEM update', async () => {
+    if (!process.env.NODEM) {
+      // we track data rejections using this global variable
+      global.hasFailures = false;
+      await start('dem:update');
+      if (global.hasFailures) {
+        postSlackMessage('DEM update failed, using previous version', 'warn');
+      }
     }
-  }
 
-  // OSM update is more complicated. Download often fails, so there is a retry loop,
-  // which breaks when a big enough file gets loaded
-  if (!process.env.USE_SEEDED_OSM) {
-    global.blobSizeOk = false; // ugly hack but gulp does not return any values from tasks
-    for (let i = 0; i < 3; i++) {
-      await start('osm:update');
-      if (global.blobSizeOk) {
-        break;
+    // OSM update is more complicated. Download often fails, so there is a retry loop,
+    // which breaks when a big enough file gets loaded
+    if (!process.env.USE_SEEDED_OSM) {
+      global.blobSizeOk = false; // ugly hack but gulp does not return any values from tasks
+      for (let i = 0; i < 3; i++) {
+        await start('osm:update');
+        if (global.blobSizeOk) {
+          break;
+        }
+        if (i < 2) {
+          // sleep 10 mins before next attempt
+          await new Promise(resolve => setTimeout(resolve, 600000));
+        }
       }
-      if (i < 2) {
-        // sleep 10 mins before next attempt
-        await new Promise(resolve => setTimeout(resolve, 600000));
+      if (!global.blobSizeOk) {
+        global.hasFailures = true;
+        postSlackMessage(
+          'OSM data update failed, using previous version',
+          'warn',
+        );
       }
+    } else {
+      logger.info('Skipping OSM update and using existing seeded data');
     }
-    if (!global.blobSizeOk) {
-      global.hasFailures = true;
-      postSlackMessage(
-        'OSM data update failed, using previous version',
-        'warn',
-      );
-    }
-  } else {
-    logger.info('Skipping OSM update and using existing seeded data');
-  }
+  });
 }
 
 async function handleTransitDataUpdate() {
-  await start('gtfs:update');
-  await start('netex:update');
+  await timeSection('Transit data update', async () => {
+    await start('gtfs:update');
+    await start('netex:update');
+  });
 }
 
-function handleTests() {
+async function handleTests() {
   if (process.env.SKIPPED_SITES === 'all' || process.env.SKIP_OTP_TESTS) {
     logger.info('Skipping all tests');
-  } else {
+    return;
+  }
+  await timeSection('Tests', async () => {
     logger.info('Test the newly built graph with OTPQA');
     execFileSync('./src/test.sh', [], { stdio: [0, 1, 2] });
-  }
+  });
 }
 
 async function handleGtfsFallback(logFile) {
@@ -97,11 +106,13 @@ async function handleGtfsFallback(logFile) {
   fs.unlinkSync(logFile); // cleanup for local use
 
   if (global.failedFeeds.split(',').length > MAX_GTFS_FALLBACK) {
-    updateSlackMessage(
+    const err = new Error(
       'Aborting the data update because too many quality tests failed',
-      'error',
     );
-    process.exit(1);
+    // Marks this as an intentional abort so update()'s catch block can post
+    // this exact message instead of the generic failure message.
+    err.isAbort = true;
+    throw err;
   }
 
   postSlackMessage(
@@ -112,51 +123,55 @@ async function handleGtfsFallback(logFile) {
   await start('gtfs:fallback');
 }
 
-function reportBuildResult(name, description) {
+async function reportBuildResult(name, description) {
   if (global.hasFailures) {
-    updateSlackMessage(
+    await updateSlackMessage(
       `${name} ${description}, but partially falling back to older data`,
       'warn',
     );
   } else {
-    updateSlackMessage(`${name} ${description} :white_check_mark:`);
+    await updateSlackMessage(`${name} ${description} :white_check_mark:`);
   }
 }
 
 function buildAndDeployDockerImages(date) {
-  logger.info('Deploying otp-data-server image...');
-  execFileSync('./otp-data-server/deploy.sh', [date], {
-    stdio: [0, 1, 2],
-    env: {
-      OTP_TAG: process.env.OTP_TAG,
-      OTP_GRAPH_DIR: global.storageDirName,
-      ROUTER_NAME: process.env.ROUTER_NAME,
-      ORG: process.env.ORG,
-      DOCKER_TAG: process.env.DOCKER_TAG,
-      DOCKER_USER: process.env.DOCKER_USER,
-      DOCKER_AUTH: process.env.DOCKER_AUTH,
-    },
-  });
-  logger.info('Deploying opentripplanner image...');
-  execFileSync('./opentripplanner/deploy-otp.sh', [date], {
-    stdio: [0, 1, 2],
-    env: {
-      OTP_TAG: process.env.OTP_TAG,
-      OTP_GRAPH_DIR: global.storageDirName,
-      ROUTER_NAME: process.env.ROUTER_NAME,
-      ORG: process.env.ORG,
-      DOCKER_TAG: process.env.DOCKER_TAG,
-      DOCKER_USER: process.env.DOCKER_USER,
-      DOCKER_AUTH: process.env.DOCKER_AUTH,
-    },
+  return timeSection('Deploy', async () => {
+    logger.info('Deploying otp-data-server image...');
+    execFileSync('./otp-data-server/deploy.sh', [date], {
+      stdio: [0, 1, 2],
+      env: {
+        OTP_TAG: process.env.OTP_TAG,
+        OTP_GRAPH_DIR: global.storageDirName,
+        ROUTER_NAME: process.env.ROUTER_NAME,
+        ORG: process.env.ORG,
+        DOCKER_TAG: process.env.DOCKER_TAG,
+        DOCKER_USER: process.env.DOCKER_USER,
+        DOCKER_AUTH: process.env.DOCKER_AUTH,
+      },
+    });
+    logger.info('Deploying opentripplanner image...');
+    execFileSync('./opentripplanner/deploy-otp.sh', [date], {
+      stdio: [0, 1, 2],
+      env: {
+        OTP_TAG: process.env.OTP_TAG,
+        OTP_GRAPH_DIR: global.storageDirName,
+        ROUTER_NAME: process.env.ROUTER_NAME,
+        ORG: process.env.ORG,
+        DOCKER_TAG: process.env.DOCKER_TAG,
+        DOCKER_USER: process.env.DOCKER_USER,
+        DOCKER_AUTH: process.env.DOCKER_AUTH,
+      },
+    });
   });
 }
 
 async function handleCleanup() {
-  if (!process.env.NOCLEANUP) {
-    logger.info('Remove oldest data versions from storage');
-    await start('storage:cleanup');
-  }
+  await timeSection('Cleanup', async () => {
+    if (!process.env.NOCLEANUP) {
+      logger.info('Remove oldest data versions from storage');
+      await start('storage:cleanup');
+    }
+  });
 }
 
 /**
@@ -170,20 +185,18 @@ async function buildStreetOnlyGraph(name) {
   await handleOsmAndDemUpdate();
 
   logger.info('Build street only graph');
-  await start('router:buildStreetOnlyGraph');
+  await timeSection('Build graph', () => start('router:buildStreetOnlyGraph'));
 
   const date = getDateString();
   global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${name}`;
 
   logger.info('Uploading street graph only build data to storage');
-  await start('router:store');
+  await timeSection('Upload', () => start('router:store'));
 
   if (!process.env.NOCLEANUP) {
     logger.info('Remove oldest street only graph data versions from storage');
     await start('storage:cleanupStreetOnlyGraphData');
   }
-
-  reportBuildResult(name, 'street only graph data updated');
 }
 
 /**
@@ -199,27 +212,27 @@ async function buildGraph(name) {
   await handleTransitDataUpdate();
 
   logger.info('Build routing graph');
-  await start('router:buildGraph');
+  await timeSection('Build graph', () => start('router:buildGraph'));
 
-  handleTests();
+  await handleTests();
 
   const logFile = 'failed_feeds.txt';
   if (fs.existsSync(logFile)) {
-    await handleGtfsFallback(logFile);
-    // rebuild the graph
-    logger.info('Rebuild graph using fallback data');
-    await start('router:buildGraph');
+    await timeSection('GTFS fallback + rebuild', async () => {
+      await handleGtfsFallback(logFile);
+      // rebuild the graph
+      logger.info('Rebuild graph using fallback data');
+      await start('router:buildGraph');
+    });
   }
 
   const date = getDateString();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
   logger.info('Uploading data to storage');
-  await start('router:store');
+  await timeSection('Upload', () => start('router:store'));
 
-  buildAndDeployDockerImages(date);
-
-  reportBuildResult(name, 'data updated');
+  await buildAndDeployDockerImages(date);
 }
 
 /**
@@ -233,27 +246,31 @@ async function buildWithPrebuiltStreetGraph(name) {
   await handleTransitDataUpdate();
 
   logger.info('Build routing graph from prebuilt street only graph');
-  await start('router:buildWithPrebuiltStreetGraph');
+  await timeSection('Build graph', () =>
+    start('router:buildWithPrebuiltStreetGraph'),
+  );
 
-  handleTests();
+  await handleTests();
 
   const logFile = 'failed_feeds.txt';
   if (fs.existsSync(logFile)) {
-    await handleGtfsFallback(logFile);
-    // rebuild the graph
-    logger.info('Rebuild graph using fallback data');
-    await start('router:buildWithPrebuiltStreetGraph');
+    await timeSection('GTFS fallback + rebuild', async () => {
+      await handleGtfsFallback(logFile);
+      // rebuild the graph
+      logger.info('Rebuild graph using fallback data');
+      await start('router:buildWithPrebuiltStreetGraph');
+    });
   }
 
   const date = getDateString();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
   logger.info('Uploading data to storage');
-  await start('router:storeForPrebuiltStreetGraphDataBuild');
+  await timeSection('Upload', () =>
+    start('router:storeForPrebuiltStreetGraphDataBuild'),
+  );
 
-  buildAndDeployDockerImages(date);
-
-  reportBuildResult(name, 'data updated from prebuilt street only graph');
+  await buildAndDeployDockerImages(date);
 }
 
 async function update() {
@@ -261,21 +278,44 @@ async function update() {
   assert(process.env.DOCKER_TAG !== undefined, 'DOCKER_TAG must be defined');
 
   const name = router.id;
+  let failed = false;
   try {
+    let description;
     switch (SPLIT_BUILD_TYPE) {
       case 'ONLY_BUILD_STREET_GRAPH':
         await buildStreetOnlyGraph(name);
+        description = 'street only graph data updated';
         break;
       case 'USE_PREBUILT_STREET_GRAPH':
         await buildWithPrebuiltStreetGraph(name);
+        description = 'data updated from prebuilt street only graph';
         break;
       default:
         await buildGraph(name);
+        description = 'data updated';
         break;
     }
+    await reportBuildResult(name, description);
   } catch (err) {
-    postSlackMessage(`${name} data update failed: ${err.message}`, 'error');
-    updateSlackMessage('Something went wrong with the data update', 'error');
+    failed = true;
+    if (err.isAbort) {
+      await updateSlackMessage(err.message, 'error');
+    } else {
+      await postSlackMessage(
+        `${name} data update failed: ${err.message}`,
+        'error',
+      );
+      await updateSlackMessage(
+        'Something went wrong with the data update',
+        'error',
+      );
+    }
+  } finally {
+    await postSectionSummary('Section timings');
+    global.buildFinalized = true;
+    if (failed) {
+      process.exit(1);
+    }
   }
 }
 
