@@ -8,11 +8,7 @@ const gulp = require('gulp');
 const { promisify } = require('util');
 const { execFileSync } = require('child_process');
 const fs = require('fs');
-const {
-  postSlackMessage,
-  updateSlackMessage,
-  postSectionSummary,
-} = require('../utils/builderUtils.js');
+const { postSlackMessage, finalizeBuild } = require('../utils/builderUtils.js');
 const { timeSection } = require('../utils/timerUtils.js');
 const { getDateStringForDockerTag } = require('../utils/formatUtils.js');
 require('../../gulpfile');
@@ -113,17 +109,6 @@ async function handleGtfsFallback(logFile) {
   );
   // use seed packages for failed feeds
   await start('gtfs:fallback');
-}
-
-async function reportBuildResult(name, description) {
-  if (global.hasFailures) {
-    await updateSlackMessage(
-      `${name} ${description}, but partially falling back to older data`,
-      'warn',
-    );
-  } else {
-    await updateSlackMessage(`${name} ${description} :white_check_mark:`);
-  }
 }
 
 function buildAndDeployDockerImages(date) {
@@ -270,7 +255,6 @@ async function update() {
   assert(process.env.DOCKER_TAG !== undefined, 'DOCKER_TAG must be defined');
 
   const name = router.id;
-  let failed = false;
   try {
     let description;
     switch (SPLIT_BUILD_TYPE) {
@@ -287,27 +271,38 @@ async function update() {
         description = 'data updated';
         break;
     }
-    await reportBuildResult(name, description);
-  } catch (err) {
-    failed = true;
-    if (err.isAbort) {
-      await updateSlackMessage(err.message, 'error');
+
+    if (global.hasFailures) {
+      await finalizeBuild({
+        statusMessage: `${name} ${description}, but partially falling back to older data`,
+        statusLevel: 'warn',
+        summaryPrefix: 'Section timings',
+        exitCode: 0,
+      });
     } else {
+      await finalizeBuild({
+        statusMessage: `${name} ${description} :white_check_mark:`,
+        summaryPrefix: 'Section timings',
+        exitCode: 0,
+      });
+    }
+  } catch (err) {
+    if (!err.isAbort) {
+      // post the error detail/stack as a thread reply for debugging; abort
+      // errors already have a concise, user-friendly message so skip this
       await postSlackMessage(
         `${name} data update failed: ${err.message}`,
         'error',
       );
-      await updateSlackMessage(
-        'Something went wrong with the data update',
-        'error',
-      );
     }
-  } finally {
-    await postSectionSummary('Section timings');
-    global.buildFinalized = true;
-    if (failed) {
-      process.exit(1);
-    }
+    await finalizeBuild({
+      statusMessage: err.isAbort
+        ? err.message
+        : 'Something went wrong with the data update',
+      statusLevel: 'error',
+      summaryPrefix: 'Section timings',
+      exitCode: 1,
+    });
   }
 }
 

@@ -129,11 +129,37 @@ async function updateSlackMessage(text, level = 'info') {
   }
 }
 
-async function postSectionSummary(prefix, level) {
+async function postSectionSummarySlackMessage(prefix, level) {
   const summary = getSummary();
   if (summary) {
     await postSlackMessage(`${prefix}:\n${summary}`, level);
   }
+}
+
+/**
+ * Performs every terminal step for a build:
+ *   - posts the final status message (editing the root message)
+ *   - posts the section-timing summary as a thread reply
+ *   - marks the build as finalized (so index.js's crash safety net doesn't double-report)
+ *   - exits the process with the given code
+ * @param {object} options
+ * @param {string} options.statusMessage text used to edit the root message
+ * @param {string} [options.statusLevel] level passed to updateSlackMessage
+ * @param {string} options.summaryPrefix text prepended before the section summary
+ * @param {string} [options.summaryLevel] level passed to postSlackMessage for the summary
+ * @param {number} options.exitCode process exit code
+ */
+async function finalizeBuild({
+  statusMessage,
+  statusLevel,
+  summaryPrefix,
+  summaryLevel,
+  exitCode,
+}) {
+  await updateSlackMessage(statusMessage, statusLevel);
+  await postSectionSummarySlackMessage(summaryPrefix, summaryLevel);
+  global.buildFinalized = true;
+  process.exit(exitCode);
 }
 
 const UNCONNECTED =
@@ -267,7 +293,7 @@ async function waitForNetwork() {
 module.exports = {
   postSlackMessage,
   updateSlackMessage,
-  postSectionSummary,
+  finalizeBuild,
   getStartBuildMessage,
   otpMatching,
   parseId,

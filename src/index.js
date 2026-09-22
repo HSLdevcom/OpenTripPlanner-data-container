@@ -1,7 +1,6 @@
 const {
   postSlackMessage,
-  updateSlackMessage,
-  postSectionSummary,
+  finalizeBuild,
   getStartBuildMessage,
   waitForNetwork,
 } = require('./utils/builderUtils.js');
@@ -22,21 +21,26 @@ logger.info(`Using timezone: ${timezone}`);
 async function reportUnexpectedTermination(err, exitCode) {
   logger.error(`Fatal error: ${err && err.stack ? err.stack : err}`);
   if (global.buildFinalized) {
-    // update()'s own finally already calls process.exit(1) synchronously on
-    // failure, so if we get here with buildFinalized true, the build must
-    // have succeeded. Don't let an unrelated stray crash/signal flip that
-    // successful outcome to a failure exit code (and don't post a
-    // misleading "interrupted" message for a build that already finished).
+    // finalizeBuild (called from update() or a previous invocation of this
+    // function) always calls process.exit itself right after setting this
+    // flag, so if we get here with buildFinalized already true, the build
+    // must have succeeded (a failure's finalizeBuild call would already
+    // have exited the process with code 1 before this could fire). Don't
+    // let an unrelated stray crash/signal flip that successful outcome to a
+    // failure exit code (and don't post a misleading "interrupted" message
+    // for a build that already finished).
     process.exit(0);
     return;
   }
   if (global.messageTimeStamp) {
-    global.buildFinalized = true;
-    await postSectionSummary(
-      'Build interrupted unexpectedly. Section timings so far',
-      'error',
-    );
-    await updateSlackMessage('Build interrupted unexpectedly', 'error');
+    await finalizeBuild({
+      statusMessage: 'Build interrupted unexpectedly',
+      statusLevel: 'error',
+      summaryPrefix: 'Build interrupted unexpectedly. Section timings so far',
+      summaryLevel: 'error',
+      exitCode,
+    });
+    return;
   }
   process.exit(exitCode);
 }
