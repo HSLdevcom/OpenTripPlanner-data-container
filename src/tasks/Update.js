@@ -24,32 +24,34 @@ const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
 const start = promisify((task, cb) => gulp.series(task)(cb));
 
 async function handleSeeding() {
-  await timeSection('Seeding', async () => {
+  await timeSection('seed', async task => {
     if (!process.env.NOSEED) {
       logger.info('Starting seeding');
-      await start('seed');
+      await start(task);
       logger.info('Seeded');
     }
   });
 }
 
 async function handleOsmAndDemUpdate() {
-  await timeSection('OSM & DEM update', async () => {
-    if (!process.env.NODEM) {
+  if (!process.env.NODEM) {
+    await timeSection('dem:update', async task => {
       // we track data rejections using this global variable
       global.hasFailures = false;
-      await start('dem:update');
+      await start(task);
       if (global.hasFailures) {
         postSlackMessage('DEM update failed, using previous version', 'warn');
       }
-    }
+    });
+  }
 
-    // OSM update is more complicated. Download often fails, so there is a retry loop,
-    // which breaks when a big enough file gets loaded
-    if (!process.env.USE_SEEDED_OSM) {
+  // OSM update is more complicated. Download often fails, so there is a retry loop,
+  // which breaks when a big enough file gets loaded
+  if (!process.env.USE_SEEDED_OSM) {
+    await timeSection('osm:update', async task => {
       global.blobSizeOk = false; // ugly hack but gulp does not return any values from tasks
       for (let i = 0; i < 3; i++) {
-        await start('osm:update');
+        await start(task);
         if (global.blobSizeOk) {
           break;
         }
@@ -65,17 +67,15 @@ async function handleOsmAndDemUpdate() {
           'warn',
         );
       }
-    } else {
-      logger.info('Skipping OSM update and using existing seeded data');
-    }
-  });
+    });
+  } else {
+    logger.info('Skipping OSM update and using existing seeded data');
+  }
 }
 
 async function handleTransitDataUpdate() {
-  await timeSection('Transit data update', async () => {
-    await start('gtfs:update');
-    await start('netex:update');
-  });
+  await timeSection('gtfs:update', task => start(task));
+  await timeSection('netex:update', task => start(task));
 }
 
 async function handleTests() {
@@ -83,9 +83,9 @@ async function handleTests() {
     logger.info('Skipping all tests');
     return;
   }
-  await timeSection('Tests', async () => {
+  await timeSection('./src/test.sh', task => {
     logger.info('Test the newly built graph with OTPQA');
-    execFileSync('./src/test.sh', [], { stdio: [0, 1, 2] });
+    execFileSync(task, [], { stdio: [0, 1, 2] });
   });
 }
 
@@ -111,13 +111,13 @@ async function handleGtfsFallback(logFile) {
     'warn',
   );
   // use seed packages for failed feeds
-  await start('gtfs:fallback');
+  await timeSection('gtfs:fallback', task => start(task));
 }
 
-function buildAndDeployDockerImages(date) {
-  return timeSection('Deploy', async () => {
+async function buildAndDeployDockerImages(date) {
+  await timeSection('./otp-data-server/deploy.sh', task => {
     logger.info('Deploying otp-data-server image...');
-    execFileSync('./otp-data-server/deploy.sh', [date], {
+    execFileSync(task, [date], {
       stdio: [0, 1, 2],
       env: {
         OTP_TAG: process.env.OTP_TAG,
@@ -129,8 +129,10 @@ function buildAndDeployDockerImages(date) {
         DOCKER_AUTH: process.env.DOCKER_AUTH,
       },
     });
+  });
+  await timeSection('./opentripplanner/deploy-otp.sh', task => {
     logger.info('Deploying opentripplanner image...');
-    execFileSync('./opentripplanner/deploy-otp.sh', [date], {
+    execFileSync(task, [date], {
       stdio: [0, 1, 2],
       env: {
         OTP_TAG: process.env.OTP_TAG,
@@ -146,10 +148,10 @@ function buildAndDeployDockerImages(date) {
 }
 
 async function handleCleanup() {
-  await timeSection('Cleanup', async () => {
+  await timeSection('storage:cleanup', async task => {
     if (!process.env.NOCLEANUP) {
       logger.info('Remove oldest data versions from storage');
-      await start('storage:cleanup');
+      await start(task);
     }
   });
 }
@@ -165,17 +167,19 @@ async function buildStreetOnlyGraph(routerId) {
   await handleOsmAndDemUpdate();
 
   logger.info('Build street only graph');
-  await timeSection('Build graph', () => start('router:buildStreetOnlyGraph'));
+  await timeSection('router:buildStreetOnlyGraph', task => start(task));
 
   const date = getDateStringForDockerTag();
   global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${routerId}`;
 
   logger.info('Uploading street graph only build data to storage');
-  await timeSection('Upload', () => start('router:store'));
+  await timeSection('router:store', task => start(task));
 
   if (!process.env.NOCLEANUP) {
     logger.info('Remove oldest street only graph data versions from storage');
-    await start('storage:cleanupStreetOnlyGraphData');
+    await timeSection('storage:cleanupStreetOnlyGraphData', task =>
+      start(task),
+    );
   }
 }
 
@@ -192,25 +196,23 @@ async function buildGraph(routerId) {
   await handleTransitDataUpdate();
 
   logger.info('Build routing graph');
-  await timeSection('Build graph', () => start('router:buildGraph'));
+  await timeSection('router:buildGraph', task => start(task));
 
   await handleTests();
 
   const logFile = 'failed_feeds.txt';
   if (fs.existsSync(logFile)) {
-    await timeSection('GTFS fallback + rebuild', async () => {
-      await handleGtfsFallback(logFile);
-      // rebuild the graph
-      logger.info('Rebuild graph using fallback data');
-      await start('router:buildGraph');
-    });
+    await handleGtfsFallback(logFile);
+    // rebuild the graph
+    logger.info('Rebuild graph using fallback data');
+    await timeSection('router:buildGraph', task => start(task));
   }
 
   const date = getDateStringForDockerTag();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${routerId}`;
 
   logger.info('Uploading data to storage');
-  await timeSection('Upload', () => start('router:store'));
+  await timeSection('router:store', task => start(task));
 
   await buildAndDeployDockerImages(date);
 }
@@ -226,28 +228,26 @@ async function buildWithPrebuiltStreetGraph(routerId) {
   await handleTransitDataUpdate();
 
   logger.info('Build routing graph from prebuilt street only graph');
-  await timeSection('Build graph', () =>
-    start('router:buildWithPrebuiltStreetGraph'),
-  );
+  await timeSection('router:buildWithPrebuiltStreetGraph', task => start(task));
 
   await handleTests();
 
   const logFile = 'failed_feeds.txt';
   if (fs.existsSync(logFile)) {
-    await timeSection('GTFS fallback + rebuild', async () => {
-      await handleGtfsFallback(logFile);
-      // rebuild the graph
-      logger.info('Rebuild graph using fallback data');
-      await start('router:buildWithPrebuiltStreetGraph');
-    });
+    await handleGtfsFallback(logFile);
+    // rebuild the graph
+    logger.info('Rebuild graph using fallback data');
+    await timeSection('router:buildWithPrebuiltStreetGraph', task =>
+      start(task),
+    );
   }
 
   const date = getDateStringForDockerTag();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${routerId}`;
 
   logger.info('Uploading data to storage');
-  await timeSection('Upload', () =>
-    start('router:storeForPrebuiltStreetGraphDataBuild'),
+  await timeSection('router:storeForPrebuiltStreetGraphDataBuild', task =>
+    start(task),
   );
 
   await buildAndDeployDockerImages(date);

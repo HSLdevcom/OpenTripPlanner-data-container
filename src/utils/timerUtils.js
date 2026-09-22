@@ -36,17 +36,20 @@ function endSection(name) {
 
 /**
  * Wraps an async function with startSection/endSection calls, ending the
- * section even if the wrapped function throws.
- * @param {string} name section label
- * @param {() => Promise<any>} fn function to time
+ * section even if the wrapped function throws. The task name is passed on
+ * to `fn` so callers can reuse it directly (e.g. as the gulp task name or
+ * script path to run) instead of repeating the literal string.
+ * @param {string} task section label — the gulp task name or script path
+ * this section represents, e.g. "seed" or "./src/test.sh"
+ * @param {(task: string) => Promise<any>} fn function to time, called with `task`
  * @returns {Promise<any>}
  */
-async function timeSection(name, fn) {
-  startSection(name);
+async function timeSection(task, fn) {
+  startSection(task);
   try {
-    return await fn();
+    return await fn(task);
   } finally {
-    endSection(name);
+    endSection(task);
   }
 }
 
