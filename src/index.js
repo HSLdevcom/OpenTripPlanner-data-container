@@ -8,8 +8,6 @@ const { update } = require('./tasks/Update');
 const { SPLIT_BUILD_TYPE, timezone } = require('./config.js');
 const logger = require('./logger');
 
-logger.info(`Using timezone: ${timezone}`);
-
 /**
  * Safety net for crashes/unexpected termination that happen outside the
  * normal try/catch in Update.js#update (which already reports failures and
@@ -44,6 +42,8 @@ async function reportUnexpectedTermination(err, exitCode) {
   }
   process.exit(exitCode);
 }
+
+logger.info(`Using timezone: ${timezone}`);
 
 process.on('uncaughtException', err => reportUnexpectedTermination(err, 1));
 process.on('unhandledRejection', err => reportUnexpectedTermination(err, 1));
