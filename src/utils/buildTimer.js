@@ -1,4 +1,5 @@
-const { formatDuration, postSlackMessage } = require('./builderUtils.js');
+const { formatDuration } = require('./formatUtils.js');
+const { postSlackMessage } = require('./builderUtils.js');
 
 /**
  * Ordered list of {name, start, end} entries. `end` is null while running.

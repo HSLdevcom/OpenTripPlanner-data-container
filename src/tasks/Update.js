@@ -13,6 +13,7 @@ const {
   updateSlackMessage,
 } = require('../utils/builderUtils.js');
 const { timeSection, postSectionSummary } = require('../utils/buildTimer.js');
+const { getDateStringForDockerTag } = require('../utils/formatUtils.js');
 require('../../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
@@ -21,16 +22,6 @@ const logger = require('../logger');
 const MAX_GTFS_FALLBACK = 2; // threshold for aborting data loading
 
 const start = promisify((task, cb) => gulp.series(task)(cb));
-
-/**
- * Docker tags don't work with ':' and file names are also prettier without them. We also need to
- * remove milliseconds because they are not relevant and make converting string back to ISO format
- * more difficult.
- * @returns date as string
- */
-function getDateString() {
-  return new Date().toISOString().slice(0, -5).concat('Z').replace(/:/g, '.');
-}
 
 async function handleSeeding() {
   await timeSection('Seeding', async () => {
@@ -187,7 +178,7 @@ async function buildStreetOnlyGraph(name) {
   logger.info('Build street only graph');
   await timeSection('Build graph', () => start('router:buildStreetOnlyGraph'));
 
-  const date = getDateString();
+  const date = getDateStringForDockerTag();
   global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${name}`;
 
   logger.info('Uploading street graph only build data to storage');
@@ -226,7 +217,7 @@ async function buildGraph(name) {
     });
   }
 
-  const date = getDateString();
+  const date = getDateStringForDockerTag();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
   logger.info('Uploading data to storage');
@@ -262,7 +253,7 @@ async function buildWithPrebuiltStreetGraph(name) {
     });
   }
 
-  const date = getDateString();
+  const date = getDateStringForDockerTag();
   global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
 
   logger.info('Uploading data to storage');
