@@ -35,6 +35,24 @@ function formatDuration(ms) {
 }
 
 /**
+ * Wraps text in a Slack code block (monospaced, rendered as a single
+ * message) so raw multi-line logs/stack traces are readable instead of
+ * looking like plain chat text. Long text is truncated from the start,
+ * keeping the tail (the most relevant/recent output, e.g. the actual
+ * error), to guard against Slack's message size limits.
+ * @param {string} text
+ * @param {number} [maxLength]
+ * @returns {string}
+ */
+function formatCodeBlock(text, maxLength = 3800) {
+  const truncated =
+    text.length > maxLength
+      ? `... (truncated)\n${text.slice(-maxLength)}`
+      : text;
+  return `\`\`\`${truncated}\`\`\``;
+}
+
+/**
  * Docker tags don't work with ':' and file names are also prettier without them. We also need to
  * remove milliseconds because they are not relevant and make converting string back to ISO format
  * more difficult.
@@ -47,5 +65,6 @@ function getDateStringForDockerTag() {
 module.exports = {
   formatClockTime,
   formatDuration,
+  formatCodeBlock,
   getDateStringForDockerTag,
 };

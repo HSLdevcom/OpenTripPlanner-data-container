@@ -2,6 +2,7 @@ const fs = require('fs');
 const { exec, execSync } = require('child_process');
 const del = require('del');
 const { otpMatching, postSlackMessage } = require('../utils/builderUtils.js');
+const { formatCodeBlock } = require('../utils/formatUtils.js');
 const { zipWithGlobIntoDir } = require('./ZipTask');
 const {
   dataDir,
@@ -68,7 +69,7 @@ const buildGraph = function (router) {
       } else {
         const log = lastLog.join('');
         postSlackMessage(
-          `${router.id} build failed: ${status}:${log}`,
+          `${router.id} build failed: ${status}\n${formatCodeBlock(log)}`,
           'error',
         );
         reject('could not build');

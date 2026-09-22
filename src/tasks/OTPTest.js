@@ -4,6 +4,7 @@ const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, timezone } = require('../config');
 const { postSlackMessage, createDir } = require('../utils/builderUtils.js');
+const { formatCodeBlock } = require('../utils/formatUtils.js');
 const logger = require('../logger');
 const testTag = process.env.OTP_TAG || 'v2';
 const JAVA_OPTS = process.env.JAVA_OPTS || '-Xmx9g';
@@ -37,7 +38,10 @@ function testWithOTP(otpFile, quiet = false) {
                 logger.info(otpFile + ' Test SUCCESS');
               } else {
                 const log = lastLog.join('');
-                postSlackMessage(`${otpFile} test failed: ${log}`, 'warn');
+                postSlackMessage(
+                  `${otpFile} test failed:\n${formatCodeBlock(log)}`,
+                  'warn',
+                );
                 global.hasFailures = true;
                 resolve(false);
               }
@@ -63,7 +67,10 @@ function testWithOTP(otpFile, quiet = false) {
             });
           } catch (e) {
             const log = lastLog.join('');
-            postSlackMessage(`${otpFile} test failed: ${log}`, 'error');
+            postSlackMessage(
+              `${otpFile} test failed:\n${formatCodeBlock(log)}`,
+              'error',
+            );
             fse.removeSync(folder);
             reject(e);
           }

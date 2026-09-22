@@ -10,7 +10,10 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const { postSlackMessage, finalizeBuild } = require('../utils/builderUtils.js');
 const { timeSection } = require('../utils/timerUtils.js');
-const { getDateStringForDockerTag } = require('../utils/formatUtils.js');
+const {
+  getDateStringForDockerTag,
+  formatCodeBlock,
+} = require('../utils/formatUtils.js');
 require('../../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');
 const assert = require('assert');
@@ -290,7 +293,7 @@ async function update() {
       // post the error detail/stack as a thread reply for debugging; abort
       // errors already have a concise, user-friendly message so skip this
       await postSlackMessage(
-        `${router.id} data update failed: ${err.message}`,
+        `${router.id} data update failed:\n${formatCodeBlock(err.message)}`,
         'error',
       );
     }
