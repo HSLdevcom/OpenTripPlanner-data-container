@@ -16,14 +16,14 @@ function getStartBuildMessage(splitBuildType) {
   switch (splitBuildType) {
     case 'ONLY_BUILD_STREET_GRAPH':
       return withStartTimestamp(
-        'Starting street only graph data build :rocket:',
+        ':rocket: Starting street only graph data build',
       );
     case 'USE_PREBUILT_STREET_GRAPH':
       return withStartTimestamp(
-        'Starting graph data build from prebuilt street graph :rocket:',
+        ':rocket: Starting graph data build from prebuilt street graph',
       );
     default:
-      return withStartTimestamp('Starting data build :rocket:');
+      return withStartTimestamp(':rocket: Starting data build');
   }
 }
 
@@ -49,16 +49,16 @@ const headers = {
 function withLevelEmoji(text, level) {
   switch (level) {
     case 'error':
-      return `${text} :boom:`;
+      return `:boom: ${text}`;
     case 'warn':
-      return `${text} :warning:`;
+      return `:warning: ${text}`;
     default:
       return text;
   }
 }
 
 /**
- * Appends the current clock time to the root ("Starting build...") message
+ * Prepends the current clock time to the root ("Starting build...") message
  * and records the build start time, so a total duration can later be
  * computed for the edited final message.
  * @param {string} text
@@ -66,11 +66,11 @@ function withLevelEmoji(text, level) {
  */
 function withStartTimestamp(text) {
   global.buildStartTime = Date.now();
-  return `${text} (started ${formatClockTime(new Date(global.buildStartTime))})`;
+  return `(started ${formatClockTime(new Date(global.buildStartTime))}) ${text}`;
 }
 
 /**
- * Appends the current clock time and, if known, the total elapsed duration
+ * Prepends the current clock time and, if known, the total elapsed duration
  * since the build started to a message that edits the root/main message.
  * @param {string} text
  * @returns {string}
@@ -80,9 +80,9 @@ function withUpdateTimestamp(text) {
   const clock = formatClockTime(now);
   if (global.buildStartTime) {
     const elapsed = formatDuration(now.getTime() - global.buildStartTime);
-    return `${text} (${clock}, total ${elapsed})`;
+    return `(${clock}, total ${elapsed}) ${text}`;
   }
-  return `${text} (${clock})`;
+  return `(${clock}) ${text}`;
 }
 
 async function postSlackMessage(text, level = 'info') {

@@ -283,7 +283,7 @@ async function update() {
       });
     } else {
       await finalizeBuild({
-        statusMessage: `${router.id} ${description} :white_check_mark:`,
+        statusMessage: `:white_check_mark: ${router.id} ${description}`,
         summaryPrefix: 'Section timings',
         exitCode: 0,
       });
