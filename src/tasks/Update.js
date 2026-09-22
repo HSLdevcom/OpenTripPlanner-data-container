@@ -154,7 +154,7 @@ async function handleCleanup() {
 /**
  * This function only builds the street graph with OSM and DEM data.
  */
-async function buildStreetOnlyGraph(name) {
+async function buildStreetOnlyGraph(routerId) {
   await handleCleanup();
 
   await handleSeeding();
@@ -165,7 +165,7 @@ async function buildStreetOnlyGraph(name) {
   await timeSection('Build graph', () => start('router:buildStreetOnlyGraph'));
 
   const date = getDateStringForDockerTag();
-  global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${name}`;
+  global.storageDirName = `osm-builds/${process.env.DOCKER_TAG}/${date}/${routerId}`;
 
   logger.info('Uploading street graph only build data to storage');
   await timeSection('Upload', () => start('router:store'));
@@ -179,7 +179,7 @@ async function buildStreetOnlyGraph(name) {
 /**
  * This function does the whole build.
  */
-async function buildGraph(name) {
+async function buildGraph(routerId) {
   await handleCleanup();
 
   await handleSeeding();
@@ -204,7 +204,7 @@ async function buildGraph(name) {
   }
 
   const date = getDateStringForDockerTag();
-  global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
+  global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${routerId}`;
 
   logger.info('Uploading data to storage');
   await timeSection('Upload', () => start('router:store'));
@@ -215,7 +215,7 @@ async function buildGraph(name) {
 /**
  * This function builds the graph from prebuilt street graph data.
  */
-async function buildWithPrebuiltStreetGraph(name) {
+async function buildWithPrebuiltStreetGraph(routerId) {
   await handleCleanup();
 
   await handleSeeding();
@@ -240,7 +240,7 @@ async function buildWithPrebuiltStreetGraph(name) {
   }
 
   const date = getDateStringForDockerTag();
-  global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${name}`;
+  global.storageDirName = `${process.env.DOCKER_TAG}/${date}/${routerId}`;
 
   logger.info('Uploading data to storage');
   await timeSection('Upload', () =>
@@ -254,34 +254,33 @@ async function update() {
   // check environmental variables which needs to be defined
   assert(process.env.DOCKER_TAG !== undefined, 'DOCKER_TAG must be defined');
 
-  const name = router.id;
   try {
     let description;
     switch (SPLIT_BUILD_TYPE) {
       case 'ONLY_BUILD_STREET_GRAPH':
-        await buildStreetOnlyGraph(name);
+        await buildStreetOnlyGraph(router.id);
         description = 'street only graph data updated';
         break;
       case 'USE_PREBUILT_STREET_GRAPH':
-        await buildWithPrebuiltStreetGraph(name);
+        await buildWithPrebuiltStreetGraph(router.id);
         description = 'data updated from prebuilt street only graph';
         break;
       default:
-        await buildGraph(name);
+        await buildGraph(router.id);
         description = 'data updated';
         break;
     }
 
     if (global.hasFailures) {
       await finalizeBuild({
-        statusMessage: `${name} ${description}, but partially falling back to older data`,
+        statusMessage: `${router.id} ${description}, but partially falling back to older data`,
         statusLevel: 'warn',
         summaryPrefix: 'Section timings',
         exitCode: 0,
       });
     } else {
       await finalizeBuild({
-        statusMessage: `${name} ${description} :white_check_mark:`,
+        statusMessage: `${router.id} ${description} :white_check_mark:`,
         summaryPrefix: 'Section timings',
         exitCode: 0,
       });
@@ -291,7 +290,7 @@ async function update() {
       // post the error detail/stack as a thread reply for debugging; abort
       // errors already have a concise, user-friendly message so skip this
       await postSlackMessage(
-        `${name} data update failed: ${err.message}`,
+        `${router.id} data update failed: ${err.message}`,
         'error',
       );
     }
