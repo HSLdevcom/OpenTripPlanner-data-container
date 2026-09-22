@@ -1,5 +1,4 @@
 const { formatDuration } = require('./formatUtils.js');
-const { postSlackMessage } = require('./builderUtils.js');
 
 /**
  * Ordered list of {name, start, end} entries. `end` is null while running.
@@ -70,20 +69,7 @@ function getSummary() {
   return lines.join('\n');
 }
 
-/**
- * Posts the recorded section summary as a Slack message, if any sections
- * have been recorded. No-op if nothing has been tracked yet.
- * @param {string} prefix text prepended before the summary, e.g. "Section timings"
- * @param {string} level Slack message level, passed through to postSlackMessage
- */
-async function postSectionSummary(prefix, level) {
-  const summary = getSummary();
-  if (summary) {
-    await postSlackMessage(`${prefix}:\n${summary}`, level);
-  }
-}
-
 module.exports = {
   timeSection,
-  postSectionSummary,
+  getSummary,
 };

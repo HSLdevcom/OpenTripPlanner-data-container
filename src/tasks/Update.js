@@ -11,8 +11,9 @@ const fs = require('fs');
 const {
   postSlackMessage,
   updateSlackMessage,
+  postSectionSummary,
 } = require('../utils/builderUtils.js');
-const { timeSection, postSectionSummary } = require('../utils/buildTimer.js');
+const { timeSection } = require('../utils/timerUtils.js');
 const { getDateStringForDockerTag } = require('../utils/formatUtils.js');
 require('../../gulpfile');
 const { router, SPLIT_BUILD_TYPE } = require('../config');

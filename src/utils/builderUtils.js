@@ -6,6 +6,7 @@ const dns = require('dns').promises;
 const logger = require('../logger');
 const { SPLIT_BUILD_TYPE } = require('../config');
 const { formatClockTime, formatDuration } = require('./formatUtils.js');
+const { getSummary } = require('./timerUtils.js');
 
 function getStartBuildMessage(splitBuildType) {
   switch (splitBuildType) {
@@ -125,6 +126,13 @@ async function updateSlackMessage(text, level = 'info') {
       `Something went wrong when trying to update Slack message: ${e}`,
     );
     return e;
+  }
+}
+
+async function postSectionSummary(prefix, level) {
+  const summary = getSummary();
+  if (summary) {
+    await postSlackMessage(`${prefix}:\n${summary}`, level);
   }
 }
 
@@ -259,6 +267,7 @@ async function waitForNetwork() {
 module.exports = {
   postSlackMessage,
   updateSlackMessage,
+  postSectionSummary,
   getStartBuildMessage,
   otpMatching,
   parseId,
