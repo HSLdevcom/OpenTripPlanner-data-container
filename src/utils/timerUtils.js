@@ -51,21 +51,38 @@ async function timeSection(name, fn) {
 }
 
 /**
- * Builds a human-readable, newline-separated summary of every section
- * recorded so far, including ones that never finished (marked "interrupted").
- * Returns null if no sections have been recorded yet.
+ * Builds a simple ASCII table listing every section recorded so far and how long
+ * it took, including ones that never finished (marked "interrupted"). Returns
+ * null if no sections have been recorded yet.
  * @returns {string|null}
  */
 function getSummary() {
   if (sections.length === 0) {
     return null;
   }
-  const lines = sections.map(({ name, start, end }) => {
-    if (end === null) {
-      return `• ${name}: interrupted after ${formatDuration(Date.now() - start)}`;
-    }
-    return `• ${name}: ${formatDuration(end - start)}`;
-  });
+  const rows = sections.map(({ name, start, end }) => [
+    name,
+    end === null
+      ? `interrupted after ${formatDuration(Date.now() - start)}`
+      : formatDuration(end - start),
+  ]);
+  const nameHeader = 'Section';
+  const durationHeader = 'Duration';
+  const nameWidth = Math.max(
+    nameHeader.length,
+    ...rows.map(([name]) => name.length),
+  );
+  const durationWidth = Math.max(
+    durationHeader.length,
+    ...rows.map(([, duration]) => duration.length),
+  );
+  const formatRow = (name, duration) =>
+    `${name.padEnd(nameWidth)}  ${duration.padEnd(durationWidth)}`;
+  const lines = [
+    formatRow(nameHeader, durationHeader),
+    '-'.repeat(nameWidth + durationWidth + 2),
+    ...rows.map(([name, duration]) => formatRow(name, duration)),
+  ];
   return lines.join('\n');
 }
 

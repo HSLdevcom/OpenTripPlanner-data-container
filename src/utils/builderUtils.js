@@ -5,7 +5,11 @@ const axios = require('axios');
 const dns = require('dns').promises;
 const logger = require('../logger');
 const { SPLIT_BUILD_TYPE } = require('../config');
-const { formatClockTime, formatDuration } = require('./formatUtils.js');
+const {
+  formatClockTime,
+  formatDuration,
+  formatCodeBlock,
+} = require('./formatUtils.js');
 const { getSummary } = require('./timerUtils.js');
 
 function getStartBuildMessage(splitBuildType) {
@@ -132,7 +136,7 @@ async function updateSlackMessage(text, level = 'info') {
 async function postSectionSummarySlackMessage(prefix, level) {
   const summary = getSummary();
   if (summary) {
-    await postSlackMessage(`${prefix}:\n${summary}`, level);
+    await postSlackMessage(`${prefix}:\n${formatCodeBlock(summary)}`, level);
   }
 }
 
