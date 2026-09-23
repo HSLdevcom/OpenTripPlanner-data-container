@@ -68,7 +68,7 @@ It is possible to change the behaviour of the data builder by defining environme
 
 Each router directory under `configs/` has a `config.js` file that defines that
 router's data sources as a plain JS object (no factory function — just named
-fields). It is validated by `src/utils/validateConfigSources.js`
+fields). It is validated by `src/utils/configSourceValidationUtils.js`
 (`yarn run validate-configs`, also run as part of `yarn test` in CI, and again
 at runtime when the data builder starts), which rejects unknown/misspelled
 fields and duplicate feed ids. Its exported shape is:

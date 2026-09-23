@@ -1,7 +1,9 @@
 const assert = require('assert');
 const path = require('path');
 const { applyExtraSrc, buildIdMap } = require('./utils/configUtils.js');
-const { validateConfigSources } = require('./utils/validateConfigSources.js');
+const {
+  validateConfigSources,
+} = require('./utils/configSourceValidationUtils.js');
 
 // OBA filter erases files which it does not recognize from GTFS packages
 // this array specifies the file names which should be preserved

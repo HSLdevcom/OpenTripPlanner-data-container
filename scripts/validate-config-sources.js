@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const {
   validateConfigSources,
-} = require('../src/utils/validateConfigSources.js');
+} = require('../src/utils/configSourceValidationUtils.js');
 
 const configsDir = path.resolve(__dirname, '../configs');
 
