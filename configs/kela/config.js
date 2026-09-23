@@ -1,5 +1,3 @@
-const { mapSrc } = require('../../src/utils/configUtils.js');
-
 // matkahuolto data source often fails when accessed through digitransit proxy
 // here we exceptionally set up direct calls with basic auth
 let mhAddress;
@@ -16,39 +14,34 @@ if (process.env.MH_BASIC_AUTH) {
 module.exports = {
   id: 'kela',
   gtfs: [
-    mapSrc(
-      'kela',
-      'https://mobility.mobility-database.fintraffic.fi/static/Kela_suuret.zip',
-      false,
-      ['kela/gtfs-rules/remove-route-color.rule'],
-    ),
-    mapSrc(
-      'kela_varely',
-      'https://mobility.mobility-database.fintraffic.fi/static/Kela_varely.zip',
-      false,
-      ['kela/gtfs-rules/remove-route-color.rule'],
-    ),
-    mapSrc(
-      'kela_waltti',
-      'https://mobility.mobility-database.fintraffic.fi/static/kela_waltti.zip',
-      false,
-      ['kela/gtfs-rules/remove-route-color.rule'],
-    ),
-    mapSrc(
-      'kela_lautat',
-      'https://mobility.mobility-database.fintraffic.fi/static/kelalautat.zip',
-      false,
-    ),
-    mapSrc(
-      'matkahuolto',
-      mhAddress,
-      false,
-      [
+    {
+      id: 'kela',
+      url: 'https://mobility.mobility-database.fintraffic.fi/static/Kela_suuret.zip',
+      rules: ['kela/gtfs-rules/remove-route-color.rule'],
+    },
+    {
+      id: 'kela_varely',
+      url: 'https://mobility.mobility-database.fintraffic.fi/static/Kela_varely.zip',
+      rules: ['kela/gtfs-rules/remove-route-color.rule'],
+    },
+    {
+      id: 'kela_waltti',
+      url: 'https://mobility.mobility-database.fintraffic.fi/static/kela_waltti.zip',
+      rules: ['kela/gtfs-rules/remove-route-color.rule'],
+    },
+    {
+      id: 'kela_lautat',
+      url: 'https://mobility.mobility-database.fintraffic.fi/static/kelalautat.zip',
+    },
+    {
+      id: 'matkahuolto',
+      url: mhAddress,
+      rules: [
         'kela/gtfs-rules/matkahuolto.rule',
         'kela/gtfs-rules/remove-route-color.rule',
       ],
-      { 'transfers.txt': null },
-    ),
+      replacements: { 'transfers.txt': null },
+    },
   ],
   osm: ['finland'],
 };

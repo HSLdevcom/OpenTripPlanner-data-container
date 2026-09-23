@@ -11,6 +11,6 @@
     "AsyncGraphQLFetchers": false,
     "Emission": true,
     "DebugRasterTiles": true,
-    "TaxiZone": true
+    "TaxiRouting": true
   }
 }

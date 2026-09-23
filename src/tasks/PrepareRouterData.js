@@ -23,6 +23,12 @@ const extraUpdaters =
     ? JSON.parse(process.env.EXTRA_UPDATERS)
     : {};
 
+/**
+ * Builds the `transitFeeds` array for build-config.json. Every configured gtfs and netex
+ * feed must be listed explicitly here: OTP disables local directory auto-scanning for an
+ * entire feed type (gtfs or netex) as soon as one feed of that type is declared, so a
+ * partial list would silently drop any undeclared feeds of that type.
+ */
 function createAndProcessBuildConfig(router) {
   logger.info('Creating build-config.json...');
   const configName = `${configsDir}/${router.id}/build-config.json`;
@@ -39,17 +45,22 @@ function createAndProcessBuildConfig(router) {
       };
       transitFeeds.push(feed);
     });
-    buildConfig.transitFeeds = transitFeeds;
   }
-  if (router.taxiZone) {
-    const taxiZoneFeeds = buildConfig.taxiZone?.feeds || [];
-    router.taxiZone.forEach(src => {
-      taxiZoneFeeds.push({
+  if (router.gtfs) {
+    router.gtfs.forEach(src => {
+      const feed = {
+        type: 'gtfs',
         feedId: src.id,
-        source: 'file:///var/opentripplanner/' + src.id + '-taxizone.zip',
-      });
+        source: 'file:///var/opentripplanner/' + src.id + '-gtfs.zip',
+      };
+      if (src.taxiProvider) {
+        feed.taxiProvider = true;
+      }
+      transitFeeds.push(feed);
     });
-    buildConfig.taxiZone = { ...buildConfig.taxiZone, feeds: taxiZoneFeeds };
+  }
+  if (transitFeeds.length > 0) {
+    buildConfig.transitFeeds = transitFeeds;
   }
   const file = new Vinyl({
     path: 'build-config.json',
@@ -95,7 +106,7 @@ function createAndProcessRouterConfig(router) {
 
 function getTransitDataFiles(router) {
   const files = [];
-  ['gtfs', 'netex', 'taxiZone'].forEach(type => {
+  ['gtfs', 'netex'].forEach(type => {
     if (router[type]) {
       const dirName = type.toLowerCase();
       router[type].forEach(src => {

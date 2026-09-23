@@ -1,6 +1,9 @@
 const assert = require('assert');
 const path = require('path');
 const { applyExtraSrc, buildIdMap } = require('./utils/configUtils.js');
+const {
+  validateConfigSources,
+} = require('./utils/configSourceValidationUtils.js');
 
 // OBA filter erases files which it does not recognize from GTFS packages
 // this array specifies the file names which should be preserved
@@ -28,6 +31,16 @@ const extraSrc =
   process.env.EXTRA_SRC !== undefined ? JSON.parse(process.env.EXTRA_SRC) : {};
 // override, remove, or add gtfs entries defined in extraSrc
 router.gtfs = applyExtraSrc(router.gtfs, extraSrc);
+
+// Validate the config after EXTRA_SRC overrides so runtime overrides are caught too.
+const configSourceErrors = validateConfigSources(
+  process.env.ROUTER_NAME,
+  router,
+);
+assert(
+  configSourceErrors.length === 0,
+  `Invalid configs/${process.env.ROUTER_NAME}/config.js:\n${configSourceErrors.join('\n')}`,
+);
 
 const SPLIT_BUILD_TYPE = process.env.SPLIT_BUILD_TYPE || 'NO_SPLIT_BUILD';
 

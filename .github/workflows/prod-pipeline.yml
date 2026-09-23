@@ -3,16 +3,14 @@ on:
   release:
     types:
       - published
+env:
+  TZ: Europe/Helsinki
 jobs:
   v3-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Set time zone to Europe/Helsinki
-        uses: zcong1993/setup-timezone@master
-        with:
-          timezone: 'Europe/Helsinki'
       - name: Check Tag
         id: check-tag
         run: |

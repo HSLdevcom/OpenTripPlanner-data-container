@@ -5,7 +5,8 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint .",
-    "test": "prettier --check . && yarn run lint",
+    "validate-configs": "node scripts/validate-config-sources.js",
+    "test": "prettier --check . && yarn run lint && yarn run validate-configs",
     "start": "node src/index.js"
   },
   "repository": {
