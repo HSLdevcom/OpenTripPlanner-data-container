@@ -4,6 +4,7 @@ const exec = require('child_process').exec;
 const through = require('through2');
 const { dataDir, constants, dataToolImage, timezone } = require('../config');
 const { postSlackMessage, createDir } = require('../utils/builderUtils.js');
+const { formatCodeBlock } = require('../utils/formatUtils.js');
 const logger = require('../logger');
 
 /**
@@ -64,7 +65,7 @@ function preprocessWithFile(
               } else {
                 const log = lastLog.join('');
                 postSlackMessage(
-                  `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log}`,
+                  `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed:\n${formatCodeBlock(log)}`,
                   'warn',
                 );
                 global.hasFailures = true;
@@ -93,7 +94,7 @@ function preprocessWithFile(
           } catch (e) {
             const log = lastLog.join('');
             postSlackMessage(
-              `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed: ${log} ${e}`,
+              `${osmFile} + ${preprocessingInstructionsFile} OSM preprocessing failed:\n${formatCodeBlock(`${log}\n${e}`)}`,
               'error',
             );
             fse.removeSync(folder);

@@ -1,26 +1,6 @@
 // This file exists to avoid a circular dependency between config.js and utils/builderUtils.js.
 
 /**
- * Builds a gtfs source entry for a router config's `gtfs` array.
- *
- * @param {string} id - Feed id, used as the OTP feedId and in derived filenames.
- * @param {string} url - Feed download URL.
- * @param {boolean} [fit=false] - Whether to run mapFit (shape snapping) on this feed.
- * @param {string[]} [rules] - OBA Filter rule file paths to apply, in order.
- * @param {Object.<string,string|null>} [replacements] - Map of file to replace -> replacement
- *   file name (or `null` to just remove the file), applied before packaging.
- * @param {Object} [request] - Extra axios request options (e.g. custom headers) for the download.
- */
-const mapSrc = (id, url, fit, rules, replacements, request) => ({
-  id,
-  url,
-  fit,
-  rules,
-  replacements,
-  request,
-});
-
-/**
  * Applies id -> patch overrides from the EXTRA_SRC env var format to a gtfs
  * array, returning a new array (does not mutate the input). For each id in
  * `extraSrc`:
@@ -71,4 +51,4 @@ const buildIdMap = entries => {
   return map;
 };
 
-module.exports = { mapSrc, applyExtraSrc, buildIdMap };
+module.exports = { applyExtraSrc, buildIdMap };

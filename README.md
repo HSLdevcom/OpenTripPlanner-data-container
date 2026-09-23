@@ -64,6 +64,35 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `SKIP_OTP_TESTS` skips OTP tests
 - (Optional) `KEEP_VERSIONS` how many old versions of data to keep, default 10
 
+#### Router data source config (`configs/<router>/config.js`)
+
+Each router directory under `configs/` has a `config.js` file that defines that
+router's data sources as a plain JS object (no factory function — just named
+fields). It is validated by `src/utils/configSourceValidationUtils.js`
+(`yarn run validate-configs`, also run as part of `yarn test` in CI, and again
+at runtime when the data builder starts), which rejects unknown/misspelled
+fields and duplicate feed ids. Its exported shape is:
+
+- `id` (required, `string`) — must match the containing directory name.
+- `gtfs` (required, `Object[]`) — GTFS feed sources. Each entry supports:
+  - `id` (required, `string`) — feed id, used as the OTP feedId and in derived filenames.
+  - `url` (required, `string`) — feed download URL.
+  - `fit` (optional, `boolean`) — whether to run mapFit (shape snapping) on this feed.
+  - `rules` (optional, `string[]`) — OBA Filter rule file paths to apply, in order.
+  - `replacements` (optional, `Object.<string,string|null>`) — map of file to replace ->
+    replacement file name (or `null` to just remove the file), applied before packaging.
+  - `request` (optional, `Object`) — extra axios request options (e.g. custom headers).
+  - `taxiProvider` (optional, `boolean`) — marks this feed as exclusively a source of
+    taxi provider data (OTP's `taxiProvider` build-config flag); it is declared explicitly
+    in `transitFeeds` rather than relying on auto-discovery (see below).
+- `netex` (optional, `Object[]`) — NeTEx feed sources. Each entry supports:
+  - `id` (required, `string`), `url` (required, `string`).
+  - `groupFilePattern` (optional, `string`) — regex OTP uses to group per-line NeTEx files.
+  - `sharedFilePattern` (optional, `string`) — regex OTP uses to identify shared NeTEx files.
+- `osm` (required, non-empty `string[]`) — OSM source ids (see the `osm` map in `src/config.js`).
+- `dem` (optional, `string`) — DEM source id (see the `dem` map in `src/config.js`).
+
+
 #### Logging
 
 Logs are written with timestamps to make issues easier to trace, e.g.:
@@ -103,7 +132,7 @@ timezone is logged once at startup.
 
 - `netex:update` downloads NeTEx packages configured in a router's `netex` list and copies them, renamed to `<id>-netex.zip`, to the `data/ready/netex` directory. Unlike `gtfs:update`, this data is not fitted, filtered, or otherwise processed — it is only downloaded and renamed.
 
-- `taxiZone:update` downloads GTFS packages configured in a router's `taxiZone` list (separate from the regular `gtfs` list, used for OpenTripPlanner's taxi zone feature) and copies them, renamed to `<id>-taxizone.zip`, to the `data/ready/taxizone` directory. Works the same way as `netex:update` above.
+- `router:copy`/`router:copyForPrebuiltStreetGraphDataBuild` (via `PrepareRouterData.js`) write the router's `build-config.json`. Every configured `gtfs` and `netex` feed is listed explicitly in its `transitFeeds` array (with `feedId`/`source`, and `taxiProvider: true` for taxi provider feeds). This is required because OTP disables local directory auto-scanning for an entire feed type (`gtfs` or `netex`) as soon as any feed of that type is declared in `transitFeeds` — a partial/mixed list would cause the undeclared feeds of that type to be silently dropped.
 
 - `router:buildGraph`
 
@@ -152,15 +181,14 @@ timezone is logged once at startup.
    - `gtfs:filter`
    - `gtfs:id`
 5. `netex:update`
-6. `taxiZone:update`
-7. `router:buildGraph`
+6. `router:buildGraph`
    - `router:copy`
    - `buildOTPGraphTask(config.router)`
-8. `test.sh`
-9. `router:store`
-10. `deploy.sh`
-11. `deploy-otp.sh`
-12. `storage:cleanup`
+7. `test.sh`
+8. `router:store`
+9. `deploy.sh`
+10. `deploy-otp.sh`
+11. `storage:cleanup`
 
 #### Street only build
 
@@ -182,15 +210,14 @@ timezone is logged once at startup.
    - `gtfs:filter`
    - `gtfs:id`
 3. `netex:update`
-4. `taxiZone:update`
-5. `router:buildWithPrebuiltStreetGraph`
+4. `router:buildWithPrebuiltStreetGraph`
    - `router:copyForPrebuiltStreetGraphDataBuild`
    - `buildOTPGraphTask(config.router)`
-6. `test.sh`
-7. `router:storeForPrebuiltStreetGraphDataBuild`
-8. `deploy.sh`
-9. `deploy-otp.sh`
-10. `storage:cleanup`
+5. `test.sh`
+6. `router:storeForPrebuiltStreetGraphDataBuild`
+7. `deploy.sh`
+8. `deploy-otp.sh`
+9. `storage:cleanup`
 
 ### otp-data-tools
 

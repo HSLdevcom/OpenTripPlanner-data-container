@@ -5,15 +5,25 @@ const axios = require('axios');
 const dns = require('dns').promises;
 const logger = require('../logger');
 const { SPLIT_BUILD_TYPE } = require('../config');
+const {
+  formatClockTime,
+  formatDuration,
+  formatCodeBlock,
+} = require('./formatUtils.js');
+const { getSummary } = require('./timerUtils.js');
 
 function getStartBuildMessage(splitBuildType) {
   switch (splitBuildType) {
     case 'ONLY_BUILD_STREET_GRAPH':
-      return 'Starting street only graph data build :rocket:';
+      return withStartTimestamp(
+        ':rocket: Starting street only graph data build',
+      );
     case 'USE_PREBUILT_STREET_GRAPH':
-      return 'Starting graph data build from prebuilt street graph :rocket:';
+      return withStartTimestamp(
+        ':rocket: Starting graph data build from prebuilt street graph',
+      );
     default:
-      return 'Starting data build :rocket:';
+      return withStartTimestamp(':rocket: Starting data build');
   }
 }
 
@@ -39,12 +49,40 @@ const headers = {
 function withLevelEmoji(text, level) {
   switch (level) {
     case 'error':
-      return `${text} :boom:`;
+      return `:boom: ${text}`;
     case 'warn':
-      return `${text} :warning:`;
+      return `:warning: ${text}`;
     default:
       return text;
   }
+}
+
+/**
+ * Prepends the current clock time to the root ("Starting build...") message
+ * and records the build start time, so a total duration can later be
+ * computed for the edited final message.
+ * @param {string} text
+ * @returns {string}
+ */
+function withStartTimestamp(text) {
+  global.buildStartTime = Date.now();
+  return `(started ${formatClockTime(new Date(global.buildStartTime))}) ${text}`;
+}
+
+/**
+ * Prepends the current clock time and, if known, the total elapsed duration
+ * since the build started to a message that edits the root/main message.
+ * @param {string} text
+ * @returns {string}
+ */
+function withUpdateTimestamp(text) {
+  const now = new Date();
+  const clock = formatClockTime(now);
+  if (global.buildStartTime) {
+    const elapsed = formatDuration(now.getTime() - global.buildStartTime);
+    return `(${clock}, total ${elapsed}) ${text}`;
+  }
+  return `(${clock}) ${text}`;
 }
 
 async function postSlackMessage(text, level = 'info') {
@@ -78,7 +116,7 @@ async function updateSlackMessage(text, level = 'info') {
       'https://slack.com/api/chat.update',
       {
         channel: process.env.SLACK_CHANNEL_ID,
-        text: withLevelEmoji(text, level),
+        text: withUpdateTimestamp(withLevelEmoji(text, level)),
         username,
         ts: global.messageTimeStamp,
       },
@@ -93,6 +131,39 @@ async function updateSlackMessage(text, level = 'info') {
     );
     return e;
   }
+}
+
+async function postSectionSummarySlackMessage(prefix, level) {
+  const summary = getSummary();
+  if (summary) {
+    await postSlackMessage(`${prefix}:\n${formatCodeBlock(summary)}`, level);
+  }
+}
+
+/**
+ * Performs every terminal step for a build:
+ *   - posts the final status message (editing the root message)
+ *   - posts the section-timing summary as a thread reply
+ *   - marks the build as finalized (so index.js's crash safety net doesn't double-report)
+ *   - exits the process with the given code
+ * @param {object} options
+ * @param {string} options.statusMessage text used to edit the root message
+ * @param {string} [options.statusLevel] level passed to updateSlackMessage
+ * @param {string} options.summaryPrefix text prepended before the section summary
+ * @param {string} [options.summaryLevel] level passed to postSlackMessage for the summary
+ * @param {number} options.exitCode process exit code
+ */
+async function finalizeBuild({
+  statusMessage,
+  statusLevel,
+  summaryPrefix,
+  summaryLevel,
+  exitCode,
+}) {
+  await updateSlackMessage(statusMessage, statusLevel);
+  await postSectionSummarySlackMessage(summaryPrefix, summaryLevel);
+  global.buildFinalized = true;
+  process.exit(exitCode);
 }
 
 const UNCONNECTED =
@@ -226,6 +297,7 @@ async function waitForNetwork() {
 module.exports = {
   postSlackMessage,
   updateSlackMessage,
+  finalizeBuild,
   getStartBuildMessage,
   otpMatching,
   parseId,

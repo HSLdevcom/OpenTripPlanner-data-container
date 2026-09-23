@@ -8,6 +8,8 @@ on:
   pull_request:
     branches:
       - v3
+env:
+  TZ: Europe/Helsinki
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -41,10 +43,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Set time zone to Europe/Helsinki
-        uses: zcong1993/setup-timezone@master
-        with:
-          timezone: 'Europe/Helsinki'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
