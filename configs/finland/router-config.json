@@ -206,7 +206,7 @@
       },
       "features": ["stop-position", "occupancy"]
     },
-     {
+    {
       "id": "matka-trip-updates",
       "type": "stop-time-updater",
       "frequency": "60s",
@@ -215,9 +215,8 @@
       "fuzzyTripMatching": true,
       "backwardsDelayPropagationType": "ALWAYS",
       "headers": {
-	"x-api-key": "${MOBILITY_API_TEST_KEY}"
+        "x-api-key": "${MOBILITY_API_TEST_KEY}"
       }
-     },
     },
     {
       "id": "matka-alerts",
