@@ -43,7 +43,7 @@ const buildGraph = function (router) {
         option = '--build';
         break;
     }
-    const command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -e MOBILITY_API_KEY=${process.env.MOBILITY_API_KEY} -e TZ=${timezone} -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${logbackConfigPath},target=/logback-include-extensions.xml ${dockerImage} ${option} --save`;
+    const command = `docker run -e JAVA_OPTS="${JAVA_OPTS}" -e MOBILITY_API_KEY=${process.env.MOBILITY_API_KEY} -e MOBILITY_API_TEST_KEY=${process.env.MOBILITY_API_TEST_KEY} -e TZ=${timezone} -v ${dataDir}/build/${router.id}:/var/opentripplanner --mount type=bind,source=${logbackConfigPath},target=/logback-include-extensions.xml ${dockerImage} ${option} --save`;
 
     logger.info(`Building OTP graph for router ${router.id}...`);
     const buildGraph = exec(command, { maxBuffer: constants.BUFFER_SIZE });
