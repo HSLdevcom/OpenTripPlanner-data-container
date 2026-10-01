@@ -197,36 +197,37 @@
   "updaters": [
     {
       "type": "vehicle-positions",
-      "url": "https://mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
+      "url": "https://mobility-api.mobility-database-test.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
       "frequency": "30s",
       "fuzzyTripMatching": true,
       "headers": {
-        "x-api-key": "${MOBILITY_API_KEY}"
+        "x-api-key": "${MOBILITY_API_TEST_KEY}"
       },
       "features": ["stop-position", "occupancy"]
     },
-    {
+     {
       "id": "matka-trip-updates",
       "type": "stop-time-updater",
       "frequency": "60s",
-      "url": "https://mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
+      "url": "https://mobility-api.mobility-database-test.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
       "fuzzyTripMatching": true,
       "backwardsDelayPropagationType": "ALWAYS",
       "headers": {
-        "x-api-key": "${MOBILITY_API_KEY}"
+	"x-api-key": "${MOBILITY_API_TEST_KEY}"
       }
+     },
     },
     {
       "id": "matka-alerts",
       "type": "real-time-alerts",
       "frequency": "30s",
-      "url": "https://mobility-api.mobility-database.fintraffic.fi/gtfs-realtime/v2",
+      "url": "https://mobility-api.mobility-database-test.fintraffic.fi/gtfs-realtime/v2",
       "feedId": "MATKA",
       "fuzzyTripMatching": true,
       "headers": {
-        "x-api-key": "${MOBILITY_API_KEY}"
+        "x-api-key": "${MOBILITY_API_TEST_KEY}"
       }
     },
     {

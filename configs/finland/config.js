@@ -3,16 +3,8 @@ module.exports = {
   gtfs: [
     {
       id: 'MATKA',
-      url: 'https://mobility.mobility-database.fintraffic.fi/static/Digitransit_main.zip',
+      url: 'https://mobility.mobility-database-test.fintraffic.fi/static/digitransit_test.zip',
       fit: true,
-    },
-    {
-      id: 'flixbus',
-      url: 'https://mobility.mobility-database.fintraffic.fi/static/flixbus_only.zip',
-    },
-    {
-      id: 'Viro',
-      url: 'https://mobility.mobility-database.fintraffic.fi/static/viro.zip',
     },
     {
       id: 'KirkkonummiE',
