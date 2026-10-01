@@ -89,6 +89,10 @@ module.exports = {
       id: 'Rovaniemi',
       url: 'https://tvv.fra1.digitaloceanspaces.com/237.zip',
       fit: true,
+      replacements: {
+        'fare_attributes.txt': 'digitransit_fare_attributes.txt',
+        'fare_rules.txt': 'digitransit_fare_rules.txt',
+      },
     },
     {
       id: 'digitraffic',
