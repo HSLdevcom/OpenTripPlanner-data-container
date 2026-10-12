@@ -32,7 +32,7 @@ module.exports = {
     {
       id: '02Taksi',
       url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
-      taxiProvider: true,
+      isTaxiData: true,
     },
   ],
   osm: ['oulu', 'southFinland'],

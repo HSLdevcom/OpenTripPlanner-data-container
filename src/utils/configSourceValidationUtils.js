@@ -20,8 +20,8 @@
  *   replacement file name (or `null` to just remove the file), applied before packaging.
  * @property {Object} [request] - Extra axios request options (e.g. custom headers) for
  *   the download.
- * @property {boolean} [taxiProvider] - Whether this feed is exclusively a source of taxi
- *   provider data (OTP's `taxiProvider` build-config flag).
+ * @property {boolean} [isTaxiData] - Whether this feed is exclusively a source of taxi
+ *   provider data (OTP's `isTaxiData` build-config flag).
  */
 const GTFS_ENTRY_FIELDS = {
   id: { required: true, type: 'string' },
@@ -30,7 +30,7 @@ const GTFS_ENTRY_FIELDS = {
   rules: { required: false, type: 'string[]' },
   replacements: { required: false, type: 'object' },
   request: { required: false, type: 'object' },
-  taxiProvider: { required: false, type: 'boolean' },
+  isTaxiData: { required: false, type: 'boolean' },
 };
 
 /**

@@ -53,8 +53,8 @@ function createAndProcessBuildConfig(router) {
         feedId: src.id,
         source: 'file:///var/opentripplanner/' + src.id + '-gtfs.zip',
       };
-      if (src.taxiProvider) {
-        feed.taxiProvider = true;
+      if (src.isTaxiData) {
+        feed.isTaxiData = true;
       }
       transitFeeds.push(feed);
     });
