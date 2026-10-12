@@ -82,8 +82,8 @@ fields and duplicate feed ids. Its exported shape is:
   - `replacements` (optional, `Object.<string,string|null>`) — map of file to replace ->
     replacement file name (or `null` to just remove the file), applied before packaging.
   - `request` (optional, `Object`) — extra axios request options (e.g. custom headers).
-  - `taxiProvider` (optional, `boolean`) — marks this feed as exclusively a source of
-    taxi provider data (OTP's `taxiProvider` build-config flag); it is declared explicitly
+  - `isTaxiData` (optional, `boolean`) — marks this feed as exclusively a source of
+    taxi provider data (OTP's `isTaxiData` build-config flag); it is declared explicitly
     in `transitFeeds` rather than relying on auto-discovery (see below).
 - `netex` (optional, `Object[]`) — NeTEx feed sources. Each entry supports:
   - `id` (required, `string`), `url` (required, `string`).
@@ -132,7 +132,7 @@ timezone is logged once at startup.
 
 - `netex:update` downloads NeTEx packages configured in a router's `netex` list and copies them, renamed to `<id>-netex.zip`, to the `data/ready/netex` directory. Unlike `gtfs:update`, this data is not fitted, filtered, or otherwise processed — it is only downloaded and renamed.
 
-- `router:copy`/`router:copyForPrebuiltStreetGraphDataBuild` (via `PrepareRouterData.js`) write the router's `build-config.json`. Every configured `gtfs` and `netex` feed is listed explicitly in its `transitFeeds` array (with `feedId`/`source`, and `taxiProvider: true` for taxi provider feeds). This is required because OTP disables local directory auto-scanning for an entire feed type (`gtfs` or `netex`) as soon as any feed of that type is declared in `transitFeeds` — a partial/mixed list would cause the undeclared feeds of that type to be silently dropped.
+- `router:copy`/`router:copyForPrebuiltStreetGraphDataBuild` (via `PrepareRouterData.js`) write the router's `build-config.json`. Every configured `gtfs` and `netex` feed is listed explicitly in its `transitFeeds` array (with `feedId`/`source`, and `isTaxiData: true` for taxi provider feeds). This is required because OTP disables local directory auto-scanning for an entire feed type (`gtfs` or `netex`) as soon as any feed of that type is declared in `transitFeeds` — a partial/mixed list would cause the undeclared feeds of that type to be silently dropped.
 
 - `router:buildGraph`
 
