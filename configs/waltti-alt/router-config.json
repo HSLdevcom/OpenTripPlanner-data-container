@@ -29,8 +29,7 @@
     },
     "maxDirectStreetDuration": "4h",
     "maxDirectStreetDurationForMode": {
-      "walk": "90m",
-      "TAXI": "3h"
+      "walk": "90m"
     },
     "maxJourneyDuration": "12h",
     "streetRoutingTimeout": "8s",
