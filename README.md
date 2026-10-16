@@ -41,6 +41,7 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional, default dev) `BUILDER_TYPE` used as a postfix to the Slack bot name
 - (Optional) `SLACK_CHANNEL_ID` defines to which slack channel the messages are sent to
 - (Optional) `SLACK_ACCESS_TOKEN` bearer token for slack messaging
+- (Optional) `SLACK_POST_SECTION_TIMINGS` if set (to any non-empty value), posts the build section timings summary as a thread reply in Slack
 - (Optional, default {}) `EXTRA_SRC` defines gtfs entries (the router config's `gtfs` list) that should be overridden or completely new entries that should be added with unique id. Example format:
   - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}`
   - You can remove an entry by including `"remove": true`, `{"FOLI": {"remove": true}}`
