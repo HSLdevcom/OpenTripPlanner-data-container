@@ -134,6 +134,9 @@ async function updateSlackMessage(text, level = 'info') {
 }
 
 async function postSectionSummarySlackMessage(prefix, level) {
+  if (!process.env.SLACK_POST_SECTION_TIMINGS) {
+    return;
+  }
   const summary = getSummary();
   if (summary) {
     await postSlackMessage(`${prefix}:\n${formatCodeBlock(summary)}`, level);
