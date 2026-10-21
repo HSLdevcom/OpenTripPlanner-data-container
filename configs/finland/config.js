@@ -20,6 +20,7 @@ module.exports = {
       isTaxiData: true,
     },
   ],
+  /*
   netex: [
     {
       id: 'VR_bussit',
@@ -32,6 +33,7 @@ module.exports = {
       url: 'https://schedules.finferries.fi/export/netex.zip',
       groupFilePattern: '().*\\.xml',
     },
-  ],
+    ],
+  */
   osm: ['finland', 'estonia'],
 };
