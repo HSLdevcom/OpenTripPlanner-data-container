@@ -246,7 +246,7 @@
       "id": "tampere-trip-updates",
       "type": "stop-time-updater",
       "frequency": "60s",
-      "url": "https://gtfsrt.blob.core.windows.net/tampere/tripupdate",
+      "url": "https://lissu.tampere.fi/api/gtfsrealtime/v2.0/feed/tripupdate",
       "feedId": "tampere",
       "fuzzyTripMatching": false,
       "backwardsDelayPropagationType": "ALWAYS"
