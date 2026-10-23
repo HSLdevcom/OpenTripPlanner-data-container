@@ -246,7 +246,7 @@
       "id": "tampere-trip-updates",
       "type": "stop-time-updater",
       "frequency": "60s",
-      "url": "https://lissu.tampere.fi/api/gtfsrealtime/v2.0/feed/tripupdate",
+      "url": "http://digitransit-proxy:8080/out/lissu.tampere.fi/api/gtfsrealtime/v2.0/feed/tripupdate",
       "feedId": "tampere",
       "fuzzyTripMatching": false,
       "backwardsDelayPropagationType": "ALWAYS"
