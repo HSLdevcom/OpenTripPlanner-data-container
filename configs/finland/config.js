@@ -154,6 +154,11 @@ module.exports = {
       url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
       isTaxiData: true,
     },
+    {
+      id: 'CAR_FERRIES',
+      url: 'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
+      fit: true,
+    }
   ],
   netex: [
     {
@@ -161,11 +166,6 @@ module.exports = {
       url: 'https://mobility.mobility-database.fintraffic.fi/static/vr_bussit.zip',
       groupFilePattern: '(line)_.*\\.xml',
       sharedFilePattern: '_.*\\.xml',
-    },
-    {
-      id: 'CAR_FERRIES',
-      url: 'https://schedules.finferries.fi/export/netex.zip',
-      groupFilePattern: '().*\\.xml',
     },
   ],
   osm: ['finland', 'estonia'],
