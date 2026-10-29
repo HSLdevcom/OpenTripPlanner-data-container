@@ -158,7 +158,7 @@ module.exports = {
       id: 'CAR_FERRIES',
       url: 'https://mobility.mobility-database.fintraffic.fi/static/ferries_cars.zip',
       fit: true,
-    }
+    },
   ],
   netex: [
     {
