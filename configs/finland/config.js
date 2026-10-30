@@ -84,7 +84,8 @@ module.exports = {
     },
     {
       id: 'Kuopio',
-      url: 'https://karttapalvelu.kuopio.fi/google_transit/google_transit.zip',
+      url: 'https://tvv.fra1.digitaloceanspaces.com/221.zip',
+      fit: true,
     },
     {
       id: 'Rovaniemi',
