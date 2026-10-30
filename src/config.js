@@ -1,6 +1,10 @@
 const assert = require('assert');
 const path = require('path');
-const { applyExtraSrc, buildIdMap } = require('./utils/configUtils.js');
+const {
+  applyExtraSrc,
+  buildIdMap,
+  splitExtraSrc,
+} = require('./utils/configUtils.js');
 const {
   validateConfigSources,
 } = require('./utils/configSourceValidationUtils.js');
@@ -26,11 +30,16 @@ const router = require(
 
 // EXTRA_SRC format should be {"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}
 // but you can only define, for example, new url and the other key value pairs will remain the same as they are defined in this file.
-// It is also possible to add completely new gtfs entry by defining object with unused id or to remove one by defining "remove": true
+// It is also possible to add a completely new gtfs entry by defining object with unused id (add "type": "netex" to get a netex entry instead)
+// or to remove one (gtfs or netex) by defining "remove": true
 const extraSrc =
   process.env.EXTRA_SRC !== undefined ? JSON.parse(process.env.EXTRA_SRC) : {};
-// override, remove, or add gtfs entries defined in extraSrc
-router.gtfs = applyExtraSrc(router.gtfs, extraSrc);
+// override or remove existing gtfs/netex entries (matched by id); unknown ids are added as new gtfs entries, or netex entries if "type": "netex"
+const extraSrcByType = splitExtraSrc(extraSrc, router.netex);
+router.gtfs = applyExtraSrc(router.gtfs, extraSrcByType.gtfs);
+if (router.netex || Object.keys(extraSrcByType.netex).length > 0) {
+  router.netex = applyExtraSrc(router.netex || [], extraSrcByType.netex);
+}
 
 // Validate the config after EXTRA_SRC overrides so runtime overrides are caught too.
 const configSourceErrors = validateConfigSources(
