@@ -51,4 +51,28 @@ const buildIdMap = entries => {
   return map;
 };
 
-module.exports = { applyExtraSrc, buildIdMap };
+/**
+ * Splits EXTRA_SRC instructions between gtfs and netex entries. Ids matching an
+ * existing netex entry go to netex, as do brand-new ids whose patch has
+ * `"type": "netex"` (the `type` key is stripped); everything else goes to gtfs.
+ *
+ * @param {Object.<string,Object>} extraSrc
+ * @param {Object[]} [netexArray] - existing netex entries (each with an `id`).
+ * @returns {{gtfs: Object.<string,Object>, netex: Object.<string,Object>}}
+ */
+const splitExtraSrc = (extraSrc, netexArray = []) => {
+  const netexIds = netexArray.map(src => src.id);
+  const gtfs = {};
+  const netex = {};
+  Object.keys(extraSrc).forEach(id => {
+    const { type, ...patch } = extraSrc[id];
+    if (netexIds.includes(id) || type === 'netex') {
+      netex[id] = patch;
+    } else {
+      gtfs[id] = extraSrc[id];
+    }
+  });
+  return { gtfs, netex };
+};
+
+module.exports = { applyExtraSrc, buildIdMap, splitExtraSrc };
