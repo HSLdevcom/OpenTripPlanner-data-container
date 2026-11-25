@@ -25,9 +25,8 @@ function setFeedId(file, id) {
       });
       // Remove unnecessary control characters that break things
       let filteredData = data.replace(/\r/g, '');
-      if (filteredData.charAt(filteredData.length - 1) === '\n') {
-        filteredData = filteredData.slice(0, -1);
-      }
+      // Remove all trailing newlines, a blank last line would end up in the last field
+      filteredData = filteredData.replace(/\n+$/, '');
       if (filteredData.charCodeAt(0) === 0xfeff) {
         // remove BOM
         filteredData = filteredData.substr(1);

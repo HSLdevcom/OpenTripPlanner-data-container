@@ -29,11 +29,6 @@ module.exports = {
       url: 'https://github.com/tvv-lippu-ja-maksujarjestelma-oy/waltti-digitransit-config-data/raw/refs/heads/main/GTFStestireittiopas.zip',
       fit: true,
     },
-    {
-      id: '02Taksi',
-      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
-      isTaxiData: true,
-    },
   ],
   osm: ['oulu', 'southFinland'],
 };

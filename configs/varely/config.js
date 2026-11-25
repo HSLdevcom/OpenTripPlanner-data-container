@@ -20,11 +20,6 @@ module.exports = {
       url: 'https://tvv.fra1.digitaloceanspaces.com/231.zip',
       fit: true,
     },
-    {
-      id: '02Taksi',
-      url: 'https://gtfsdata.blob.core.windows.net/finland/02Taksi-taxizone.zip',
-      isTaxiData: true,
-    },
   ],
   osm: ['varely'],
 };
