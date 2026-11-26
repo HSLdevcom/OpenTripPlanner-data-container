@@ -42,7 +42,7 @@ It is possible to change the behaviour of the data builder by defining environme
 - (Optional) `SLACK_CHANNEL_ID` defines to which slack channel the messages are sent to
 - (Optional) `SLACK_ACCESS_TOKEN` bearer token for slack messaging
 - (Optional) `SLACK_POST_SECTION_TIMINGS` if set (to any non-empty value), posts the build section timings summary as a thread reply in Slack
-- (Optional, default {}) `EXTRA_SRC` defines gtfs entries (the router config's `gtfs` list) that should be overridden or completely new entries that should be added with unique id. Example format:
+- (Optional, default {}) `EXTRA_SRC` defines gtfs or netex entries (the router config's `gtfs` and `netex` lists, matched by id) that should be overridden or completely new entries (added as gtfs, or as netex if the entry has `"type": "netex"`) that should be added with unique id. Example format:
   - `{"FOLI": {"url": "https://data.foli.fi/gtfs/gtfs.zip",  "fit": false, "rules": ["waltti/gtfs-rules/waltti.rule"]}}`
   - You can remove an entry by including `"remove": true`, `{"FOLI": {"remove": true}}`
 - (Optional, default {}) `EXTRA_UPDATERS` defines router-config.json updater values that should be overridden or completely new updater that should be added with unique id. Example format:
